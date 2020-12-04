@@ -11,4 +11,6 @@ The development of this package has begun. Updates will be described in this REA
 
 -- December 4, 2020 --
 
-`Smcmc' class created. This corresponds to "MCMC simulation objects". The `plot' command works directly on this and produces density plots with the desired quantiles and means indicated.
+`Smcmc` class created. This corresponds to "MCMC simulation objects". The `plot` command works directly on this and produces density plots with the desired quantiles and means indicated.
+
+---------------------

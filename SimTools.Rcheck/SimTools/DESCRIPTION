@@ -1,0 +1,17 @@
+Package: SimTools
+Version: 1.0-0
+Date: 2020-06-20
+Title: Toolkit for Simulation output including Monte Carlo and MCMC
+Author: Dootika Vats <dootika@iitk.ac.in>,
+	James M. Flegal <jflegal@ucr.edu>, 
+	Galin Jones <galin@umn.edu>, 
+	Gunjan Jalori.
+Maintainer: Dootika Vats <dootika@iitk.ac.in>
+Imports: mcmcse
+Description: Toolkit for Simulation output including Monte Carlo and MCMC
+License: GPL (>= 2)
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+NeedsCompilation: no
+Packaged: 2020-12-04 13:09:47 UTC; Dootika
+Built: R 4.0.2; ; 2020-12-04 13:09:56 UTC; unix

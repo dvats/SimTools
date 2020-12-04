@@ -7,11 +7,11 @@ Author: Dootika Vats <dootika@iitk.ac.in>,
 	Galin Jones <galin@umn.edu>, 
 	Gunjan Jalori.
 Maintainer: Dootika Vats <dootika@iitk.ac.in>
-Imports: mcmcse
+Imports: mcmcse, mvtnorm
 Description: Toolkit for Simulation output including Monte Carlo and MCMC
 License: GPL (>= 2)
 Encoding: UTF-8
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-12-04 13:09:47 UTC; Dootika
-Built: R 4.0.2; ; 2020-12-04 13:09:56 UTC; unix
+Packaged: 2020-12-04 17:46:35 UTC; Dootika
+Built: R 4.0.2; ; 2020-12-04 17:46:45 UTC; unix

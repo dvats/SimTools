@@ -29,57 +29,21 @@ Malformed Description field: should contain one or more complete sentences.
 * checking whether the package can be unloaded cleanly ... OK
 * checking whether the namespace can be loaded with stated dependencies ... OK
 * checking whether the namespace can be unloaded cleanly ... OK
-* checking dependencies in R code ... NOTE
-Namespace in Imports field not imported from: ‘mcmcse’
-  All declared Imports should be used.
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... OK
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... NOTE
-boxplot.Siid: no visible global function definition for ‘par’
-boxplot.Siid: no visible global function definition for ‘adjustcolor’
-den.plot: no visible global function definition for ‘density’
-den.plot: no visible global function definition for ‘polygon’
-den.plot: no visible global function definition for ‘segments’
-error.est: no visible binding for global variable ‘quantile’
-error.est: no visible global function definition for ‘density’
-error.est: no visible global function definition for ‘mcse.multi’
-error.est: no visible global function definition for ‘cov’
-error.est: no visible global function definition for ‘qnorm’
-error.est: no visible global function definition for ‘pmvnorm’
-make.Smcmc: no visible global function definition for ‘batchSize’
-plot.CIs: no visible global function definition for ‘par’
-plot.CIs: no visible global function definition for ‘ts’
-plot.Smcmc: no visible global function definition for ‘dev.interactive’
-plot.Smcmc: no visible global function definition for ‘adjustcolor’
-plot.boxx: no visible global function definition for ‘boxplot’
-plot.boxx: no visible global function definition for ‘polygon’
-plot.boxx: no visible global function definition for ‘segments’
-Undefined global functions or variables:
-  adjustcolor batchSize boxplot cov density dev.interactive mcse.multi
-  par pmvnorm polygon qnorm quantile segments ts
-Consider adding
-  importFrom("grDevices", "adjustcolor", "dev.interactive")
-  importFrom("graphics", "boxplot", "par", "polygon", "segments")
-  importFrom("stats", "cov", "density", "qnorm", "quantile", "ts")
-to your NAMESPACE file.
+* checking R code for possible problems ... OK
 * checking Rd files ... OK
 * checking Rd metadata ... OK
 * checking Rd cross-references ... OK
 * checking for missing documentation entries ... OK
 * checking for code/documentation mismatches ... OK
-* checking Rd \usage sections ... WARNING
-Undocumented arguments in documentation object 'plot.Smcmc'
-  ‘...’
-
-Functions with \usage entries need to have the appropriate \alias
-entries, and all their arguments documented.
-The \usage entries must correspond to syntactically valid R code.
-See chapter ‘Writing R documentation files’ in the ‘Writing R
-Extensions’ manual.
+* checking Rd \usage sections ... OK
 * checking Rd contents ... OK
 * checking for unstated dependencies in examples ... OK
 * checking examples ... OK
 * checking PDF version of manual ... OK
 * DONE
-Status: 1 WARNING, 3 NOTEs
+Status: 1 NOTE

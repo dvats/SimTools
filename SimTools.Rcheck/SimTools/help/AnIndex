@@ -1,1 +1,5 @@
+as.Smcmc	Smcmc
+as.Smcmc.default	Smcmc
+is.mcmc	Smcmc
 plot.Smcmc	plot.Smcmc
+Smcmc	Smcmc

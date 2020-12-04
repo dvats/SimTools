@@ -71,17 +71,18 @@ No file Rd2.aux.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (656.78088pt too wide) in paragraph at lines 44--44
+Overfull \hbox (652.78088pt too wide) in paragraph at lines 44--44
  []\T1/zi4/m/n/10 plot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = 
 FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = \TS1/zi4/m/n/10 '\T1/z
 i4/m/n/10 plum4\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , quan.col = \TS1/zi4/m/n/10 '\T
 1/zi4/m/n/10 lightsteelblue3\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , opaq = 0.7, auto.
-layout = TRUE, ask = dev.interactive(), ...)[] 
+layout = TRUE, ask = dev.interactive(),...)[] 
 [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
 No file Rd2.ind.
-[2]
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux)
+[3]
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -97,7 +98,7 @@ s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
 /urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times
 /utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pf
 b></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (2 pages, 61938 bytes).
+Output written on Rd2.pdf (3 pages, 63674 bytes).
 Transcript written on Rd2.log.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex)
  restricted \write18 enabled.
@@ -159,33 +160,34 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1enc.dfu)))
 Writing index file Rd2.idx
 
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.out)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.out) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.out)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.out) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.toc) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.toc) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (656.78088pt too wide) in paragraph at lines 44--44
+Overfull \hbox (652.78088pt too wide) in paragraph at lines 44--44
  []\T1/zi4/m/n/10 plot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = 
 FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = \TS1/zi4/m/n/10 '\T1/z
 i4/m/n/10 plum4\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , quan.col = \TS1/zi4/m/n/10 '\T
 1/zi4/m/n/10 lightsteelblue3\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , opaq = 0.7, auto.
-layout = TRUE, ask = dev.interactive(), ...)[] 
+layout = TRUE, ask = dev.interactive(),...)[] 
 [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
 No file Rd2.ind.
-[2]
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux) )
+[3]
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux) )
 (see the transcript file for additional information){/usr/local/texlive/2015/te
 xmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive/2015/texmf-dist/fonts/
 enc/dvips/inconsolata/i4-ts1.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/
@@ -195,12 +197,12 @@ s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
 /urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times
 /utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pf
 b></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (2 pages, 62154 bytes).
+Output written on Rd2.pdf (3 pages, 64000 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (1 entries accepted, 0 rejected).
-Sorting entries...done (0 comparisons).
-Generating output file Rd2.ind....done (5 lines written, 0 warnings).
+Scanning input file Rd2.idx....done (4 entries accepted, 0 rejected).
+Sorting entries....done (12 comparisons).
+Generating output file Rd2.ind....done (18 lines written, 0 warnings).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex)
@@ -263,37 +265,46 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1enc.dfu)))
 Writing index file Rd2.idx
 
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.out)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.out) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.out)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.out) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.toc) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.toc) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (656.78088pt too wide) in paragraph at lines 44--44
+Overfull \hbox (652.78088pt too wide) in paragraph at lines 44--44
  []\T1/zi4/m/n/10 plot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = 
 FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = \TS1/zi4/m/n/10 '\T1/z
 i4/m/n/10 plum4\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , quan.col = \TS1/zi4/m/n/10 '\T
 1/zi4/m/n/10 lightsteelblue3\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , opaq = 0.7, auto.
-layout = TRUE, ask = dev.interactive(), ...)[] 
+layout = TRUE, ask = dev.interactive(),...)[] 
 [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.ind [2] [3])
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.ind [3]
+
+LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
+(Font)              using `T1/zi4/m/n' instead on input line 3.
+
+[4])
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  )
 (see the transcript file for additional information){/usr/local/texlive/2015/te
@@ -305,12 +316,12 @@ s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
 /urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times
 /utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pf
 b></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (3 pages, 62666 bytes).
+Output written on Rd2.pdf (4 pages, 64795 bytes).
 Transcript written on Rd2.log.
 This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (1 entries accepted, 0 rejected).
-Sorting entries...done (0 comparisons).
-Generating output file Rd2.ind....done (5 lines written, 0 warnings).
+Scanning input file Rd2.idx....done (4 entries accepted, 0 rejected).
+Sorting entries....done (12 comparisons).
+Generating output file Rd2.ind....done (18 lines written, 0 warnings).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
 This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex)
@@ -373,33 +384,43 @@ Package hyperref Warning: Option `pagebackref' has already been used,
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1enc.dfu)))
 Writing index file Rd2.idx
 
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1ptm.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.out)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.out) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.out)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.out) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.toc) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.toc) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (656.78088pt too wide) in paragraph at lines 44--44
+Overfull \hbox (652.78088pt too wide) in paragraph at lines 44--44
  []\T1/zi4/m/n/10 plot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = 
 FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = \TS1/zi4/m/n/10 '\T1/z
 i4/m/n/10 plum4\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , quan.col = \TS1/zi4/m/n/10 '\T
 1/zi4/m/n/10 lightsteelblue3\TS1/zi4/m/n/10 '\T1/zi4/m/n/10 , opaq = 0.7, auto.
-layout = TRUE, ask = dev.interactive(), ...)[] 
+layout = TRUE, ask = dev.interactive(),...)[] 
 [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.ind [2] [3])
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpOSRkUt/Rd2pdf2099
-3073d82e/Rd2.aux) )
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def) [2]
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.ind [3]
+
+LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
+(Font)              using `T1/zi4/m/n' instead on input line 3.
+
+[4])
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpZ3aODF/Rd2pdfa2e4
+23a8b82d/Rd2.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ )
 (see the transcript file for additional information){/usr/local/texlive/2015/te
 xmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive/2015/texmf-dist/fonts/
 enc/dvips/inconsolata/i4-ts1.enc}{/usr/local/texlive/2015/texmf-dist/fonts/enc/
@@ -409,8 +430,8 @@ s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
 /urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times
 /utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmr8a.pf
 b></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Rd2.pdf (3 pages, 63317 bytes).
+Output written on Rd2.pdf (4 pages, 65434 bytes).
 Transcript written on Rd2.log.
 Saving output to ‘SimTools-manual.pdf’ ...
 Done
-You may want to clean up by 'rm -Rf /var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T//RtmpOSRkUt/Rd2pdf20993073d82e'
+You may want to clean up by 'rm -Rf /var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T//RtmpZ3aODF/Rd2pdfa2e423a8b82d'

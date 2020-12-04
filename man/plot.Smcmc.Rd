@@ -4,7 +4,7 @@
 \alias{plot.Smcmc}
 \title{Plot Smcmc}
 \usage{
-\method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3', opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+\method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3', opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
 }
 \arguments{
 \item{x}{: a `Smcmc' class object}
@@ -32,6 +32,8 @@
 \item{auto.layout}{: logical argument for an automatic layout of plots}
 
 \item{ask}{: activating interactive plots}
+
+\item{...}{: arguments passed on to the \code{density} plot in base R}
 }
 \value{
 returns a plot of the univariate density estimates with simultaneous

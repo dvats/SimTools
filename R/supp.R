@@ -82,7 +82,7 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],qciu = CIs$upper.ci.mat[, i],bord = bord,mean.color = mean.color, quan.color = quan.color,mean = mean,...)
+      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],qciu = CIs$upper.ci.mat[, i],bord = bord,mean.color = mean.color, quan.color = quan.color, mean = mean,...)
     }
   }
   else if(dimn == 4) {

@@ -1,10 +1,43 @@
-"make.Smcmc" <- function(data, batch.size = FALSE, varnames = colnames(data)) # make Smcmc object
+## usethis namespace: start
+#' @importFrom grDevices adjustcolor dev.interactive
+#' @importFrom graphics boxplot par polygon segments
+#' @importFrom stats cov density qnorm quantile ts
+#' @importFrom mcmcse mcse.multi batchSize
+#' @importFrom mvtnorm pmvnorm
+## usethis namespace: end
+
+#' @title Plot Smcmc
+#'
+#' @description Density plots with simultaenous error bars around means and quantiles
+#'  for MCMC data. The error bars account for the correlated nature of the process.
+#'
+#'
+#' @name Smcmc
+#' @aliases Smcmc as.Smcmc as.Smcmc.default is.mcmc 
+#' @usage Smcmc(data, batch.size = FALSE, varnames = colnames(data))
+#' @param data : an MCMC output matrix with nsim rows and p columns
+#' @param batch.size : logical vector, if true, calculates the batch size appropriate for this Markov chain. Setting to TRUE saves time in future steps.
+#' @param varnames : a character string equal to the number of columns in \code{data}
+#'
+#' @return an Smcmc class object
+#' @examples
+#' # Producing Markov chain
+#' chain <- numeric(length = 1e3)
+#' chain[1] <- 0
+#' err <- rnorm(1e3)
+#' for(i in 2:1e3)
+#' {
+#'   chain[i] <- .3*chain[i-1] + err[i]
+#' }
+#' smcmc.obj <- Smcmc(chain)
+#' @export
+"Smcmc" <- function(data, batch.size = FALSE, varnames = colnames(data)) # make Smcmc object
 {
   if(missing(data))
     stop("Data must be provided.")
-  
-  if(!is.matrix(data))
-    stop("Data must be a matrix")
+
+  if(is.vector(data))
+    data <- as.matrix(data, ncol = 1)
 
   nsim <- dim(data)[1]
 
@@ -27,11 +60,13 @@
   return(FALSE)
 }
 
+#' @export
 "as.Smcmc" <- function (x, ...) 
   UseMethod("as.Smcmc")
 
+#' @export
 "as.Smcmc.default" <- function (x, ...) 
-  if (is.Smcmc(x)) x else make.Smcmc(x)
+  if (is.Smcmc(x)) x else Smcmc(x)
 
 
 
@@ -43,7 +78,7 @@
 #'
 #'
 #' @name plot.Smcmc
-#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3', opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3', opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
 #' @param x : a `Smcmc' class object
 #' @param Q : vector of quantiles
 #' @param alpha : confidence level of simultaneous confidence intervals 
@@ -57,7 +92,7 @@
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
 #' @param auto.layout : logical argument for an automatic layout of plots
 #' @param ask : activating interactive plots
-#'
+#' @param ... : arguments passed on to the \code{density} plot in base R
 #' @return returns a plot of the univariate density estimates with simultaneous
 #'			confidence intervals wherever asked. If \code{plot == FALSE} a list of
 #'			estimates and simultaneous confidence intervals.
@@ -92,15 +127,11 @@
     	mn = out$mean.est,mean = mean, quans = out$xi.q, 
     	auto.layout = auto.layout, ask = ask,...)
   }
-  return(out)
+  invisible(out)
 }
 
 
-## usethis namespace: start
-#' @importFrom grDevices adjustcolor dev.interactive
-#' @importFrom graphics boxplot par polygon segments
-#' @importFrom stats cov density qnorm quantile ts
-## usethis namespace: end
+
 
 
 

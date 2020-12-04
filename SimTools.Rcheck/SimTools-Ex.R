@@ -6,6 +6,30 @@ library('SimTools')
 base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
 cleanEx()
+nameEx("Smcmc")
+### * Smcmc
+
+flush(stderr()); flush(stdout())
+
+### Name: Smcmc
+### Title: Plot Smcmc
+### Aliases: Smcmc as.Smcmc as.Smcmc.default is.mcmc
+
+### ** Examples
+
+# Producing Markov chain
+chain <- numeric(length = 1e3)
+chain[1] <- 0
+err <- rnorm(1e3)
+for(i in 2:1e3)
+{
+  chain[i] <- .3*chain[i-1] + err[i]
+}
+smcmc.obj <- Smcmc(chain)
+
+
+
+cleanEx()
 nameEx("plot.Smcmc")
 ### * plot.Smcmc
 

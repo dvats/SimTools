@@ -1,5 +1,10 @@
+as.Siid	Siid
+as.Siid.default	Siid
 as.Smcmc	Smcmc
 as.Smcmc.default	Smcmc
+boxplot.Siid	boxplot.Siid
+is.iid	Siid
 is.mcmc	Smcmc
 plot.Smcmc	plot.Smcmc
+Siid	Siid
 Smcmc	Smcmc

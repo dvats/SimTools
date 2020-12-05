@@ -25,13 +25,32 @@ Type 'q()' to quit R.
 > base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 > base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
 > cleanEx()
+> nameEx("Siid")
+> ### * Siid
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: Siid
+> ### Title: Siid class
+> ### Aliases: Siid as.Siid as.Siid.default is.iid
+> 
+> ### ** Examples
+> 
+> # Generating iid data
+> chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
+> siid.obj <- Siid(chain)
+> 
+> 
+> 
+> 
+> cleanEx()
 > nameEx("Smcmc")
 > ### * Smcmc
 > 
 > flush(stderr()); flush(stdout())
 > 
 > ### Name: Smcmc
-> ### Title: Plot Smcmc
+> ### Title: Smcmc class
 > ### Aliases: Smcmc as.Smcmc as.Smcmc.default is.mcmc
 > 
 > ### ** Examples
@@ -45,6 +64,26 @@ Type 'q()' to quit R.
 +   chain[i] <- .3*chain[i-1] + err[i]
 + }
 > smcmc.obj <- Smcmc(chain)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("boxplot.Siid")
+> ### * boxplot.Siid
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: boxplot.Siid
+> ### Title: Boxplot for Siid
+> ### Aliases: boxplot.Siid
+> 
+> ### ** Examples
+> 
+> # Generating iid data
+> chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
+> siid.obj <- Siid(chain)
+> boxplot(chain)
+> 
 > 
 > 
 > 
@@ -68,6 +107,7 @@ Type 'q()' to quit R.
 + {
 +   chain[i] <- .3*chain[i-1] + err[i]
 + }
+> chain <- Smcmc(chain)
 > plot(chain)
 > 
 > 
@@ -78,7 +118,7 @@ Type 'q()' to quit R.
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  0.149 0.011 0.161 0 0 
+Time elapsed:  0.198 0.015 0.215 0 0 
 > grDevices::dev.off()
 null device 
           1 

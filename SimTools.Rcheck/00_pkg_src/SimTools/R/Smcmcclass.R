@@ -6,11 +6,9 @@
 #' @importFrom mvtnorm pmvnorm
 ## usethis namespace: end
 
-#' @title Plot Smcmc
+#' @title Smcmc class
 #'
-#' @description Density plots with simultaenous error bars around means and quantiles
-#'  for MCMC data. The error bars account for the correlated nature of the process.
-#'
+#' @description Smcmc class for simulated data using Markov chain Monte Carlo
 #'
 #' @name Smcmc
 #' @aliases Smcmc as.Smcmc as.Smcmc.default is.mcmc 
@@ -78,7 +76,9 @@
 #'
 #'
 #' @name plot.Smcmc
-#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3', opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, 
+#'                            mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
+#'                            opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
 #' @param x : a `Smcmc' class object
 #' @param Q : vector of quantiles
 #' @param alpha : confidence level of simultaneous confidence intervals 
@@ -105,6 +105,7 @@
 #' {
 #'   chain[i] <- .3*chain[i-1] + err[i]
 #' }
+#' chain <- Smcmc(chain)
 #' plot(chain)
 #'
 #' @references
@@ -115,10 +116,10 @@
 #' @export
 "plot.Smcmc" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, 
 	plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-	opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+	opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
   x <- as.Smcmc(x)
-  out <- error.est(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, ...)
+  out <- error.est(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
   if(plot == TRUE)
   {
     plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 

@@ -6,13 +6,32 @@ library('SimTools')
 base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
 cleanEx()
+nameEx("Siid")
+### * Siid
+
+flush(stderr()); flush(stdout())
+
+### Name: Siid
+### Title: Siid class
+### Aliases: Siid as.Siid as.Siid.default is.iid
+
+### ** Examples
+
+# Generating iid data
+chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
+siid.obj <- Siid(chain)
+
+
+
+
+cleanEx()
 nameEx("Smcmc")
 ### * Smcmc
 
 flush(stderr()); flush(stdout())
 
 ### Name: Smcmc
-### Title: Plot Smcmc
+### Title: Smcmc class
 ### Aliases: Smcmc as.Smcmc as.Smcmc.default is.mcmc
 
 ### ** Examples
@@ -26,6 +45,26 @@ for(i in 2:1e3)
   chain[i] <- .3*chain[i-1] + err[i]
 }
 smcmc.obj <- Smcmc(chain)
+
+
+
+cleanEx()
+nameEx("boxplot.Siid")
+### * boxplot.Siid
+
+flush(stderr()); flush(stdout())
+
+### Name: boxplot.Siid
+### Title: Boxplot for Siid
+### Aliases: boxplot.Siid
+
+### ** Examples
+
+# Generating iid data
+chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
+siid.obj <- Siid(chain)
+boxplot(chain)
+
 
 
 
@@ -49,6 +88,7 @@ for(i in 2:1e3)
 {
   chain[i] <- .3*chain[i-1] + err[i]
 }
+chain <- Smcmc(chain)
 plot(chain)
 
 

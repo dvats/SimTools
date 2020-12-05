@@ -5,7 +5,7 @@
 \alias{as.Smcmc}
 \alias{as.Smcmc.default}
 \alias{is.mcmc}
-\title{Plot Smcmc}
+\title{Smcmc class}
 \usage{
 Smcmc(data, batch.size = FALSE, varnames = colnames(data))
 }
@@ -20,8 +20,7 @@ Smcmc(data, batch.size = FALSE, varnames = colnames(data))
 an Smcmc class object
 }
 \description{
-Density plots with simultaenous error bars around means and quantiles
- for MCMC data. The error bars account for the correlated nature of the process.
+Smcmc class for simulated data using Markov chain Monte Carlo
 }
 \examples{
 # Producing Markov chain

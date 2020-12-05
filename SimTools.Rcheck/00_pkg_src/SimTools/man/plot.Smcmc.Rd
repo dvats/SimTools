@@ -4,7 +4,9 @@
 \alias{plot.Smcmc}
 \title{Plot Smcmc}
 \usage{
-\method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3', opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+\method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, 
+                           mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
+                           opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
 }
 \arguments{
 \item{x}{: a `Smcmc' class object}
@@ -53,6 +55,7 @@ for(i in 2:1e3)
 {
   chain[i] <- .3*chain[i-1] + err[i]
 }
+chain <- Smcmc(chain)
 plot(chain)
 
 }

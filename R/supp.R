@@ -54,7 +54,7 @@ CIz <- function(z, p1 , p2, theta.hat, phi, ci.sigma.mat, n, mean = TRUE)
 }
 
 den.plot <- function(x, mn, quans, mcil, mciu, qcil, qciu, mean = TRUE, 
-  bord = NA, mean.color, quan.color, main = "Component-wise Densities", ...)
+  bord = NA, mean.color, quan.color,l, main = paste("Density of ",l), ...)
 {
   plot(density(x, ...), main = main, ...)
   if(mean){
@@ -78,12 +78,22 @@ den.plot <- function(x, mn, quans, mcil, mciu, qcil, qciu, mean = TRUE,
 plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, 
   mean = TRUE, mn, quans, auto.layout, ask, ...)
 {
+  if(is.null(attributes(x)$varnames)) 
+  {
+    varnames <- as.character(1:dim(x)[2])
+  }else{
+    varnames <- attributes(x)$varnames
+  }
+  
   if(dimn < 4) {
     par(mfrow = c(dimn,1))
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],qciu = CIs$upper.ci.mat[, i],bord = bord,mean.color = mean.color, quan.color = quan.color, mean = mean,...)
+      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
+        qciu = CIs$upper.ci.mat[, i],bord = bord, 
+        mean.color = mean.color, quan.color = quan.color, 
+        mean = mean, l = varnames[i], ...)
     }
   }
   else if(dimn == 4) {
@@ -91,14 +101,21 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     for(i in 1:4)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],qciu = CIs$upper.ci.mat[, i],bord = bord,mean.color = mean.color, quan.color = quan.color,mean = mean,...)
+      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], 
+        mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
+        qciu = CIs$upper.ci.mat[, i],bord = bord,
+        mean.color = mean.color, quan.color = quan.color,
+        mean = mean,  l = varnames[i], ...)
     }
   }else if(dimn == 5||dimn == 6){
     par(mfrow = c(3,2))
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],qciu = CIs$upper.ci.mat[, i],bord = bord,mean.color = mean.color, quan.color = quan.color,mean = mean,...)
+      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], 
+        mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
+        qciu = CIs$upper.ci.mat[, i], bord = bord, mean.color = mean.color, 
+        quan.color = quan.color, mean = mean,  l = varnames[i], ...)
     }
   }else {
     pars <- NULL
@@ -113,7 +130,11 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],qciu = CIs$upper.ci.mat[, i],bord = bord,mean.color = mean.color, quan.color = quan.color,mean = mean,...)
+      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], 
+        mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
+        qciu = CIs$upper.ci.mat[, i],bord = bord, 
+        mean.color = mean.color, quan.color = quan.color,
+        mean = mean, l = varnames[i], ...)
       if (i == 1)
         pars <- c(pars, par(ask=ask))
     }
@@ -243,9 +264,9 @@ error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh, mean = TRUE, iid
 
 ## For boxplots
 plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, mn, quans, range, width, varwidth, notch, outline, plot, border,
-                      col, ann, horizontal, add) 
+                      col, ann, horizontal, add,...) 
 {
-  boxplot.matrix(x, range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
+  boxplot.matrix(x, ..., range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
     plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add)
   for(i in 1:dimn) {
     quansi <- quans[, i]

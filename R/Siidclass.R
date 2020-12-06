@@ -85,7 +85,7 @@
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"boxplot.Siid" <- function(x, ...,  alpha = 0.05, thresh = 0.001, mean.col = 'plum4',
+"boxplot.Siid" <- function(x, ...,alpha = 0.05, thresh = 0.001, mean.col = 'plum4',
                       quan.col = 'lightsteelblue3', opaq = .6, range = 1.5, width = NULL, varwidth = FALSE,
                       outline = TRUE, plot = TRUE, border = par("fg"), col = 'white',
                       ann = !add, horizontal = FALSE, add = FALSE)
@@ -96,7 +96,7 @@
   foo3 <- error.est(x, Q, alpha = alpha, thresh = thresh, mean = FALSE, iid = TRUE)
   plot.boxx(x, dimn = length(x[1,]), CIs = foo3, mean.color = mean.col, quan.color = adjustcolor(quan.col, alpha.f = opaq), mn = foo3$mean.est, 
             quans = foo3$xi.q, range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
-            plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add)
+            plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add,...)
 }
 
 

@@ -125,8 +125,8 @@
     plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-    	mn = out$mean.est,mean = mean, quans = out$xi.q, 
-    	auto.layout = auto.layout, ask = ask,...)
+    	mn = out$mean.est, mean = mean, quans = out$xi.q, 
+    	auto.layout = auto.layout, ask = ask, ...)
   }
   invisible(out)
 }

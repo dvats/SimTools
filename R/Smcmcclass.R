@@ -1,6 +1,6 @@
 ## usethis namespace: start
 #' @importFrom grDevices adjustcolor dev.interactive
-#' @importFrom graphics boxplot par polygon segments
+#' @importFrom graphics boxplot par polygon segments boxplot.matrix
 #' @importFrom stats cov density qnorm quantile ts
 #' @importFrom mcmcse mcse.multi batchSize
 #' @importFrom mvtnorm pmvnorm

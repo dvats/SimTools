@@ -122,11 +122,10 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
 }
 
 #Q is list of quantiles to be estimated. It will be estimated for each component, m is the length of Q
-error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh, 
-  mean = TRUE, iid, ...) 
+error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh, mean = TRUE, iid) 
 {
   m <- length(Q)
-  n <- attributes(x)$nsim
+  n <- dim(x)[1]
   
   # p1 is the dimension of g(x)
   # p2 is defined this because p1+p2 will ncols in lambda and sigma
@@ -246,7 +245,7 @@ error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh,
 plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, mn, quans, range, width, varwidth, notch, outline, plot, border,
                       col, ann, horizontal, add) 
 {
-  boxplot(x, range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
+  boxplot.matrix(x, range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
     plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add)
   for(i in 1:dimn) {
     quansi <- quans[, i]

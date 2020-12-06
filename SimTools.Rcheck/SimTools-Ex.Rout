@@ -82,7 +82,27 @@ Type 'q()' to quit R.
 > # Generating iid data
 > chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
 > siid.obj <- Siid(chain)
-> boxplot(chain)
+> boxplot(siid.obj)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plot.Siid")
+> ### * plot.Siid
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plot.Siid
+> ### Title: Plot Siid
+> ### Aliases: plot.Siid
+> 
+> ### ** Examples
+> 
+> # Generating iid data
+> chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
+> siid.obj <- Siid(chain)
+> plot(siid.obj)
 > 
 > 
 > 
@@ -118,7 +138,7 @@ Type 'q()' to quit R.
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  0.198 0.015 0.215 0 0 
+Time elapsed:  0.354 0.015 0.381 0 0 
 > grDevices::dev.off()
 null device 
           1 

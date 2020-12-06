@@ -63,7 +63,27 @@ flush(stderr()); flush(stdout())
 # Generating iid data
 chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
 siid.obj <- Siid(chain)
-boxplot(chain)
+boxplot(siid.obj)
+
+
+
+
+cleanEx()
+nameEx("plot.Siid")
+### * plot.Siid
+
+flush(stderr()); flush(stdout())
+
+### Name: plot.Siid
+### Title: Plot Siid
+### Aliases: plot.Siid
+
+### ** Examples
+
+# Generating iid data
+chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
+siid.obj <- Siid(chain)
+plot(siid.obj)
 
 
 

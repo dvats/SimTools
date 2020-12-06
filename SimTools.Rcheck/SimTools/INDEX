@@ -1,4 +1,5 @@
 Siid                    Siid class
 Smcmc                   Smcmc class
 boxplot.Siid            Boxplot for Siid
+plot.Siid               Plot Siid
 plot.Smcmc              Plot Smcmc

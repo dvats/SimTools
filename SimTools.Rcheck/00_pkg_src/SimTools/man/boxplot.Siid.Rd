@@ -54,7 +54,7 @@ Boxplots with simultaenous error bars around all quantiles for iid data.
 # Generating iid data
 chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
 siid.obj <- Siid(chain)
-boxplot(chain)
+boxplot(siid.obj)
 
 }
 \references{

@@ -156,7 +156,8 @@ error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh, mean = TRUE, iid
   p2 <- m*length(x[1,])
   theta.hat <- colMeans(x) #g bar
   xi.q <- apply(x, 2, quantile, Q)
-  
+  xi.q <- as.matrix(xi.q)
+  if(m==1) xi.q <- t(xi.q)
   #phi is the vector of all quantiles
   phi <- rep(0, p2)
   for(i in 1:m)

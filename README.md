@@ -10,6 +10,13 @@ The development of this package has begun. Updates will be described in this REA
 
 
 **Run**: `runme.R`
+
+
+---------------------
+ December 7, 2020 
+
+`Siid` class created. This corresponds to "IID simulation objects". The `boxplot` and `plot` commands work directly on this and produces boxplots and density plots. 
+
 ---------------------
  December 4, 2020 
 
@@ -17,8 +24,4 @@ The development of this package has begun. Updates will be described in this REA
 
 ---------------------
 
- December 7, 2020 
 
-`Siid` class created. This corresponds to "IID simulation objects". The `boxplot` and `plot` commands work directly on this and produces boxplots and density plots. 
-
----------------------

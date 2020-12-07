@@ -126,7 +126,7 @@
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mn = out$mean.est, mean = mean, quans = out$xi.q, 
-    	auto.layout = auto.layout, ask = ask, ...)
+    	auto.layout = auto.layout, ask = ask,lty=2)#, ...)
   }
   invisible(out)
 }

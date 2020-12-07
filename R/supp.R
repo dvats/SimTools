@@ -56,7 +56,7 @@ CIz <- function(z, p1 , p2, theta.hat, phi, ci.sigma.mat, n, mean = TRUE)
 den.plot <- function(x, mn, quans, mcil, mciu, qcil, qciu, mean = TRUE, 
   bord = NA, mean.color, quan.color,l, main = paste("Density of ",l), ...)
 {
-  plot(density(x, ...), main = main, ...)
+  plot(density(x), main = main, ...)
   if(mean){
     dum1 <- density(x, from = mcil, to = mciu)
     polygon(c(mcil, dum1$x, mciu), c(0, dum1$y, 0), col = mean.color, border = bord )
@@ -67,17 +67,18 @@ den.plot <- function(x, mn, quans, mcil, mciu, qcil, qciu, mean = TRUE,
     polygon(c(qcil[j], dum1$x, qciu[j]), c(0, dum1$y, 0), col = quan.color, border = bord)
   }
   if(mean){
-    segments(mn,0,mn, density(x, from = mn, to = mn, n = 1 )$y)
+    segments(mn,0,mn, density(x, from = mn, to = mn, n = 1 )$y,...)
   }
   for(j in 1:length(quans))
   {
-    segments(quans[j],0,quans[j], density(x, from = quans[j], to = quans[j], n = 1 )$y)
+    segments(quans[j],0,quans[j], density(x, from = quans[j], to = quans[j], n = 1 )$y,...)
   }
 }
 
 plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, 
   mean = TRUE, mn, quans, auto.layout, ask, ...)
 {
+  pars <- NULL
   if(is.null(attributes(x)$varnames)) 
   {
     varnames <- as.character(1:dim(x)[2])
@@ -118,7 +119,6 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
         quan.color = quan.color, mean = mean,  l = varnames[i], ...)
     }
   }else {
-    pars <- NULL
     on.exit(par(pars))
     
     
@@ -139,6 +139,7 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
         pars <- c(pars, par(ask=ask))
     }
   }
+  on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
   
 }
 
@@ -266,8 +267,14 @@ error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh, mean = TRUE, iid
 plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, mn, quans, range, width, varwidth, notch, outline, plot, border,
                       col, ann, horizontal, add,...) 
 {
+  if(is.null(attributes(x)$varnames)) 
+  {
+    varnames <- as.character(1:dim(x)[2])
+  }else{
+    varnames <- attributes(x)$varnames
+  }
   boxplot.matrix(x, ..., range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
-    plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add)
+                 names=varnames, plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add)
   for(i in 1:dimn) {
     quansi <- quans[, i]
     qcil = CIs$lower.ci.mat[, i]

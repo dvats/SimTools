@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  6 DEC 2020 16:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  7 DEC 2020 09:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -615,8 +615,8 @@ Now handling font encoding PD1 ...
 
 Writing index file Rd2.idx
 
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpegbUEE/Rd2pdfc2b7
-1f76c79e/Rd2.aux)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpdGXTRJ/Rd2pdffd9c
+3ba2c564/Rd2.aux)
 \openout1 = `Rd2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
@@ -671,10 +671,10 @@ LaTeX Info: Redefining \ref on input line 8.
 LaTeX Info: Redefining \pageref on input line 8.
 LaTeX Info: Redefining \nameref on input line 8.
 
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpegbUEE/Rd2pdfc2b7
-1f76c79e/Rd2.out)
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpegbUEE/Rd2pdfc2b7
-1f76c79e/Rd2.out)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpdGXTRJ/Rd2pdffd9c
+3ba2c564/Rd2.out)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpdGXTRJ/Rd2pdffd9c
+3ba2c564/Rd2.out)
 \@outlinefile=\write4
 \openout4 = `Rd2.out'.
 
@@ -699,8 +699,8 @@ LaTeX Font Info:    Try loading font information for T1+phv on input line 32.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpegbUEE/Rd2pdfc2b7
-1f76c79e/Rd2.toc
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpdGXTRJ/Rd2pdffd9c
+3ba2c564/Rd2.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 1.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -765,8 +765,8 @@ File: utf8.def 2014/09/29 v1.1m UTF-8 support for inputenc
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/utf8.def
 File: utf8.def 2014/09/29 v1.1m UTF-8 support for inputenc
 ) [5]
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpegbUEE/Rd2pdfc2b7
-1f76c79e/Rd2.ind [6]
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpdGXTRJ/Rd2pdffd9c
+3ba2c564/Rd2.ind [6]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 3.
@@ -778,8 +778,8 @@ LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 331.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 331.
 
-(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpegbUEE/Rd2pdfc2b7
-1f76c79e/Rd2.aux)
+(/private/var/folders/6h/ckff_c490ml7_lmhj4xqv3lw0000gp/T/RtmpdGXTRJ/Rd2pdffd9c
+3ba2c564/Rd2.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 331.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 331.
 Package rerunfilecheck Info: File `Rd2.out' has not changed.

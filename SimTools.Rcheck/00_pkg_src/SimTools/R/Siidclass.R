@@ -90,7 +90,7 @@
                       outline = TRUE, plot = TRUE, border = par("fg"), col = 'white',
                       ann = !add, horizontal = FALSE, add = FALSE)
 {
-  x <- Siid(x)
+  x <- as.Siid(x)
   Q <- c(0.25, 0.50, 0.75)
   notch <- FALSE
   foo3 <- error.est(x, Q, alpha = alpha, thresh = thresh, mean = FALSE, iid = TRUE)

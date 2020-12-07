@@ -8,7 +8,7 @@ Author: Dootika Vats <dootika@iitk.ac.in>,
 	Gunjan Jalori.
 Maintainer: Dootika Vats <dootika@iitk.ac.in>
 Imports: mcmcse, mvtnorm
-Description: Toolkit for Simulation output including Monte Carlo and MCMC
+Description: Toolkit for Simulation output including Monte Carlo and MCMC. The package provides visualisations that accounts for Monte Carlo variability. 
 License: GPL (>= 2)
 Encoding: UTF-8
 RoxygenNote: 7.1.1

@@ -9,7 +9,7 @@ Gunjan Jalori
 The development of this package has begun. Updates will be described in this README. For communication regarding issues in the code and other suggestions,  we can try and use the GitHub Issues interface.
 
 
-** Run **: `runme.R`
+**Run**: `runme.R`
 ---------------------
  December 4, 2020 
 

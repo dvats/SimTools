@@ -22,9 +22,10 @@ MakeChain <- function(p = 4, n = 1e3, h = .5)
   for (i in 2:n) 
   {
     prop <- chain[i-1, ] + rnorm(p, mean = 0, sd = h)
-    ratio <- prod((dnorm(prop)/dnorm(chain[i-1, ])))
-    alpha <- min(1, ratio)
-    if(runif(1) <= alpha) {
+    log.ratio <- sum(dnorm(prop, log = TRUE) - dnorm(chain[i-1, ], log = TRUE))
+    
+    if(log(runif(1)) < log.ratio) 
+    {
       chain[i, ] <- prop
     }
     else {

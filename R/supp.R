@@ -53,10 +53,20 @@ CIz <- function(z, p1 , p2, theta.hat, phi, ci.sigma.mat, n, mean = TRUE)
   return(mfrow)
 }
 
-den.plot <- function(x, mn, quans, mcil, mciu, qcil, qciu, mean = TRUE, 
-  bord = NA, mean.color, quan.color,l, main = paste("Density of ",l), ...)
+
+addCI <- function(data, CIs, component = 1, bord = NA, 
+                  mean = TRUE,mean.col = 'plum4', quan.col = 'lightsteelblue3'
+                  , opaq = 0.7, ...)
 {
-  plot(density(x), main = main, ...)
+  x = ts(data[, component])
+  mean.color = adjustcolor(mean.col, alpha.f = opaq)
+  quan.color = adjustcolor(quan.col, alpha.f = opaq)
+  mn <- CIs$mean.est[component]
+  quans <- CIs$xi.q[ , component]
+  mcil = CIs$lower.ci.mean[component]
+  mciu = CIs$upper.ci.mean[component]
+  qcil = CIs$lower.ci.mat[, component]
+  qciu = CIs$upper.ci.mat[, component]
   if(mean){
     dum1 <- density(x, from = mcil, to = mciu)
     polygon(c(mcil, dum1$x, mciu), c(0, dum1$y, 0), col = mean.color, border = bord )
@@ -76,7 +86,7 @@ den.plot <- function(x, mn, quans, mcil, mciu, qcil, qciu, mean = TRUE,
 }
 
 plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, 
-  mean = TRUE, mn, quans, auto.layout, ask, ...)
+  mean = TRUE, auto.layout, ask, ...)
 {
   pars <- NULL
   if(is.null(attributes(x)$varnames)) 
@@ -91,10 +101,11 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
-        qciu = CIs$upper.ci.mat[, i],bord = bord, 
+      main1 = paste("Density of ",varnames[i])
+      plot(density(beta), main = main1, ...)
+      addCI(x, CIs, component = i, bord = bord, 
         mean.color = mean.color, quan.color = quan.color, 
-        mean = mean, l = varnames[i], ...)
+        mean = mean, ...)
     }
   }
   else if(dimn == 4) {
@@ -102,21 +113,22 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     for(i in 1:4)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], 
-        mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
-        qciu = CIs$upper.ci.mat[, i],bord = bord,
-        mean.color = mean.color, quan.color = quan.color,
-        mean = mean,  l = varnames[i], ...)
+      main1 = paste("Density of ",varnames[i])
+      plot(density(beta), main = main1, ...)
+      addCI(x, CIs, component = i, bord = bord, 
+            mean.color = mean.color, quan.color = quan.color, 
+            mean = mean, ...)
     }
   }else if(dimn == 5||dimn == 6){
     par(mfrow = c(3,2))
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], 
-        mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
-        qciu = CIs$upper.ci.mat[, i], bord = bord, mean.color = mean.color, 
-        quan.color = quan.color, mean = mean,  l = varnames[i], ...)
+      main1 = paste("Density of ",varnames[i])
+      plot(density(beta), main = main1, ...)
+      addCI(x, CIs,component = i, bord = bord, 
+            mean.color = mean.color, quan.color = quan.color, 
+            mean = mean, ...)
     }
   }else {
     on.exit(par(pars))
@@ -130,11 +142,11 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
-      den.plot(x = beta, mn = mn[i], quans = quans[, i], mcil = CIs$lower.ci.mean[i], 
-        mciu = CIs$upper.ci.mean[i], qcil = CIs$lower.ci.mat[, i],
-        qciu = CIs$upper.ci.mat[, i],bord = bord, 
-        mean.color = mean.color, quan.color = quan.color,
-        mean = mean, l = varnames[i], ...)
+      plot(density(beta), main = main1, ...)
+      main1 = paste("Density of ",varnames[i])
+      addCI(x, CIs, component = i, bord = bord, 
+            mean.color = mean.color, quan.color = quan.color, 
+            mean = mean, ...)
       if (i == 1)
         pars <- c(pars, par(ask=ask))
     }
@@ -144,7 +156,8 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
 }
 
 #Q is list of quantiles to be estimated. It will be estimated for each component, m is the length of Q
-error.est <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh, mean = TRUE, iid) 
+makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
+                   iid = FALSE, mean = TRUE) 
 {
   m <- length(Q)
   n <- dim(x)[1]
@@ -287,7 +300,7 @@ plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, mn, quans, range, wi
       }else {
         polygon(c(i-(0.2*min(dimn,2)),i+(0.2*min(dimn,2)),i+(0.2*min(dimn,2)), i-(0.2*min(dimn,2))), c(qcil[j],qcil[j],qciu[j],qciu[j]), col = quan.color, border = FALSE)
       } 
-    }
+    } 
     for(j in 1:length(quansi))
     {
       if(horizontal==TRUE) {

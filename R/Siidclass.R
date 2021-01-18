@@ -93,7 +93,7 @@
   x <- as.Siid(x)
   Q <- c(0.25, 0.50, 0.75)
   notch <- FALSE
-  foo3 <- error.est(x, Q, alpha = alpha, thresh = thresh, mean = FALSE, iid = TRUE)
+  foo3 <- makeCI(x, Q, alpha = alpha, thresh = thresh, mean = FALSE, iid = TRUE)
   plot.boxx(x, dimn = length(x[1,]), CIs = foo3, mean.color = mean.col, quan.color = adjustcolor(quan.col, alpha.f = opaq), mn = foo3$mean.est, 
             quans = foo3$xi.q, range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
             plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add,...)
@@ -145,7 +145,7 @@
   opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
   x <- as.Siid(x)
-  out <- error.est(x, Q, alpha, thresh = thresh, iid = TRUE, mean = mean)
+  out <- makeCI(x, Q, alpha, thresh = thresh, iid = TRUE, mean = mean)
   if(plot == TRUE)
   {
     plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 

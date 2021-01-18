@@ -119,14 +119,14 @@
 	opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
   x <- as.Smcmc(x)
-  out <- error.est(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
+  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
   if(plot == TRUE)
   {
     plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-    	mn = out$mean.est, mean = mean, quans = out$xi.q, 
-    	auto.layout = auto.layout, ask = ask, ...)
+    	mean = mean, auto.layout = auto.layout, 
+    	ask = ask, ...)
   }
   invisible(out)
 }

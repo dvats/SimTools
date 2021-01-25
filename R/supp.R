@@ -85,7 +85,7 @@ addCI <- function(data, CIs, component = 1, bord = NA,
   }
 }
 
-plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, 
+plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, rug,
   mean = TRUE, auto.layout, ask, ...)
 {
   pars <- NULL
@@ -103,6 +103,7 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
       beta = ts(x[, i])
       main1 = paste("Density of ",varnames[i])
       plot(density(beta), main = main1, ...)
+      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       addCI(x, CIs, component = i, bord = bord, 
         mean.color = mean.color, quan.color = quan.color, 
         mean = mean, ...)
@@ -115,6 +116,7 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
       beta = ts(x[, i])
       main1 = paste("Density of ",varnames[i])
       plot(density(beta), main = main1, ...)
+      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       addCI(x, CIs, component = i, bord = bord, 
             mean.color = mean.color, quan.color = quan.color, 
             mean = mean, ...)
@@ -126,6 +128,7 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
       beta = ts(x[, i])
       main1 = paste("Density of ",varnames[i])
       plot(density(beta), main = main1, ...)
+      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       addCI(x, CIs,component = i, bord = bord, 
             mean.color = mean.color, quan.color = quan.color, 
             mean = mean, ...)
@@ -143,6 +146,7 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     {
       beta = ts(x[, i])
       plot(density(beta), main = main1, ...)
+      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       main1 = paste("Density of ",varnames[i])
       addCI(x, CIs, component = i, bord = bord, 
             mean.color = mean.color, quan.color = quan.color, 

@@ -116,7 +116,7 @@
 #' @export
 "plot.Smcmc" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, 
 	plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-	opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+	rug = FALSE, opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
   x <- as.Smcmc(x)
   out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
@@ -125,7 +125,7 @@
     plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-    	mean = mean, auto.layout = auto.layout, 
+    	mean = mean, auto.layout = auto.layout, rug = rug,
     	ask = ask, ...)
   }
   invisible(out)

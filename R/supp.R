@@ -161,8 +161,10 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, rug,
 
 #Q is list of quantiles to be estimated. It will be estimated for each component, m is the length of Q
 makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
-                   iid = FALSE, mean = TRUE) 
+                   iid = FALSE, mean = TRUE, b.size = NULL) 
 {
+  if(!is.list(data)) data <- list(data)
+  
   m <- length(Q)
   n <- dim(x)[1]
   
@@ -195,7 +197,7 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
   
   #since p2 was m*dim(h(x))
   lower.ci.mat <- matrix(0, nrow = m, ncol = p2/m)
-  upper.ci.mat <- matrix(0, nrow = m, ncol = p2/m)
+  upper.ci.mat <- matrix(0, nrow = m, ncol = p2/m) 
   indis <- matrix(0,nrow = n,ncol = p2)
   for(i in 1:m)
   {
@@ -209,7 +211,7 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
   }
   if(mean == FALSE) Y <- indis else Y <- cbind(x, indis)
   
-  if(iid == FALSE)sigma.mat <- mcse.multi(Y, size = attributes(x)$size)$cov else sigma.mat <- cov(Y)
+  if(iid == FALSE)sigma.mat <- mcse.multi(Y, size = b)$cov else sigma.mat <- cov(Y)
   
   if(mean == FALSE) lambda <- 1/fs else (lambda <- 1/c(I.flat, fs))
   
@@ -220,7 +222,7 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
   z1 <- qnorm(1 - alpha/2)
   z2 <- qnorm(1 - alpha/(2*p))
   foo1 <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-  foo2 <- CIz(z2,p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+  foo2 <- CIz(z2, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
   if(mean == FALSE) v <- phi else v <- c(theta.hat, phi)
   
   count <- 0
@@ -299,7 +301,7 @@ plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, range, width, varwid
   }
 }
 
-boxCI <- function(x,CI,component = 1,dimn = 1,mean.color = 'plum4', quan.color = 'lightsteelblue3',horizontal = FALSE) 
+boxCI <- function(x,CI,components = c(1),dimn = 1,mean.color = 'plum4', quan.color = 'lightsteelblue3',horizontal = FALSE) 
 {
   quans = CI$xi.q
   mn = CI$mean.est
@@ -324,4 +326,32 @@ boxCI <- function(x,CI,component = 1,dimn = 1,mean.color = 'plum4', quan.color =
     }
     
   }
+}
+
+RBM <- function(x) {
+  m <- length(x)
+  
+  if(class(x) != "list")
+    stop("must be list of chains")
+  
+  if(is.null(x))
+    stop("Chains are null")
+  
+  n <- as.integer(nrow(x[[1]]))
+  p <- as.integer(ncol(x[[1]]))
+  
+  b <- 0
+  for(i in 1:m) {
+    b <- b + attributes(x[[i]])$size
+  }
+  b.final <- trunc(b/m)
+  a <- trunc(n/b.final)
+  ab <- a*b.final
+  trash <- n-ab
+  big.chain <- matrix(0,ncol = p,nrow = ab*m)
+  for (i in 1:m) {
+    big.chain[((i-1)*ab+1):(i*ab),] <- x[[i]][-(1:trash),]
+  }
+  
+  return(list("b.size" = b.final, "new.data" = big.chain)) 
 }

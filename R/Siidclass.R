@@ -140,18 +140,18 @@
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"plot.Siid" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, 
+"plot.Siid" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, rug = TRUE, 
   plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-  rug = FALSE, opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+ opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
   x <- as.Siid(x)
   out <- makeCI(x, Q, alpha, thresh = thresh, iid = TRUE, mean = mean)
   if(plot == TRUE)
   {
-    plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
+    plot.CIs(x, dimn = length(x[1,]), CIs = out, rug = rug, bord = border, 
              mean.color = adjustcolor(mean.col, alpha.f = opaq), 
              quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-             mean = mean, auto.layout = auto.layout, rug = rug,
+             mean = mean, auto.layout = auto.layout,
              ask = ask, ...)
   }
   invisible(out)

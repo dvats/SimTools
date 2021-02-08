@@ -29,7 +29,7 @@
 #' }
 #' smcmc.obj <- Smcmc(chain)
 #' @export
-"Smcmc" <- function(data, batch.size = FALSE, varnames = colnames(data)) # make Smcmc object
+"Smcmc" <- function(data, batch.size = TRUE, varnames = colnames(data)) # make Smcmc object
 {
   if(missing(data))
     stop("Data must be provided.")
@@ -118,11 +118,19 @@
 	plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
 	rug = FALSE, opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
-  x <- as.Smcmc(x)
-  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
+  if(!is.list(x)) data <- list(x)
+  m <- length(x)
+  for(i in 1:m)
+    x[[i]] <- as.Smcmc(x[[i]])
+  
+  foo <- RBM(x)
+  data <- foo$new.data
+  b <- foo$b.size
+  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, b.size = b)
+
   if(plot == TRUE)
   {
-    plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
+    plot.CIs(data, dimn = length(data[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mean = mean, auto.layout = auto.layout, rug = rug,

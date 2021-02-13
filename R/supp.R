@@ -163,43 +163,45 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, rug,
 makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
                    iid = FALSE, mean = TRUE, b.size = NULL) 
 {
-  if(!is.list(data)) data <- list(data)
   
-  m <- length(Q)
+  if(is.null(b.size)) 
+    b.size <- batchSize(x)
+  
+  mq <- length(Q)
   n <- dim(x)[1]
   
   # p1 is the dimension of g(x)
   # p2 is defined this because p1+p2 will ncols in lambda and sigma
   # v is the vector of all means and quantiles to be estimated
   p1 <- length(x[1,])
-  p2 <- m*length(x[1,])
+  p2 <- mq*length(x[1,])
   theta.hat <- colMeans(x) #g bar
   xi.q <- apply(x, 2, quantile, Q)
   xi.q <- as.matrix(xi.q)
-  if(m==1) xi.q <- t(xi.q)
+  if(mq==1) xi.q <- t(xi.q)
   #phi is the vector of all quantiles
   phi <- rep(0, p2)
-  for(i in 1:m)
+  for(i in 1:mq)
   {
-    phi[((i-1)*(p2/m) + 1):(i*(p2/m))] = xi.q[i,]
+    phi[((i-1)*(p2/mq) + 1):(i*(p2/mq))] = xi.q[i,]
   }
   
   fs <- rep(0, p2)
-  for(j in 1:m)
+  for(j in 1:mq)
   {
-    for(i in 1:(p2/m))
+    for(i in 1:(p2/mq))
     {
-      fs[(j-1)*(p2/m) + i] <- density(x[, i], from = xi.q[j, i], to = xi.q[j, i], n = 1 )$y 
+      fs[(j-1)*(p2/mq) + i] <- density(x[, i], from = xi.q[j, i], to = xi.q[j, i], n = 1 )$y 
     }
   }
   
   I.flat <- rep(1, p1)
   
   #since p2 was m*dim(h(x))
-  lower.ci.mat <- matrix(0, nrow = m, ncol = p2/m)
-  upper.ci.mat <- matrix(0, nrow = m, ncol = p2/m) 
+  lower.ci.mat <- matrix(0, nrow = mq, ncol = p2/mq)
+  upper.ci.mat <- matrix(0, nrow = mq, ncol = p2/mq) 
   indis <- matrix(0,nrow = n,ncol = p2)
-  for(i in 1:m)
+  for(i in 1:mq)
   {
     
     indi <- (apply(x, 1, Indicator, xi.q[i,]))
@@ -207,11 +209,11 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
     {
       indi <- t(indi)
     }
-    indis[,((i-1)*(p2/m) + 1):(i*(p2/m))] <- indi 
+    indis[,((i-1)*(p2/mq) + 1):(i*(p2/mq))] <- indi 
   }
   if(mean == FALSE) Y <- indis else Y <- cbind(x, indis)
   
-  if(iid == FALSE)sigma.mat <- mcse.multi(Y, size = b)$cov else sigma.mat <- cov(Y)
+  if(iid == FALSE)sigma.mat <- mcse.multi(Y, size = b.size)$cov else sigma.mat <- cov(Y)
   
   if(mean == FALSE) lambda <- 1/fs else (lambda <- 1/c(I.flat, fs))
   
@@ -252,16 +254,16 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
   }
   temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
   
-  for(i in 1:m)
+  for(i in 1:mq)
   {
     if(mean == FALSE)
     {
-      lower.ci.mat[i, ] <- temp$lower.ci[((i-1)*(p2/m)+1):(i*(p2/m) )]
-      upper.ci.mat[i, ] <- temp$upper.ci[((i-1)*(p2/m) +1):(i*(p2/m) )]
+      lower.ci.mat[i, ] <- temp$lower.ci[((i-1)*(p2/mq)+1):(i*(p2/mq) )]
+      upper.ci.mat[i, ] <- temp$upper.ci[((i-1)*(p2/mq) +1):(i*(p2/mq) )]
     }
     else{
-      lower.ci.mat[i, ] <- temp$lower.ci[((i-1)*(p2/m) + p1 + 1):(i*(p2/m) + p1)]
-      upper.ci.mat[i, ] <- temp$upper.ci[((i-1)*(p2/m) + p1 + 1):(i*(p2/m) + p1)]
+      lower.ci.mat[i, ] <- temp$lower.ci[((i-1)*(p2/mq) + p1 + 1):(i*(p2/mq) + p1)]
+      upper.ci.mat[i, ] <- temp$upper.ci[((i-1)*(p2/mq) + p1 + 1):(i*(p2/mq) + p1)]
     }
   }
   
@@ -328,7 +330,7 @@ boxCI <- function(x,CI,components = c(1),dimn = 1,mean.color = 'plum4', quan.col
   }
 }
 
-RBM <- function(x) {
+chain_stacker <- function(x) {
   m <- length(x)
   
   if(class(x) != "list")
@@ -344,8 +346,8 @@ RBM <- function(x) {
   for(i in 1:m) {
     b <- b + attributes(x[[i]])$size
   }
-  b.final <- trunc(b/m)
-  a <- trunc(n/b.final)
+  b.final <- floor(b/m)
+  a <- floor(n/b.final)
   ab <- a*b.final
   trash <- n-ab
   big.chain <- matrix(0,ncol = p,nrow = ab*m)

@@ -125,8 +125,8 @@
   
   foo <- RBM(x)
   data <- foo$new.data
-  b <- foo$b.size
-  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, b.size = b)
+  b.size <- foo$b.size
+  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, b.size = b.size)
 
   if(plot == TRUE)
   {

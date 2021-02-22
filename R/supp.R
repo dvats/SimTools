@@ -85,8 +85,8 @@ addCI <- function(data, CIs, component = 1, bord = NA,
   }
 }
 
-plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, rug,
-  mean = TRUE, auto.layout, ask, ...)
+plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, 
+                     rug, mean = TRUE, auto.layout, ask, ...)
 {
   pars <- NULL
   if(is.null(attributes(x)$varnames)) 
@@ -145,6 +145,8 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, rug,
     for(i in 1:dimn)
     {
       beta = ts(x[, i])
+      
+      main1 = paste("Density of ",varnames[i])
       plot(density(beta), main = main1, ...)
       if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       main1 = paste("Density of ",varnames[i])
@@ -161,12 +163,15 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, rug,
 
 #Q is list of quantiles to be estimated. It will be estimated for each component, m is the length of Q
 makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
-                   iid = FALSE, mean = TRUE, b.size = NULL) 
+                   iid = FALSE, mean = TRUE) 
 {
   
-  if(is.null(b.size)) 
-    b.size <- batchSize(x)
   
+  if(is.null(attributes(x)$size)) 
+    b.size <- batchSize(attributes(x)$stacked)
+  else b.size <- attributes(x)$size
+  
+  x <- attributes(x)$stacked
   mq <- length(Q)
   n <- dim(x)[1]
   
@@ -303,7 +308,13 @@ plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, range, width, varwid
   }
 }
 
-boxCI <- function(x,CI,components = c(1),dimn = 1,mean.color = 'plum4', quan.color = 'lightsteelblue3',horizontal = FALSE) 
+boxCI <- function(x,
+                  CI,
+                  components = c(1),
+                  dimn       = 1,
+                  mean.color = 'plum4', 
+                  quan.color = 'lightsteelblue3',
+                  horizontal = FALSE) 
 {
   quans = CI$xi.q
   mn = CI$mean.est
@@ -344,16 +355,16 @@ chain_stacker <- function(x) {
   
   b <- 0
   for(i in 1:m) {
-    b <- b + attributes(x[[i]])$size
+    b <- b + batchSize(x[[i]])
   }
   b.final <- floor(b/m)
   a <- floor(n/b.final)
   ab <- a*b.final
   trash <- n-ab
-  big.chain <- matrix(0,ncol = p,nrow = ab*m)
+  big.chain <- matrix(0,ncol = p, nrow = ab*m)
   for (i in 1:m) {
     big.chain[((i-1)*ab+1):(i*ab),] <- x[[i]][-(1:trash),]
   }
   
-  return(list("b.size" = b.final, "new.data" = big.chain)) 
+  return(list("b.size" = b.final, "stacked.data" = big.chain))
 }

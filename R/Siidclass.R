@@ -15,7 +15,8 @@
 #' siid.obj <- Siid(chain)
 #'
 #' @export
-"Siid" <- function(data, varnames = colnames(data)) # make Siid object
+"Siid" <- function(data,
+                   varnames = colnames(data)) # make Siid object
 {
   if(missing(data))
     stop("Data must be provided.")
@@ -31,7 +32,7 @@
   return(data)
 }
 
-"is.Siid" <- function (x) 
+"is.Siid" <- function(x) 
 {
   if (inherits(x, "Siid")) 
     return(TRUE)

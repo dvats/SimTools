@@ -29,22 +29,32 @@
 #' }
 #' smcmc.obj <- Smcmc(chain)
 #' @export
-"Smcmc" <- function(data, batch.size = TRUE, varnames = colnames(data)) # make Smcmc object
+"Smcmc" <- function(data,
+                    batch.size = TRUE, 
+                    stacked = TRUE,
+                    varnames = colnames(data)) # make Smcmc object
 {
   if(missing(data))
     stop("Data must be provided.")
-
-  if(is.vector(data))
-    data <- as.matrix(data, ncol = 1)
+  
+  if(!is.list(data))
+    data <- list(data)
 
   nsim <- dim(data)[1]
-
-  if(batch.size)
+  
+  if(stacked == TRUE)
   {
-    attr(data, "size") <- batchSize(data)
-  }else{
-    attr(data, "size") <- NULL
+    foo <- chain_stacker(data)
+    attr(data, "stacked") <- foo$stacked.data
+    
+    if(batch.size)
+    {
+      attr(data, "size") <- foo$b.size
+    }else{
+      attr(data, "size") <- NULL
+    }
   }
+
   attr(data,"nsim") <- nsim
   attr(data,"varnames") <- varnames
   attr(data,"class") <- "Smcmc"
@@ -114,23 +124,30 @@
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"plot.Smcmc" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, 
-	plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-	rug = FALSE, opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+"plot.Smcmc" <- function(x, 
+                         Q        = c(0.1, 0.9), 
+                         alpha    = 0.05, 
+                         thresh   = 0.001, 
+                         iid      = FALSE, 
+                         plot     = TRUE,  
+                         mean     = TRUE, 
+                         border   = NA, 
+                         mean.col = 'plum4', 
+                         quan.col = 'lightsteelblue3',
+                         rug      = FALSE, 
+                         opaq     = 0.7, 
+                         auto.layout = TRUE, 
+                         ask      = dev.interactive(), ...)
 {
   if(!is.list(x)) data <- list(x)
   m <- length(x)
-  for(i in 1:m)
-    x[[i]] <- as.Smcmc(x[[i]])
-  
-  foo <- RBM(x)
-  data <- foo$new.data
-  b.size <- foo$b.size
-  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, b.size = b.size)
+  x <- as.Smcmc(x)
+  #data <- attributes(x)$stacked
+  out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
 
   if(plot == TRUE)
   {
-    plot.CIs(data, dimn = length(data[1,]), CIs = out, bord = border, 
+    plot.CIs(attributes(x)$stacked, dimn = length(attributes(x)$stacked[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mean = mean, auto.layout = auto.layout, rug = rug,

@@ -362,9 +362,13 @@ chain_stacker <- function(x) {
   ab <- a*b.final
   trash <- n-ab
   big.chain <- matrix(0,ncol = p, nrow = ab*m)
-  for (i in 1:m) {
-    big.chain[((i-1)*ab+1):(i*ab),] <- x[[i]][-(1:trash),]
+  if(ab != n)
+  {
+    for (i in 1:m) {
+      big.chain[((i-1)*ab+1):(i*ab),] <- x[[i]][-(1:trash),]
+    }
+  }else{
+    big.chain <- Reduce("rbind", x)
   }
-  
   return(list("b.size" = b.final, "stacked.data" = big.chain))
 }

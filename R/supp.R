@@ -88,14 +88,15 @@ addCI <- function(data, CIs, component = 1, bord = NA,
 plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color, 
                      rug, mean = TRUE, auto.layout, ask, ...)
 {
+  
   pars <- NULL
   if(is.null(x$varnames)) 
   {
-    varnames <- as.character(1:dim(x)[2])
+    varnames <- as.character(1:dim(x$stacked)[2])
   }else{
     varnames <- x$varnames
   }
-  
+  x <- x$stacked
   if(dimn < 4) {
     par(mfrow = c(dimn,1))
     for(i in 1:dimn)
@@ -135,7 +136,6 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
     }
   }else {
     on.exit(par(pars))
-    
     
     if (auto.layout) {
       mfrow <- set.mfrow(Nparms = 6)

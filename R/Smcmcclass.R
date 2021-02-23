@@ -55,16 +55,12 @@
     }
   }
   
-  out <- list( "stacked"  = stacked.chain,
-               "b.size"   = size,
-               "nsim"     = nsim,
-               "varmanes" = varnames )
+  out <- list( stacked  = stacked.chain,
+               b.size   = size,
+               nsim     = nsim,
+               varnames = varnames )
   
   class(out) <- "Smcmc"
-  
-  #attr(data,"nsim") <- nsim
-  #attr(data,"varnames") <- varnames
-  #attr(data,"class") <- "Smcmc"
   return(out)
 }
 
@@ -146,18 +142,17 @@
                          auto.layout = TRUE, 
                          ask      = dev.interactive(), ...)
 {
-  if(!is.list(x)) data <- list(x)
-  m <- length(x)
+  
   x <- as.Smcmc(x)
   out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
-
+  dat <- x$stacked
   if(plot == TRUE)
   {
-    plot.CIs(x$stacked, dimn = length(x$stacked[1,]), CIs = out, bord = border, 
+    plot.CIs(x,dimn = length(dat[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mean = mean, auto.layout = auto.layout, rug = rug,
-    	ask = ask, ...)
+    	ask = ask)# , ...)
   }
   invisible(out)
 }

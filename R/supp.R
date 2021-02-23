@@ -89,11 +89,11 @@ plot.CIs <- function(x,dimn, CIs, bord = NULL, mean.color, quan.color,
                      rug, mean = TRUE, auto.layout, ask, ...)
 {
   pars <- NULL
-  if(is.null(attributes(x)$varnames)) 
+  if(is.null(x$varnames)) 
   {
     varnames <- as.character(1:dim(x)[2])
   }else{
-    varnames <- attributes(x)$varnames
+    varnames <- x$varnames
   }
   
   if(dimn < 4) {
@@ -167,11 +167,11 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
 {
   
   
-  if(is.null(attributes(x)$size)) 
-    b.size <- batchSize(attributes(x)$stacked)
-  else b.size <- attributes(x)$size
+  if(is.null(x$size)) 
+    b.size <- batchSize(x$stacked)
+  else b.size <- x$size
   
-  x <- attributes(x)$stacked
+  x <- x$stacked
   mq <- length(Q)
   n <- dim(x)[1]
   
@@ -294,11 +294,11 @@ makeCI <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001,
 plot.boxx <- function(x, dimn, CIs, mean.color, quan.color, range, width, varwidth, notch, outline, plot, border,
                       col, ann, horizontal, add,...) 
 {
-  if(is.null(attributes(x)$varnames)) 
+  if(is.null(x$varnames)) 
   {
     varnames <- as.character(1:dim(x)[2])
   }else{
-    varnames <- attributes(x)$varnames
+    varnames <- x$varnames
   }
   boxplot.matrix(x, ..., range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
                  names=varnames, plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add)

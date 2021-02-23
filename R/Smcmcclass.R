@@ -40,25 +40,32 @@
   if(!is.list(data))
     data <- list(data)
 
-  nsim <- dim(data)[1]
+  nsim <- dim(data[[1]])[1]
   
   if(stacked == TRUE)
   {
     foo <- chain_stacker(data)
-    attr(data, "stacked") <- foo$stacked.data
+    stacked.chain <- foo$stacked.data
     
     if(batch.size)
     {
-      attr(data, "size") <- foo$b.size
+      size <- foo$b.size
     }else{
-      attr(data, "size") <- NULL
+      size <- NULL
     }
   }
-
-  attr(data,"nsim") <- nsim
-  attr(data,"varnames") <- varnames
-  attr(data,"class") <- "Smcmc"
-  return(data)
+  
+  out <- list( "stacked"  = stacked.chain,
+               "b.size"   = size,
+               "nsim"     = nsim,
+               "varmanes" = varnames )
+  
+  class(out) <- "Smcmc"
+  
+  #attr(data,"nsim") <- nsim
+  #attr(data,"varnames") <- varnames
+  #attr(data,"class") <- "Smcmc"
+  return(out)
 }
 
 "is.Smcmc" <- function (x) 
@@ -142,12 +149,11 @@
   if(!is.list(x)) data <- list(x)
   m <- length(x)
   x <- as.Smcmc(x)
-  #data <- attributes(x)$stacked
   out <- makeCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
 
   if(plot == TRUE)
   {
-    plot.CIs(attributes(x)$stacked, dimn = length(attributes(x)$stacked[1,]), CIs = out, bord = border, 
+    plot.CIs(x$stacked, dimn = length(x$stacked[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mean = mean, auto.layout = auto.layout, rug = rug,

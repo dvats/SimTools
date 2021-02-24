@@ -26,8 +26,8 @@ New submission
 * checking DESCRIPTION meta-information ... OK
 * checking top-level files ... NOTE
 Files ‘README.md’ or ‘NEWS.md’ cannot be checked without ‘pandoc’ being installed.
-Non-standard file/directory found at top level:
-  ‘SimTools_1.0-0.tar.gz’
+Non-standard files/directories found at top level:
+  ‘SimTools_1.0-0.tar.gz’ ‘runme.R’
 * checking for left-over files ... OK
 * checking index information ... OK
 * checking package subdirectories ... OK

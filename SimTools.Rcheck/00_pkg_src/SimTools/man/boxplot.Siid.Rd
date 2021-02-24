@@ -4,10 +4,11 @@
 \alias{boxplot.Siid}
 \title{Boxplot for Siid}
 \usage{
-\method{boxplot}{Siid}(x, ...,  alpha = 0.05, thresh = 0.001,  mean.col = 'plum4',
-                     quan.col = 'lightsteelblue3', opaq = .6, range = 1.5, width = NULL, varwidth = FALSE,
-                     outline = TRUE, plot = TRUE, border = par("fg"), col = 'white',
-                     ann = !add, horizontal = FALSE, add = FALSE)
+\method{boxplot}{Siid}(x, ...,  alpha = 0.05, thresh = 0.001, 
+                     quan.col = 'lightsteelblue3', opaq = .6, range = 1.5, 
+                     width = NULL, varwidth = FALSE, outline = TRUE, plot = TRUE, 
+                     border = par("fg"), col = 'white', ann = !add, 
+                     horizontal = FALSE, add = FALSE)
 }
 \arguments{
 \item{x}{: a `Siid' class object}
@@ -17,8 +18,6 @@
 \item{alpha}{: confidence level of simultaneous confidence intervals}
 
 \item{thresh}{: numeric typically less than .005 for the accuracy of the simulteaneous procedure}
-
-\item{mean.col}{: color for the mean confidence interval}
 
 \item{quan.col}{: color for the quantile confidence intervals}
 
@@ -45,7 +44,8 @@
 \item{add}{: as defined for base \code{boxplot}}
 }
 \value{
-returns the base \code{boxplot} with simultaneous confidence intervals around all quantiles
+returns the base \code{boxplot} with simultaneous confidence intervals around 
+        all quantiles
 }
 \description{
 Boxplots with simultaenous error bars around all quantiles for iid data.

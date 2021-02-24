@@ -4,9 +4,10 @@
 \alias{plot.Smcmc}
 \title{Plot Smcmc}
 \usage{
-\method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, 
-                           mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-                           opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+\method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
+                            plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', 
+                            quan.col = 'lightsteelblue3',rug = TRUE, opaq = 0.7, 
+                            auto.layout = TRUE, ask = dev.interactive(),...)
 }
 \arguments{
 \item{x}{: a `Smcmc' class object}
@@ -29,6 +30,8 @@
 
 \item{quan.col}{: color for the quantile confidence intervals}
 
+\item{rug}{: logical indicating whether a rug plot is desired}
+
 \item{opaq}{: opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.}
 
 \item{auto.layout}{: logical argument for an automatic layout of plots}
@@ -48,14 +51,14 @@ Density plots with simultaenous error bars around means and quantiles
 }
 \examples{
 # Producing Markov chain
-chain <- numeric(length = 1e3)
-chain[1] <- 0
+chain <- matrix(0, ncol = 1, nrow = 1e3)
+chain[1,] <- 0
 err <- rnorm(1e3)
 for(i in 2:1e3)
 {
-  chain[i] <- .3*chain[i-1] + err[i]
+  chain[i,] <- .3*chain[i-1,] + err[i]
 }
-chain <- Smcmc(chain)
+chain <- Smcmc(list(chain))
 plot(chain)
 
 }

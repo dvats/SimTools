@@ -7,12 +7,14 @@
 \alias{is.mcmc}
 \title{Smcmc class}
 \usage{
-Smcmc(data, batch.size = FALSE, varnames = colnames(data))
+Smcmc(data, batch.size = TRUE, stacked = TRUE, varnames = colnames(data))
 }
 \arguments{
-\item{data}{: an MCMC output matrix with nsim rows and p columns}
+\item{data}{: a list of MCMC output matrices each with `nsim` rows and `p` columns}
 
-\item{batch.size}{: logical vector, if true, calculates the batch size appropriate for this Markov chain. Setting to TRUE saves time in future steps.}
+\item{batch.size}{: logical argument, if true, calculates the batch size appropriate for this Markov chain. Setting to TRUE saves time in future steps.}
+
+\item{stacked}{: recommended to be `TRUE`. logical argument, if true, stores a carefully stacked version of the MCMC output for use later.}
 
 \item{varnames}{: a character string equal to the number of columns in \code{data}}
 }
@@ -24,12 +26,12 @@ Smcmc class for simulated data using Markov chain Monte Carlo
 }
 \examples{
 # Producing Markov chain
-chain <- numeric(length = 1e3)
-chain[1] <- 0
+chain <- matrix(0, nrow = 1e3, ncol = 1)
+chain[1,] <- 0
 err <- rnorm(1e3)
 for(i in 2:1e3)
 {
-  chain[i] <- .3*chain[i-1] + err[i]
+  chain[i,] <- .3*chain[i-1,] + err[i]
 }
 smcmc.obj <- Smcmc(chain)
 }

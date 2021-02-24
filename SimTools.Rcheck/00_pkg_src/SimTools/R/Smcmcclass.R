@@ -12,43 +12,58 @@
 #'
 #' @name Smcmc
 #' @aliases Smcmc as.Smcmc as.Smcmc.default is.mcmc 
-#' @usage Smcmc(data, batch.size = FALSE, varnames = colnames(data))
-#' @param data : an MCMC output matrix with nsim rows and p columns
-#' @param batch.size : logical vector, if true, calculates the batch size appropriate for this Markov chain. Setting to TRUE saves time in future steps.
+#' @usage Smcmc(data, batch.size = TRUE, stacked = TRUE, varnames = colnames(data))
+#' @param data : a list of MCMC output matrices each with `nsim` rows and `p` columns
+#' @param batch.size : logical argument, if true, calculates the batch size appropriate for this Markov chain. Setting to TRUE saves time in future steps.
+#' @param stacked : recommended to be `TRUE`. logical argument, if true, stores a carefully stacked version of the MCMC output for use later.
 #' @param varnames : a character string equal to the number of columns in \code{data}
 #'
 #' @return an Smcmc class object
 #' @examples
 #' # Producing Markov chain
-#' chain <- numeric(length = 1e3)
-#' chain[1] <- 0
+#' chain <- matrix(0, nrow = 1e3, ncol = 1)
+#' chain[1,] <- 0
 #' err <- rnorm(1e3)
 #' for(i in 2:1e3)
 #' {
-#'   chain[i] <- .3*chain[i-1] + err[i]
+#'   chain[i,] <- .3*chain[i-1,] + err[i]
 #' }
 #' smcmc.obj <- Smcmc(chain)
 #' @export
-"Smcmc" <- function(data, batch.size = FALSE, varnames = colnames(data)) # make Smcmc object
+"Smcmc" <- function(data,
+                    batch.size = TRUE, 
+                    stacked = TRUE,
+                    varnames = colnames(data)) # make Smcmc object
 {
   if(missing(data))
     stop("Data must be provided.")
+  
+  if(!is.list(data))
+    data <- list(data)
 
-  if(is.vector(data))
-    data <- as.matrix(data, ncol = 1)
-
-  nsim <- dim(data)[1]
-
-  if(batch.size)
+  nsim <- dim(data[[1]])[1]
+  
+  if(stacked == TRUE)
   {
-    attr(data, "size") <- batchSize(data)
-  }else{
-    attr(data, "size") <- NULL
+    foo <- chain_stacker(data)
+    stacked.chain <- foo$stacked.data
+    
+    if(batch.size)
+    {
+      size <- foo$b.size
+    }else{
+      size <- NULL
+    }
   }
-  attr(data,"nsim") <- nsim
-  attr(data,"varnames") <- varnames
-  attr(data,"class") <- "Smcmc"
-  return(data)
+  
+  out <- list( chains = data,
+               stacked  = stacked.chain,
+               b.size   = size,
+               nsim     = nsim,
+               varnames = varnames )
+  
+  class(out) <- "Smcmc"
+  return(out)
 }
 
 "is.Smcmc" <- function (x) 
@@ -76,9 +91,10 @@
 #'
 #'
 #' @name plot.Smcmc
-#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, plot = TRUE, 
-#'                            mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-#'                            opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
+#'                             plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', 
+#'                             quan.col = 'lightsteelblue3',rug = TRUE, opaq = 0.7, 
+#'                             auto.layout = TRUE, ask = dev.interactive(),...)    
 #' @param x : a `Smcmc' class object
 #' @param Q : vector of quantiles
 #' @param alpha : confidence level of simultaneous confidence intervals 
@@ -89,6 +105,7 @@
 #' @param border : whether a border is required for the simultaneous confidence intervals
 #' @param mean.col : color for the mean confidence interval
 #' @param quan.col : color for the quantile confidence intervals
+#' @param rug : logical indicating whether a rug plot is desired
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
 #' @param auto.layout : logical argument for an automatic layout of plots
 #' @param ask : activating interactive plots
@@ -98,14 +115,14 @@
 #'			estimates and simultaneous confidence intervals.
 #' @examples
 #' # Producing Markov chain
-#' chain <- numeric(length = 1e3)
-#' chain[1] <- 0
+#' chain <- matrix(0, ncol = 1, nrow = 1e3)
+#' chain[1,] <- 0
 #' err <- rnorm(1e3)
 #' for(i in 2:1e3)
 #' {
-#'   chain[i] <- .3*chain[i-1] + err[i]
+#'   chain[i,] <- .3*chain[i-1,] + err[i]
 #' }
-#' chain <- Smcmc(chain)
+#' chain <- Smcmc(list(chain))
 #' plot(chain)
 #'
 #' @references
@@ -114,25 +131,35 @@
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"plot.Smcmc" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE, 
-	plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-	opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+"plot.Smcmc" <- function(x, 
+                         Q        = c(0.1, 0.9), 
+                         alpha    = 0.05, 
+                         thresh   = 0.001, 
+                         iid      = FALSE, 
+                         plot     = TRUE,  
+                         mean     = TRUE, 
+                         border   = NA, 
+                         mean.col = 'plum4', 
+                         quan.col = 'lightsteelblue3',
+                         rug      = TRUE, 
+                         opaq     = 0.7, 
+                         auto.layout = TRUE, 
+                         ask      = dev.interactive(), ...)
 {
+  
   x <- as.Smcmc(x)
-  out <- error.est(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
+  out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
+  dat <- x$stacked
   if(plot == TRUE)
   {
-    plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
+    plot.CIs(x, dimn = length(dat[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-    	mn = out$mean.est, mean = mean, quans = out$xi.q, 
-    	auto.layout = auto.layout, ask = ask, ...)
+    	mean = mean, auto.layout = auto.layout, rug = rug,
+    	ask = ask)# , ...)
   }
   invisible(out)
 }
-
-
-
 
 
 

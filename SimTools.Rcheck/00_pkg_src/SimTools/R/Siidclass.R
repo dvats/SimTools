@@ -15,7 +15,8 @@
 #' siid.obj <- Siid(chain)
 #'
 #' @export
-"Siid" <- function(data, varnames = colnames(data)) # make Siid object
+"Siid" <- function(data,
+                   varnames = colnames(data)) # make Siid object
 {
   if(missing(data))
     stop("Data must be provided.")
@@ -24,14 +25,15 @@
     data <- as.matrix(data, ncol = 1)
 
   nsim <- dim(data)[1]
-
-  attr(data,"nsim") <- nsim
-  attr(data,"varnames") <- varnames
-  attr(data,"class") <- "Siid"
-  return(data)
+  out <- list( data  = data,
+               nsim     = nsim,
+               varnames = varnames )
+  
+  class(out) <- "Siid"
+  return(out)
 }
 
-"is.Siid" <- function (x) 
+"is.Siid" <- function(x) 
 {
   if (inherits(x, "Siid")) 
     return(TRUE)
@@ -50,16 +52,16 @@
 #' @title Boxplot for Siid
 #' @name boxplot.Siid
 #' @description Boxplots with simultaenous error bars around all quantiles for iid data.
-#' @usage \method{boxplot}{Siid}(x, ...,  alpha = 0.05, thresh = 0.001,  mean.col = 'plum4',
-#'                      quan.col = 'lightsteelblue3', opaq = .6, range = 1.5, width = NULL, varwidth = FALSE,
-#'                      outline = TRUE, plot = TRUE, border = par("fg"), col = 'white',
-#'                      ann = !add, horizontal = FALSE, add = FALSE)
+#' @usage \method{boxplot}{Siid}(x, ...,  alpha = 0.05, thresh = 0.001, 
+#'                      quan.col = 'lightsteelblue3', opaq = .6, range = 1.5, 
+#'                      width = NULL, varwidth = FALSE, outline = TRUE, plot = TRUE, 
+#'                      border = par("fg"), col = 'white', ann = !add, 
+#'                      horizontal = FALSE, add = FALSE)
 #' 
 #' @param x : a `Siid' class object
 #' @param ... : arguments sent to boxplot  
 #' @param alpha : confidence level of simultaneous confidence intervals 
 #' @param thresh : numeric typically less than .005 for the accuracy of the simulteaneous procedure
-#' @param mean.col : color for the mean confidence interval
 #' @param quan.col : color for the quantile confidence intervals
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
 #' @param range :  as defined for base \code{boxplot}
@@ -72,7 +74,8 @@
 #' @param ann : as defined for base \code{boxplot}  
 #' @param horizontal : as defined for base \code{boxplot}  
 #' @param add : as defined for base \code{boxplot}    
-#' @return returns the base \code{boxplot} with simultaneous confidence intervals around all quantiles
+#' @return returns the base \code{boxplot} with simultaneous confidence intervals around 
+#'         all quantiles
 #' @examples
 #' # Generating iid data
 #' chain <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
@@ -85,7 +88,7 @@
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"boxplot.Siid" <- function(x, ...,alpha = 0.05, thresh = 0.001, mean.col = 'plum4',
+"boxplot.Siid" <- function(x, ...,alpha = 0.05, thresh = 0.001,
                       quan.col = 'lightsteelblue3', opaq = .6, range = 1.5, width = NULL, varwidth = FALSE,
                       outline = TRUE, plot = TRUE, border = par("fg"), col = 'white',
                       ann = !add, horizontal = FALSE, add = FALSE)
@@ -93,13 +96,13 @@
   x <- as.Siid(x)
   Q <- c(0.25, 0.50, 0.75)
   notch <- FALSE
-  foo3 <- error.est(x, Q, alpha = alpha, thresh = thresh, mean = FALSE, iid = TRUE)
-  plot.boxx(x, dimn = length(x[1,]), CIs = foo3, mean.color = mean.col, quan.color = adjustcolor(quan.col, alpha.f = opaq), mn = foo3$mean.est, 
-            quans = foo3$xi.q, range = range, width = width, varwidth = varwidth, notch = notch, outline = outline,
-            plot = plot, border = border, col = col, ann = ann, horizontal = horizontal, add = add,...)
+  foo3 <- getCI(x, Q, alpha = alpha, thresh = thresh, mean = FALSE, iid = TRUE)
+  plot.boxx(x, dimn = length(x$data[1,]), CIs = foo3, 
+            quan.color = adjustcolor(quan.col, alpha.f = opaq), 
+            range = range, width = width, varwidth = varwidth, notch = notch,
+            outline = outline,plot = plot, border = border, col = col, 
+            ann = ann, horizontal = horizontal, add = add,...)
 }
-
-
 
 
 #' @title Plot Siid
@@ -109,13 +112,16 @@
 #'
 #'
 #' @name plot.Siid
-#' @usage \method{plot}{Siid}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, plot = TRUE, 
-#'                            mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-#'                            opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+#' @usage \method{plot}{Siid}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, 
+#'                            rug = TRUE, plot = TRUE, mean = TRUE, border = NA,
+#'                            mean.col = 'plum4', quan.col = 'lightsteelblue3', 
+#'                            opaq = 0.7, auto.layout = TRUE, 
+#'                            ask = dev.interactive(), ...)
 #' @param x : a `Siid' class object
 #' @param Q : vector of quantiles
 #' @param alpha : confidence level of simultaneous confidence intervals 
 #' @param thresh : numeric typically less than .005 for the accuracy of the simulteaneous procedure
+#' @param rug : logical indicating whether a rug plot is desired
 #' @param plot :  logical argument for is plots are to be returned 
 #' @param mean : logical argument whether the mean is to be plotted
 #' @param border : whether a border is required for the simultaneous confidence intervals
@@ -140,19 +146,19 @@
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"plot.Siid" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, 
+"plot.Siid" <- function(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, rug = TRUE, 
   plot = TRUE,  mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-  opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
+ opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(), ...)
 {
   x <- as.Siid(x)
-  out <- error.est(x, Q, alpha, thresh = thresh, iid = TRUE, mean = mean)
+  out <- getCI(x, Q, alpha, thresh = thresh, iid = TRUE, mean = mean)
   if(plot == TRUE)
   {
-    plot.CIs(x, dimn = length(x[1,]), CIs = out, bord = border, 
-      mean.color = adjustcolor(mean.col, alpha.f = opaq), 
-      quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-      mn = out$mean.est,mean = mean, quans = out$xi.q, 
-      auto.layout = auto.layout, ask = ask,...)
+    plot.CIs(x, dimn = length(x$data[1,]), CIs = out, rug = rug, bord = border, 
+             mean.color = adjustcolor(mean.col, alpha.f = opaq), 
+             quan.color = adjustcolor(quan.col, alpha.f = opaq), 
+             mean = mean, auto.layout = auto.layout,
+             ask = ask, ...)
   }
   invisible(out)
 }

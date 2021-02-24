@@ -4,9 +4,11 @@
 \alias{plot.Siid}
 \title{Plot Siid}
 \usage{
-\method{plot}{Siid}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, plot = TRUE, 
-                           mean = TRUE, border = NA, mean.col = 'plum4', quan.col = 'lightsteelblue3',
-                           opaq = 0.7, auto.layout = TRUE, ask = dev.interactive(),...)
+\method{plot}{Siid}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, 
+                           rug = TRUE, plot = TRUE, mean = TRUE, border = NA,
+                           mean.col = 'plum4', quan.col = 'lightsteelblue3', 
+                           opaq = 0.7, auto.layout = TRUE, 
+                           ask = dev.interactive(), ...)
 }
 \arguments{
 \item{x}{: a `Siid' class object}
@@ -16,6 +18,8 @@
 \item{alpha}{: confidence level of simultaneous confidence intervals}
 
 \item{thresh}{: numeric typically less than .005 for the accuracy of the simulteaneous procedure}
+
+\item{rug}{: logical indicating whether a rug plot is desired}
 
 \item{plot}{:  logical argument for is plots are to be returned}
 

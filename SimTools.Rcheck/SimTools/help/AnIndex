@@ -1,8 +1,11 @@
+addCI	addCI
 as.Siid	Siid
 as.Siid.default	Siid
 as.Smcmc	Smcmc
 as.Smcmc.default	Smcmc
+boxCI	boxCI
 boxplot.Siid	boxplot.Siid
+getCI	getCI
 is.iid	Siid
 is.mcmc	Smcmc
 plot.Siid	plot.Siid

@@ -11,6 +11,14 @@ The development of this package has begun. Updates will be described in this REA
 
 **Run**: `runme.R`
 
+---------------------
+ February 24, 2021
+
+Added functions `getCI`, `addCI`, and `boxCI` to get and add simultaneous CIs to existing plots.
+
+Additionally, now the `Smcmc` class supports multiple chains. The
+input is a list of chains, and calling `Smcmc` does some processing
+to make a `stacked` version of the chains.
 
 ---------------------
  December 7, 2020 

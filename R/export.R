@@ -114,8 +114,13 @@ getCI <- function(x,
   
   if(class(x) == "Smcmc")
   {
-    if(is.null(x$size)) 
-      b.size <- batchSize(x$stacked)  # error here, fix this
+    if(is.null(x$size)) {
+      b.size <- 0
+      for (i in length(x$chains)) {
+        b.size <- b.size + batchSize(x$chains[[i]])
+      }
+      b.final <- floor(b.size/length(x$chains))
+    } 
     else b.size <- x$size
     
     x <- x$stacked
@@ -265,11 +270,11 @@ getCI <- function(x,
 #' @export
 boxCI <- function(x,
                   CI,
-                  component = c(1),
+                  component = 1,
                   dimn       = 1,
                   quan.color = 'lightsteelblue3',
                   horizontal = FALSE) 
-{
+{ 
   quans = CI$xi.q
   mn = CI$mean.est
   quansi <- quans[, component]

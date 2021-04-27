@@ -60,7 +60,7 @@
                stacked  = stacked.chain,
                b.size   = size,
                nsim     = nsim,
-               varnames = varnames )
+               varnames = varnames)
   
   class(out) <- "Smcmc"
   return(out)

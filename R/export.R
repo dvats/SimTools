@@ -281,6 +281,7 @@ boxCI <- function(x,
   qcil = CI$lower.ci.mat[, component]
   qciu = CI$upper.ci.mat[, component]
   i <- component
+  if(dimn == 1) i <- 1
   for(j in 1:length(quansi))
   {
     if(horizontal==TRUE) {

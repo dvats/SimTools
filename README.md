@@ -32,6 +32,6 @@ to make a `stacked` version of the chains.
 
 ---------------------
 
-# Funding
+## Funding
 
 Greatful for support by SERB, DST, India (MSC/2020/000165).

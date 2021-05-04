@@ -89,66 +89,22 @@ plot.CIs <- function(x,
       data <- x$data
     }
   }
-
-  if(dimn < 4) {
-    par(mfrow = c(dimn,1))
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize = 0.03, side=1, lwd=0.5)      
-      addCI(x, CIs, component = i, bord = bord, 
-        mean.color = mean.color, quan.color = quan.color, 
-        mean = mean, ...)
-    }
-  }
-  else if(dimn == 4) {
-    par(mfrow = c(2,2))
-    for(i in 1:4)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-    }
-  }else if(dimn == 5||dimn == 6){
-    par(mfrow = c(3,2))
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      addCI(x, CIs,component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-    }
-  }else {
-    on.exit(par(pars))
+  
+  setLayout(dimn)
+  for(i in 1:dimn)
+  {
+    beta = ts(data[, i])
     
-    if (auto.layout) {
-      mfrow <- set.mfrow(Nparms = 6)
-      pars <- par(mfrow = mfrow)
-    }
-    
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      main1 = paste("Density of ",varnames[i])
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
+    main1 = paste("Density of ",varnames[i])
+    plot(density(beta), main = main1, ...)
+    if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
+    main1 = paste("Density of ",varnames[i])
+    addCI(x, CIs, component = i, bord = bord, 
+          mean.color = mean.color, quan.color = quan.color, 
+          mean = mean, ...)
+    if(dimn>6)
       if (i == 1)
         pars <- c(pars, par(ask=ask))
-    }
   }
   on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
   
@@ -206,12 +162,35 @@ chain_stacker <- function(x) {
   return(list("b.size" = b.final, "stacked.data" = big.chain))
 }
 
+setLayout <- function(p=1, auto.layout = TRUE,pars = NULL)
+{
+  if(p < 4) {
+    par(mfrow = c(dimn,1))
+  }
+  else if(p == 4) {
+    par(mfrow = c(2,2))
+  }
+  else if(p == 5||p == 6){
+    par(mfrow = c(3,2))
+  }
+  else {
+    on.exit(par(pars))
+    
+    if (auto.layout) {
+      mfrow <- set.mfrow(Nparms = 6)
+      pars <- par(mfrow = mfrow)
+    }
+  }  
+  
+}
+
 acf.Smcmc <- function(x,
                       lag.max     = NULL,
                       type        = c("correlation", "covariance", "partial"),
                       plot        = TRUE,
                       na.action   = na.fail,
                       auto.layout = TRUE,
+                      ask         = dev.interactive(),
                       avgcol      = "blue",
                       chain.col   = "red",
                       ...)
@@ -237,25 +216,9 @@ acf.Smcmc <- function(x,
   if(plot) 
   {
     pars <- NULL
+    setLayout(p)
   }
   
-  if(p < 4) {
-    par(mfrow = c(dimn,1))
-  }
-  else if(p == 4) {
-    par(mfrow = c(2,2))
-  }
-  else if(p == 5||p == 6){
-    par(mfrow = c(3,2))
-  }
-  else {
-    on.exit(par(pars))
-    
-    if (auto.layout) {
-      mfrow <- set.mfrow(Nparms = 6)
-      pars <- par(mfrow = mfrow)
-    }
-  } 
     for(i in 1:p)
     {
       xi <- matrix(data = 0, nrow = n, ncol = m)
@@ -285,11 +248,13 @@ acf.Smcmc <- function(x,
         {
           lines(0:lag.max, as.matrix(acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 2, lty = 2, yaxt = 'n', xaxt = 'n')
         }
+        if(p > 6)
+          if (i == 1)
+            pars <- c(pars, par(ask=ask))
+        
       }
       
     }
-    
-    
     on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
     
 }

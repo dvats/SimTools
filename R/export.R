@@ -177,7 +177,7 @@ getCI <- function(x,
   }
   if(mean == FALSE) Y <- indis else Y <- cbind(x, indis)
   
-  if(iid == FALSE)sigma.mat <- mcse.multi(Y, size = b.size)$cov else sigma.mat <- cov(Y)
+  if(iid == FALSE) suppressWarnings(sigma.mat <- mcse.multi(Y, size = b.size)$cov) else sigma.mat <- cov(Y)
   
   if(mean == FALSE) lambda <- 1/fs else (lambda <- 1/c(I.flat, fs))
   
@@ -299,4 +299,141 @@ boxCI <- function(x,
     }
     
   }
+}
+
+
+
+
+
+
+
+#' @title ACF Plot for Markov chain Monte Carlo
+#'
+#' @description Autocorrelation function plots for MCMC data (including multiple chains)
+#'
+#'
+#' @name ACF
+#' @usage ACF(x,component = NULL, type = c("correlation", "covariance"),
+#'              plot= TRUE, lag.max = NULL, avg.col = "blue", chain.col   = "red",
+#'              na.action   = na.fail, auto.layout = TRUE, ask = dev.interactive()) 
+#'          
+#' @param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
+#' @param component : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
+#' @param type : the kind of ACF plot: "correlation" or "covariance"
+#' @param plot : TRUE if plots are required. If FALSE, raw values are returned
+#' @param lag.max : Maximum lag for the ACF plot
+#' @param avg.col  : color for the overall ACF of each component
+#' @param chain.col : color for the ACF of the individual chains.
+#' @param na.action :  function to be called to handle missing values. ‘na.pass’ can be used.
+#' @param auto.layout : logical argument for an automatic layout of plots
+#' @param ask : activating interactive plots
+
+
+#' @return returns the autocorrelation function plots of the Markov chains. Uses the
+#'         more accurate globally-centered ACFs.
+#' @examples
+#' # Producing Markov chain
+#' chain <- matrix(0, ncol = 1, nrow = 1e3)
+#' chain[1,] <- 0
+#' err <- rnorm(1e3)
+#' for(i in 2:1e3)
+#' {
+#'   chain[i,] <- .3*chain[i-1,] + err[i]
+#' }
+#' chain <- Smcmc(list(chain))
+#' ACF(chain)
+#'
+#' @references
+#' Agarwal, M., and Vats, D., “Globally-centered autocovariances in MCMC”, 
+#' arxiv - 2009.01799,  2020. 
+#'
+#' @export
+
+ACF <- function(x,
+                component   = NULL,
+                type        = c("correlation", "covariance", "partial"),
+                plot        = TRUE,
+                lag.max     = NULL,
+                avgcol      = "blue",
+                chain.col   = "red",
+                na.action   = na.fail,
+                auto.layout = TRUE,
+                ask         = dev.interactive())
+{
+  
+  if(is.matrix(x))
+  {
+    x <- list(x)
+  }
+  if(class(x) == "Smcmc")
+  {
+    x <- x$chains
+  } else  if(!is.list(x))
+  {
+    stop("x must be a matrix, list or an Smcmc  object")
+  }
+    
+
+  dimn <- dim(x[[1]])
+  n <- dimn[1]
+  p <- dimn[2]
+
+  which <- as.numeric(component)
+  if(is.null(component)) which <- 1:p
+
+  varnames <- colnames(x[[1]])
+  if (is.null(lag.max)) lag.max <- floor(10 * (log10(n)) )
+  
+  lag.max <- as.integer(min(lag.max, n - 1L))
+  m <- length(x)
+
+  
+  if(plot) 
+  {
+    pars <- NULL
+    setLayout(length(which))
+  }
+  
+  for(i in which)
+  {
+    xi <- matrix(data = 0, nrow = n, ncol = m)
+
+    for (j in 1:m) {
+      xi[,j] <- x[[j]][,i]
+    }
+    xi <- xi - mean(xi) # global mean
+    
+    chain.acf <- list(length = m)
+    
+    for(j in 1:m) {
+      chain.acf[[j]] <- acf(xi[,j], type = type, plot = FALSE, demean = FALSE, lag.max = lag.max)
+    }
+
+    avgf <-  chain.acf[[1]]
+    avgf$acf <-  0
+    for(j in 1:m) 
+    {
+      avgf$acf <- avgf$acf + chain.acf[[j]]$acf
+    }
+    avgf$acf <- avgf$acf/m
+    
+    if(plot)
+    {
+      plot(avgf, ci = 0, main = varnames[i], lwd = .2, ylim = c( - 1.96/sqrt(n), max(avgf$acf)))
+      
+      for(j in 1:m)
+      {
+        lines(0:lag.max, as.matrix(chain.acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
+      }
+      lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avgcol, alpha.f = .6), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
+
+      if(p > 6)
+        if (i == 1)
+          pars <- c(pars, par(ask=ask))
+      
+    }
+    
+  }
+  on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
+  invisible(list("combined" = avgf, "individual" = chain.acf))    
 }

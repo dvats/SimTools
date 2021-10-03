@@ -33,7 +33,7 @@
 "Smcmc" <- function(data,
                     batch.size = TRUE, 
                     stacked = TRUE,
-                    varnames = colnames(data)) # make Smcmc object
+                    varnames = NULL) # make Smcmc object
 {
   if(missing(data))
     stop("Data must be provided.")
@@ -42,6 +42,7 @@
     data <- list(data)
 
   nsim <- dim(data[[1]])[1]
+  if(is.null(varnames)) varnames <- colnames(data[[1]])  
   
   if(stacked == TRUE)
   {
@@ -149,10 +150,9 @@
   
   x <- as.Smcmc(x)
   out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
-  dat <- x$stacked
   if(plot == TRUE)
   {
-    plot.CIs(x, dimn = length(dat[1,]), CIs = out, bord = border, 
+    plot.CIs(x, dimn = length(x$stacked[1,]), CIs = out, bord = border, 
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mean = mean, auto.layout = auto.layout, rug = rug,

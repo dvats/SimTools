@@ -32,6 +32,7 @@ MakeChain <- function(p = 4, n = 1e3, h = .5)
       chain[i, ] <- chain[i - 1, ]
     }
   }
+  colnames(chain) <- c("Comp 1", "Comp 2", "Comp 3", "Comp 4")
   return(chain)
 }
 
@@ -44,6 +45,9 @@ chain <- MakeChain()
 # on the terminal run: R CMD INSTALL SimTools_1.0-0.tar.gz
 library(SimTools)
 
+
+# Make ACF plot
+ACF(chain)
 
 # First, we tell the package that chain is an MCMC process
 # using the class `Smcmc`. A few things, setting:
@@ -58,6 +62,7 @@ out.one <- Smcmc(chain)
 head(out.one$chains[[1]])
 
 # the batch size chosen
+# for variance estimation
 out.one$b.size
 
 
@@ -92,6 +97,11 @@ chain3 <- MakeChain()
 out.three <- Smcmc(list(chain1, chain2, chain3))
 str(out.three)
 # access list of chains by out.three$chains 
+
+
+# Make ACF plot
+ACF(out.three)
+
 
 # calculated batch size is the average of 
 # individual chain batch sizes

@@ -60,7 +60,7 @@
                stacked  = stacked.chain,
                b.size   = size,
                nsim     = nsim,
-               varnames = varnames )
+               varnames = varnames)
   
   class(out) <- "Smcmc"
   return(out)
@@ -156,7 +156,7 @@
     	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
     	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
     	mean = mean, auto.layout = auto.layout, rug = rug,
-    	ask = ask)# , ...)
+    	ask = ask, ...)
   }
   invisible(out)
 }

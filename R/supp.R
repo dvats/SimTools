@@ -89,66 +89,22 @@ plot.CIs <- function(x,
       data <- x$data
     }
   }
-
-  if(dimn < 4) {
-    par(mfrow = c(dimn,1))
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize = 0.03, side=1, lwd=0.5)
-      addCI(x, CIs, component = i, bord = bord, 
-        mean.color = mean.color, quan.color = quan.color, 
-        mean = mean, ...)
-    }
-  }
-  else if(dimn == 4) {
-    par(mfrow = c(2,2))
-    for(i in 1:4)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-    }
-  }else if(dimn == 5||dimn == 6){
-    par(mfrow = c(3,2))
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      addCI(x, CIs,component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-    }
-  }else {
-    on.exit(par(pars))
+  
+  setLayout(dimn)
+  for(i in 1:dimn)
+  {
+    beta = ts(data[, i])
     
-    if (auto.layout) {
-      mfrow <- set.mfrow(Nparms = 6)
-      pars <- par(mfrow = mfrow)
-    }
-    
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      main1 = paste("Density of ",varnames[i])
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
+    main1 = paste("Density of ",varnames[i])
+    plot(density(beta), main = main1, ...)
+    if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
+    main1 = paste("Density of ",varnames[i])
+    addCI(x, CIs, component = i, bord = bord, 
+          mean.color = mean.color, quan.color = quan.color, 
+          mean = mean, ...)
+    if(dimn>6)
       if (i == 1)
         pars <- c(pars, par(ask=ask))
-    }
   }
   on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
   
@@ -204,4 +160,101 @@ chain_stacker <- function(x) {
     big.chain <- Reduce("rbind", x)
   }
   return(list("b.size" = b.final, "stacked.data" = big.chain))
+}
+
+setLayout <- function(p=1, auto.layout = TRUE,pars = NULL)
+{
+  if(p < 4) {
+    par(mfrow = c(dimn,1))
+  }
+  else if(p == 4) {
+    par(mfrow = c(2,2))
+  }
+  else if(p == 5||p == 6){
+    par(mfrow = c(3,2))
+  }
+  else {
+    on.exit(par(pars))
+    
+    if (auto.layout) {
+      mfrow <- set.mfrow(Nparms = 6)
+      pars <- par(mfrow = mfrow)
+    }
+  }  
+  
+}
+
+acf.Smcmc <- function(x,
+                      lag.max     = NULL,
+                      type        = c("correlation", "covariance", "partial"),
+                      plot        = TRUE,
+                      na.action   = na.fail,
+                      auto.layout = TRUE,
+                      ask         = dev.interactive(),
+                      avgcol      = "blue",
+                      chain.col   = "red",
+                      ...)
+{
+  
+  if(is.null(x))
+    stop("data can not be null")
+  
+  if(!is.list(x))
+    stop("x must be a list of chains")
+  
+  if (is.null(lag.max))
+    lag.max <- floor(10 * (log10(n)))
+  
+  lag.max <- as.integer(min(lag.max, n - 1L))
+  m <- length(x)
+  dimn <- dim(x[[1]])
+  n <- dimn[1]
+  p <- dimn[2]
+  
+  #x <- as.Smcmc(x)
+  
+  if(plot) 
+  {
+    pars <- NULL
+    setLayout(p)
+  }
+  
+    for(i in 1:p)
+    {
+      xi <- matrix(data = 0, nrow = n, ncol = m)
+      for (j in 1:m) {
+        xi[,j] <- x[[j]][,i]
+      }
+      xi <- xi - mean(xi)
+      
+      acf <- list()
+      
+      for(j in 1:m) {
+        acf[[j]] <- acf(xi[,j], type = type, plot = FALSE, demean = FALSE, lag.max = lag.max)
+      }
+      avgf <- acf[[1]]
+      for(j in 2:m) {
+        avgf$acf <- avgf$acf + acf[[j]]$acf
+      }
+      avgf$acf <- avgf$acf/m
+      
+      if(plot)
+      {
+        plot(avgf, main = i)
+        
+        lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avgcol, alpha.f = .5), lwd = 2, lty = 2, yaxt = 'n', xaxt = 'n')
+        
+        for(j in 1:m)
+        {
+          lines(0:lag.max, as.matrix(acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 2, lty = 2, yaxt = 'n', xaxt = 'n')
+        }
+        if(p > 6)
+          if (i == 1)
+            pars <- c(pars, par(ask=ask))
+        
+      }
+      
+    }
+    on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
+    
 }

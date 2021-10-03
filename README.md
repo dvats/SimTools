@@ -6,10 +6,20 @@ Leadership:
 Contributors:
 Gunjan Jalori
 
-The development of this package has begun. Updates will be described in this README. For communication regarding issues in the code and other suggestions,  we can try and use the GitHub Issues interface.
+Updates will be described in this README. For communication regarding issues in the code and other suggestions,  please employ the issues feature on GitHub.
 
 
 **Run**: `runme.R`
+
+
+---------------------
+ October 3, 2021
+
+Added function `ACF` that plots ACF plots for Markov chains for each
+component. The function plots globally-centered ACFs, and can thus be
+used for multiple chain setups
+
+Other clean-up to the code has also been done.
 
 ---------------------
  February 24, 2021

@@ -11,6 +11,12 @@ Updates will be described in this README. For communication regarding issues in 
 
 **Run**: `runme.R`
 
+---------------------
+Next update goal:
+- multiple chain compatibility
+- summary function for output
+- compatibility for discrete state space
+- make efficient trace plots
 
 ---------------------
  October 3, 2021

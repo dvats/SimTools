@@ -367,8 +367,8 @@ ACF <- function(x,
   }
   if(class(x) == "Smcmc")
   {
-    x <- x$chains
-  } else  if(!is.list(x))
+    x <- x$chains[[1]]
+  }else if(!is.list(x))
   {
     stop("x must be a matrix, list or an Smcmc  object")
   }
@@ -390,7 +390,6 @@ ACF <- function(x,
   
   if(plot) 
   {
-    pars <- NULL
     setLayout(length(which))
   }
   
@@ -426,14 +425,10 @@ ACF <- function(x,
         lines(0:lag.max, as.matrix(chain.acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
       }
       lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avgcol, alpha.f = .6), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
-
-      if(p > 6)
-        if (i == 1)
-          pars <- c(pars, par(ask=ask))
       
     }
     
   }
-  on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
-  invisible(list("combined" = avgf, "individual" = chain.acf))    
+on.exit( par (ask = FALSE,mfrow=c(1,1)))
+invisible(list("combined" = avgf, "individual" = chain.acf))    
 }

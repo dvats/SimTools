@@ -30,7 +30,7 @@
 #' }
 #' smcmc.obj <- Smcmc(chain)
 #' @export
-"Smcmc" <- function(data,
+Smcmc <- function(data,
                     batch.size = TRUE, 
                     stacked = TRUE,
                     varnames = NULL) # make Smcmc object
@@ -49,10 +49,11 @@
     foo <- chain_stacker(data)
     stacked.chain <- foo$stacked.data
     
-    if(batch.size)
+    if(batch.size == TRUE)
     {
       size <- foo$b.size
-    }else{
+    }
+    else{
       size <- NULL
     }
   }

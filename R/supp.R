@@ -66,8 +66,6 @@ plot.CIs <- function(x,
                     auto.layout, 
                     ask, ...)
 {
-  
-  pars <- NULL
   if(class(x) == "Smcmc")
   {
     if(is.null(x$varnames)) 
@@ -77,7 +75,7 @@ plot.CIs <- function(x,
       varnames <- x$varnames
     }
     data <- x$stacked
-  } else{
+  }else{
     if(class(x) == "Siid")
     {
       if(is.null(x$varnames)) 
@@ -102,11 +100,8 @@ plot.CIs <- function(x,
     addCI(x, CIs, component = i, bord = bord, 
           mean.color = mean.color, quan.color = quan.color, 
           mean = mean, ...)
-    if(dimn>6)
-      if (i == 1)
-        pars <- c(pars, par(ask=ask))
   }
-  on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
+  on.exit(par(ask = FALSE,mfrow=c(1,1)))
   
 }
 
@@ -176,7 +171,7 @@ setLayout <- function(p=1, auto.layout = TRUE,pars = NULL)
     
     if (auto.layout) {
       mfrow <- set.mfrow(Nparms = 6)
-      pars <- par(mfrow = mfrow)
+      pars <- par(ask=FALSE,mfrow = mfrow)
     }
   }  
   

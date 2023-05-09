@@ -56,11 +56,11 @@ ACF(chain)
 #         time in the future
 # varnames = colnames(chain) by default
 
+
 out.one <- Smcmc(chain)
 
 # the chain is accessed via
 head(out.one$chains[[1]])
-
 # the batch size chosen
 # for variance estimation
 out.one$b.size
@@ -78,7 +78,7 @@ head(out.one$stacked)
 # plot.Smcmc function
 plot(out.one)
 
-# rug plots can be removed
+ # rug plots can be removed
 plot(out.one, rug = FALSE)
 
 # flexibility in this function
@@ -100,7 +100,7 @@ str(out.three)
 
 
 # Make ACF plot
-ACF(out.three)
+ACF(out.three$chain[[1]])
 
 
 # calculated batch size is the average of 

@@ -367,13 +367,12 @@ ACF <- function(x,
   }
   if(class(x) == "Smcmc")
   {
-    x <- x$chains[[1]]
-  }else if(!is.list(x))
+    x <- x$chains
+  }
+  else if(!is.list(x))
   {
     stop("x must be a matrix, list or an Smcmc  object")
   }
-    
-
   dimn <- dim(x[[1]])
   n <- dimn[1]
   p <- dimn[2]

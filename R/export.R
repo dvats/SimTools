@@ -368,8 +368,7 @@ ACF <- function(x,
   if(class(x) == "Smcmc")
   {
     x <- x$chains
-  }
-  else if(!is.list(x))
+  }else if(!is.list(x))
   {
     stop("x must be a matrix, list or an Smcmc  object")
   }
@@ -408,16 +407,18 @@ ACF <- function(x,
     }
 
     avgf <-  chain.acf[[1]]
+    k = 100
     avgf$acf <-  0
     for(j in 1:m) 
     {
       avgf$acf <- avgf$acf + chain.acf[[j]]$acf
+      k = min(k,min(chain.acf[[j]]$acf))
     }
     avgf$acf <- avgf$acf/m
     
     if(plot)
     {
-      plot(avgf, ci = 0, main = varnames[i], lwd = .2, ylim = c( - 1.96/sqrt(n), max(avgf$acf)))
+      plot(avgf, ci = 0, main = varnames[i], lwd = .2, ylim = c( min(- 1.96/sqrt(n),min(avgf$acf),k), max(avgf$acf)))
       
       for(j in 1:m)
       {

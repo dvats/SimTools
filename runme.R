@@ -100,7 +100,7 @@ str(out.three)
 
 
 # Make ACF plot
-ACF(out.three$chain[[1]])
+ACF(out.three)
 
 
 # calculated batch size is the average of 

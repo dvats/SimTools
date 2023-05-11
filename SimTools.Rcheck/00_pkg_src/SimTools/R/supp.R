@@ -66,8 +66,6 @@ plot.CIs <- function(x,
                     auto.layout, 
                     ask, ...)
 {
-  
-  pars <- NULL
   if(class(x) == "Smcmc")
   {
     if(is.null(x$varnames)) 
@@ -77,7 +75,7 @@ plot.CIs <- function(x,
       varnames <- x$varnames
     }
     data <- x$stacked
-  } else{
+  }else{
     if(class(x) == "Siid")
     {
       if(is.null(x$varnames)) 
@@ -89,68 +87,21 @@ plot.CIs <- function(x,
       data <- x$data
     }
   }
-
-  if(dimn < 4) {
-    par(mfrow = c(dimn,1))
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize = 0.03, side=1, lwd=0.5)
-      addCI(x, CIs, component = i, bord = bord, 
-        mean.color = mean.color, quan.color = quan.color, 
-        mean = mean, ...)
-    }
-  }
-  else if(dimn == 4) {
-    par(mfrow = c(2,2))
-    for(i in 1:4)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-    }
-  }else if(dimn == 5||dimn == 6){
-    par(mfrow = c(3,2))
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      addCI(x, CIs,component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-    }
-  }else {
-    on.exit(par(pars))
+  
+  setLayout(dimn)
+  for(i in 1:dimn)
+  {
+    beta = ts(data[, i])
     
-    if (auto.layout) {
-      mfrow <- set.mfrow(Nparms = 6)
-      pars <- par(mfrow = mfrow)
-    }
-    
-    for(i in 1:dimn)
-    {
-      beta = ts(data[, i])
-      
-      main1 = paste("Density of ",varnames[i])
-      plot(density(beta), main = main1, ...)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-      main1 = paste("Density of ",varnames[i])
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean, ...)
-      if (i == 1)
-        pars <- c(pars, par(ask=ask))
-    }
+    main1 = paste("Density of ",varnames[i])
+    plot(density(beta), main = main1, ...)
+    if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
+    main1 = paste("Density of ",varnames[i])
+    addCI(x, CIs, component = i, bord = bord, 
+          mean.color = mean.color, quan.color = quan.color, 
+          mean = mean, ...)
   }
-  on.exit(par(pars, ask=FALSE,mfrow=c(1,1)))
+  on.exit(par(ask = FALSE,mfrow=c(1,1)))
   
 }
 
@@ -186,15 +137,13 @@ chain_stacker <- function(x) {
   n <- as.integer(nrow(x[[1]]))
   p <- as.integer(ncol(x[[1]]))
   
-  b <- 0
-  for(i in 1:m) {
-    b <- b + batchSize(x[[i]])
-  }
-  b.final <- floor(b/m)
+  b.final <- floor(mean(sapply(x, batchSize))) # mean batch size
+
   a <- floor(n/b.final)
   ab <- a*b.final
   trash <- n-ab
   big.chain <- matrix(0,ncol = p, nrow = ab*m)
+  colnames(big.chain) <- colnames(x[[1]])
   if(ab != n)
   {
     for (i in 1:m) {
@@ -204,4 +153,26 @@ chain_stacker <- function(x) {
     big.chain <- Reduce("rbind", x)
   }
   return(list("b.size" = b.final, "stacked.data" = big.chain))
+}
+
+setLayout <- function(p=1, auto.layout = TRUE,pars = NULL)
+{
+  if(p < 4) {
+    par(mfrow = c(p,1))
+  }
+  else if(p == 4) {
+    par(mfrow = c(2,2))
+  }
+  else if(p == 5||p == 6){
+    par(mfrow = c(3,2))
+  }
+  else {
+    on.exit(par(pars))
+    
+    if (auto.layout) {
+      mfrow <- set.mfrow(Nparms = 6)
+      pars <- par(ask=FALSE,mfrow = mfrow)
+    }
+  }  
+  
 }

@@ -1,15 +1,14 @@
-* using log directory ‘/Users/Dootika/Documents/GitHub/SimTools/SimTools.Rcheck’
-* using R version 4.0.2 (2020-06-22)
-* using platform: x86_64-apple-darwin17.0 (64-bit)
+* using log directory ‘/Users/dootika/Documents/GitHub/SimTools/SimTools.Rcheck’
+* using R version 4.3.0 (2023-04-21)
+* using platform: aarch64-apple-darwin20 (64-bit)
+* R was compiled by
+    Apple clang version 14.0.0 (clang-1400.0.29.202)
+    GNU Fortran (GCC) 12.2.0
+* running under: macOS Ventura 13.0
 * using session charset: UTF-8
-* using option ‘--as-cran’
 * checking for file ‘SimTools/DESCRIPTION’ ... OK
 * this is package ‘SimTools’ version ‘1.0-0’
 * package encoding: UTF-8
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: ‘Dootika Vats <dootika@iitk.ac.in>’
-
-New submission
 * checking package namespace information ... OK
 * checking package dependencies ... OK
 * checking if this is a source package ... OK
@@ -18,16 +17,11 @@ New submission
 * checking for hidden files and directories ... OK
 * checking for portable file names ... OK
 * checking for sufficient/correct file permissions ... OK
-* checking serialization versions ... OK
 * checking whether package ‘SimTools’ can be installed ... OK
 * checking installed package size ... OK
 * checking package directory ... OK
-* checking for future file timestamps ... OK
 * checking DESCRIPTION meta-information ... OK
-* checking top-level files ... NOTE
-Files ‘README.md’ or ‘NEWS.md’ cannot be checked without ‘pandoc’ being installed.
-Non-standard files/directories found at top level:
-  ‘SimTools_1.0-0.tar.gz’ ‘runme.R’
+* checking top-level files ... OK
 * checking for left-over files ... OK
 * checking index information ... OK
 * checking package subdirectories ... OK
@@ -38,25 +32,66 @@ Non-standard files/directories found at top level:
 * checking whether the package can be unloaded cleanly ... OK
 * checking whether the namespace can be loaded with stated dependencies ... OK
 * checking whether the namespace can be unloaded cleanly ... OK
-* checking loading without being on the library search path ... OK
-* checking use of S3 registration ... OK
 * checking dependencies in R code ... OK
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... OK
+* checking R code for possible problems ... NOTE
+ACF: no visible binding for global variable ‘na.fail’
+ACF: no visible global function definition for ‘acf’
+ACF: no visible global function definition for ‘lines’
+Undefined global functions or variables:
+  acf lines na.fail
+Consider adding
+  importFrom("graphics", "lines")
+  importFrom("stats", "acf", "na.fail")
+to your NAMESPACE file.
 * checking Rd files ... OK
 * checking Rd metadata ... OK
-* checking Rd line widths ... OK
 * checking Rd cross-references ... OK
 * checking for missing documentation entries ... OK
-* checking for code/documentation mismatches ... OK
+* checking for code/documentation mismatches ... WARNING
+Codoc mismatches from documentation object 'ACF':
+ACF
+  Code: function(x, component = NULL, type = c("correlation",
+                 "covariance", "partial"), plot = TRUE, lag.max = NULL,
+                 avgcol = "blue", chain.col = "red", na.action =
+                 na.fail, auto.layout = TRUE, ask = dev.interactive())
+  Docs: function(x, component = NULL, type = c("correlation",
+                 "covariance"), plot = TRUE, lag.max = NULL, avg.col =
+                 "blue", chain.col = "red", na.action = na.fail,
+                 auto.layout = TRUE, ask = dev.interactive())
+  Argument names in code not in docs:
+    avgcol
+  Argument names in docs not in code:
+    avg.col
+  Mismatches in argument names:
+    Position: 6 Code: avgcol Docs: avg.col
+  Mismatches in argument default values:
+    Name: 'type' Code: c("correlation", "covariance", "partial") Docs: c("correlation", "covariance")
+
+Codoc mismatches from documentation object 'Smcmc':
+Smcmc
+  Code: function(data, batch.size = TRUE, stacked = TRUE, varnames =
+                 NULL)
+  Docs: function(data, batch.size = TRUE, stacked = TRUE, varnames =
+                 colnames(data))
+  Mismatches in argument default values:
+    Name: 'varnames' Code: NULL Docs: colnames(data)
+
+Codoc mismatches from documentation object 'boxCI':
+boxCI
+  Code: function(x, CI, component = 1, dimn = 1, quan.color =
+                 "lightsteelblue3", horizontal = FALSE)
+  Docs: function(x, CI, component = c(1), dimn = 1, quan.color =
+                 "lightsteelblue3", horizontal = FALSE)
+  Mismatches in argument default values:
+    Name: 'component' Code: 1 Docs: c(1)
+
 * checking Rd \usage sections ... OK
 * checking Rd contents ... OK
 * checking for unstated dependencies in examples ... OK
 * checking examples ... OK
 * checking PDF version of manual ... OK
-* checking for non-standard things in the check directory ... OK
-* checking for detritus in the temp directory ... OK
 * DONE
-Status: 2 NOTEs
+Status: 1 WARNING, 1 NOTE

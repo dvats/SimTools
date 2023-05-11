@@ -1,29 +1,42 @@
 pkgname <- "SimTools"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
-base::assign(".ExTimings", "SimTools-Ex.timings", pos = 'CheckExEnv')
-base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
-base::assign(".format_ptime",
-function(x) {
-  if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
-  if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
-  options(OutDec = '.')
-  format(x[1L:3L], digits = 7L)
-},
-pos = 'CheckExEnv')
-
-### * </HEADER>
 library('SimTools')
 
 base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+cleanEx()
+nameEx("ACF")
+### * ACF
+
+flush(stderr()); flush(stdout())
+
+### Name: ACF
+### Title: ACF Plot for Markov chain Monte Carlo
+### Aliases: ACF
+
+### ** Examples
+
+# Producing Markov chain
+chain <- matrix(0, ncol = 1, nrow = 1e3)
+chain[1,] <- 0
+err <- rnorm(1e3)
+for(i in 2:1e3)
+{
+  chain[i,] <- .3*chain[i-1,] + err[i]
+}
+chain <- Smcmc(list(chain))
+ACF(chain)
+
+
+
+
 cleanEx()
 nameEx("Siid")
 ### * Siid
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: Siid
 ### Title: Siid class
 ### Aliases: Siid as.Siid as.Siid.default is.iid
@@ -37,15 +50,12 @@ siid.obj <- Siid(chain)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("Siid", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("Smcmc")
 ### * Smcmc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: Smcmc
 ### Title: Smcmc class
 ### Aliases: Smcmc as.Smcmc as.Smcmc.default is.mcmc
@@ -64,15 +74,12 @@ smcmc.obj <- Smcmc(chain)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("Smcmc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("addCI")
 ### * addCI
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: addCI
 ### Title: Add simultaneous confidence interval to existing plot.
 ### Aliases: addCI
@@ -93,15 +100,12 @@ addCI(chain, CIs, component = 1)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("addCI", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("boxCI")
 ### * boxCI
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: boxCI
 ### Title: Add simultaneous confidence interval to existing boxplot
 ### Aliases: boxCI
@@ -113,15 +117,12 @@ output <- matrix(rnorm(3*1e3), nrow = 1e3, ncol = 3)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("boxCI", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("boxplot.Siid")
 ### * boxplot.Siid
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: boxplot.Siid
 ### Title: Boxplot for Siid
 ### Aliases: boxplot.Siid
@@ -136,15 +137,12 @@ boxplot(siid.obj)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("boxplot.Siid", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("getCI")
 ### * getCI
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: getCI
 ### Title: Calculates simultaneous confidence intervals.
 ### Aliases: getCI
@@ -166,15 +164,12 @@ addCI(chain, CIs, component = 1)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("getCI", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.Siid")
 ### * plot.Siid
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.Siid
 ### Title: Plot Siid
 ### Aliases: plot.Siid
@@ -189,15 +184,12 @@ plot(siid.obj)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.Siid", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.Smcmc")
 ### * plot.Smcmc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.Smcmc
 ### Title: Plot Smcmc
 ### Aliases: plot.Smcmc
@@ -218,8 +210,6 @@ plot(chain)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.Smcmc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 ### * <FOOTER>
 ###
 cleanEx()

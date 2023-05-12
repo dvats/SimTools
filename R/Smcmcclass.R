@@ -54,7 +54,7 @@ Smcmc <- function(data,
       size <- foo$b.size
     }
     else{
-      size <- NULL
+      size <- batch.size
     }
   }
   

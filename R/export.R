@@ -114,14 +114,14 @@ getCI <- function(x,
   
   if(class(x) == "Smcmc")
   {
-    if(is.null(x$size)) {
+    if(is.null(x$b.size)) {
       b.size <- 0
       for (i in length(x$chains)) {
         b.size <- b.size + batchSize(x$chains[[i]])
       }
       b.final <- floor(b.size/length(x$chains))
     } 
-    else b.size <- x$size
+    else b.size <- x$b.size
     
     x <- x$stacked
   }else{

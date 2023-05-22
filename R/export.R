@@ -388,7 +388,7 @@ ACF <- function(x,
   
   if(plot) 
   {
-    setLayout(length(which))
+     setLayout(length(which))
   }
   
   for(i in which)
@@ -431,4 +431,188 @@ ACF <- function(x,
   }
 on.exit( par (ask = FALSE,mfrow=c(1,1)))
 invisible(list("combined" = avgf, "individual" = chain.acf))    
+}
+
+
+
+
+
+
+
+#' @title Trace Plot for Markov chain Monte Carlo
+#' @description traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain.
+#' @name traceplot
+#' @usage function(x, fast = FALSE, xlim = NULL, ylim = NULL,component = NULL,
+#'                   xlab = "Iteration",auto.layout = TRUE,
+#'                   ask = dev.interactive(),
+#'                   col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
+#'                           "springgreen2","skyblue3","khaki3",
+#'                           "lightpink1","palegreen3","thistle3","aquamarine3","dimgrey",
+#'                           "tomato3"))
+#'
+#'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
+#'@param fast : a boolearn argument that will be auto set to TRUE when chain size is larger than 1e6
+#'@param xlim : range of x-axis
+#'@param ylim : range of y-axis
+#'@param component : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
+#'@param xlab : lables of x-axis
+#'@param auto.layout : logical argument for an automatic layout of plots
+#'@param ask : activating interactive plots
+#'@param col : color vector for multiple chains
+#'
+#'
+#' @return Returns the Trace Plots of Markov Chain(s)
+#' @examples
+#' # example code
+#' # Defining a function to produce Markov chain with dimension p and size n
+#' MakeChain <- function(p, n , h = .5)
+#' {
+#'   chain <- matrix(0, nrow = n,ncol = p)
+#'   for (i in 2:n) 
+#'   {
+#'     prop <- chain[i-1, ] + rnorm(p, mean = 0, sd = h)
+#'     log.ratio <- sum(dnorm(prop, log = TRUE) - dnorm(chain[i-1, ], log = TRUE))
+#'     if(log(runif(1)) < log.ratio) 
+#'     {chain[i, ] <- prop}
+#'     else{chain[i, ] <- chain[i - 1, ]}
+#'   }
+#'   v = vector(length = p)
+#'   for(i in 1:p){v[i] = paste("Comp ",i)}
+#'   colnames(chain) = v
+#'   return(chain)
+#' }
+#'
+#'
+#' chain1 <- MakeChain(p=4,n=1000)
+#' chain2 <- MakeChain(p=4,n=1000)
+#' chain3 <- MakeChain(p=4,n=1000)
+#' out <- Smcmc(list(chain1,chain2,chain3))
+#' traceplot(out)
+#'
+#'
+#' chain1 <- MakeChain(p=6,n=1000)
+#' chain2 <- MakeChain(p=6,n=1000)
+#' chain3 <- MakeChain(p=6,n=1000)
+#' out <- Smcmc(list(chain1,chain2,chain3))
+#' traceplot(out)
+
+#'
+#'
+#'
+#'
+#' @export
+
+traceplot <- function(x, fast = FALSE, xlim = NULL, ylim = NULL,component = NULL,
+                      xlab = "Iteration",auto.layout = TRUE,
+                      ask = dev.interactive(),
+                      col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
+                              "springgreen2","skyblue3","khaki3",
+                              "lightpink1","palegreen3","thistle3","aquamarine3","dimgrey",
+                              "tomato3"))
+{
+  if(is.matrix(x))
+  {
+    x <- list(x)
+  }
+  if(class(x) == "Smcmc")
+  {
+    x <- x$chains
+  }else if(!is.list(x))
+  {
+    stop("x must be a matrix, list or an Smcmc  object")
+  }
+  
+  varnames <- colnames(x[[1]])
+  dimn <- dim(x[[1]])
+  n <- dimn[1]
+  p <- dimn[2]
+  m = length(x)
+  
+  if(dim(x[[1]])[1] > 100000)
+  {
+    fast = TRUE
+  }
+  
+  if(fast)
+  {
+    index = sample(1:n-1,10000,replace = FALSE)
+    index = c(index,n)
+    index = sort(index)
+  }else{index = 1:n}
+  
+  which <- as.numeric(component)
+  if(is.null(component)) which <- 1:p
+  xlim <- if (is.null(xlim)) c(0,n) else xlim
+  maxi = vector(length = p)
+  mini = vector(length = p)
+  vec = vector(length = m)
+  for(j in 1:m)
+  {
+    for(i in 1:p)
+    {
+      maxi[i] = max(maxi,max(x[[j]][,i]))
+      mini[i] = min(mini,min(x[[j]][,i]))
+    }
+    vec[j] = paste("Chain",j)
+  }
+  
+  spacest = NULL
+  spacesb = NULL
+  if(p<6)
+  {
+    par(mfrow = c(p, 1))
+    spacest = c(3,rep(0,p-1))
+    spacesb = c(rep(0,p-1),4)
+    
+    for(i in which)
+    {
+      par(mar = c(spacesb[i], 4.1, spacest[i], 2.1))
+      ylim <- if (is.null(ylim)) c(mini[i],maxi[i]) else ylim
+      plot(x= index, y = x[[1]][index,i], xlab = xlab, ylab =varnames[i],
+           type = "l", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
+           col = adjustcolor(col[1],alpha.f = 0.9), xaxt = if(i==p) 's' else 'n')
+      for(j in 2:m)
+      {
+        lines(x= index, y=x[[j]][index,i], type = "l", 
+              col = adjustcolor(col[j],alpha.f = 0.9),
+              ylim = ylim, xlim = xlim, lwd = 1, lty = 1, 
+              yaxt = 'n', xaxt = 'n')
+      }
+    }
+  }else
+  {
+    setLayout(length(which))
+    k = setLayout(length(which))
+    print(k)
+    spacest = c(rep(3,k$mfrow[2]),rep(0,p-2))
+    spacesb = c(rep(0,p-2),rep(4.2,k$mfrow[2]))
+    print(spacest)
+    print(spacesb)
+    for(i in which)
+    {
+      par(mar = c(spacesb[i],4.2,spacest[i],2))
+      ylim <-  if (is.null(ylim)) c(mini[i],maxi[i]) else ylim
+      plot(x= index, y = x[[1]][index,i], 
+           xlab = if(i > p-2) xlab else"", ylab = varnames[i],
+           type = "l", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
+           col = adjustcolor(col[1],alpha.f = 0.9),
+           xaxt = if(i > p-2)'s' else'n')
+      for(j in 2:m)
+      {
+        lines(x= index, y=x[[j]][index,i], type = "l", 
+              col = adjustcolor(col[j],alpha.f = 0.9),
+              ylim = ylim, xlim = xlim, lwd = 1, lty = 1, 
+              yaxt = 'n', xaxt = 'n')
+      }
+    }
+  }
+  par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+  plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
+  legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
+         horiz = TRUE,cex = 1, seg.len=1, bty = 'n')
+  on.exit(par(ask = FALSE, mfrow = c(1,1)))
+  par(mar = c(5.1, 4.1, 4.1, 2.1))
+  par(fig = c(0, 1, 0, 1))
+  par(oma = c(0, 0, 0, 0))
+  if(fast){message("Chain size is very large, fast changed to TRUE.")}
 }

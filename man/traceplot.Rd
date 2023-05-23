@@ -10,7 +10,7 @@ Trace Plot for Markov chain Monte Carlo
 traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain. 
 }
 \usage{
-traceplot(x, fast = FALSE, xlim = NULL, ylim = NULL,component = NULL,
+traceplot(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,component = NULL,
           xlab = "Iteration",auto.layout = TRUE,
           ask = dev.interactive(),
           col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
@@ -22,6 +22,8 @@ traceplot(x, fast = FALSE, xlim = NULL, ylim = NULL,component = NULL,
   \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix}
   
   \item{fast}{: a boolean argument that will be auto set to TRUE when chain size is larger than 1e6}
+  
+  \item{which}{: if we want full size traceplots of specific dimensions of chain, we can pass a vector of respective dimension/components. }
   
   \item{xlim}{: range of x-axis}
   

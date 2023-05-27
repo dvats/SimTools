@@ -176,3 +176,22 @@ setLayout <- function(p=1, auto.layout = TRUE,pars = NULL)
   }  
   
 }
+  
+  
+##setLayout for traceplot
+setLayout_trace <- function(p, ask = FALSE)
+{
+  if(p%%2 == 0)
+  {
+    mfrow = c(p/2,2)
+  }
+  
+  else
+  {
+    mfrow = c((p+1)/2,2)
+  }
+  par(ask = FALSE, mfrow = mfrow)
+  k = list(ask,mfrow)
+  names(k) = c("ask","mfrow")
+  return(k)
+}

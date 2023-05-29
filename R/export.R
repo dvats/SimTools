@@ -555,12 +555,9 @@ traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,co
   vec = vector(length = m)
   for(j in 1:m)
   {
-    for(i in 1:p)
-    {
-      maxi[i] = max(maxi,max(x[[j]][,i]))
-      mini[i] = min(mini,min(x[[j]][,i]))
-    }
-    vec[j] = paste("Chain",j)
+      maxi = max(maxi, apply(x[[j]],2,max))
+      mini = min(mini,apply(x[[j]],2,min))
+      vec[j] = paste("Chain",j)
   }
   
   ## this if condition is for plotting traceplots of chains, 
@@ -589,7 +586,7 @@ traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,co
       par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
       plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
       legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-             horiz = TRUE,cex = 1, seg.len=1, bty = 'n')
+             horiz = TRUE,cex = 1.25, seg.len=1, bty = 'n')
       on.exit(par(ask = FALSE, mfrow = c(1,1)))
       par(mar = c(5.1, 4.1, 4.1, 2.1))
       par(fig = c(0, 1, 0, 1))
@@ -613,10 +610,10 @@ traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,co
                 yaxt = 'n', xaxt = 'n')
         }
       ##Setting of legend
-      par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+      par(fig = c(0,1, 0,1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
       plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
       legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-             horiz = TRUE,cex = 1, seg.len=1, bty = 'n')
+             horiz = TRUE,cex = 1.25, seg.len=1, bty = 'n')
       on.exit(par(ask = FALSE, mfrow = c(1,1)))
       par(mar = c(5.1, 4.1, 4.1, 2.1))
       par(fig = c(0, 1, 0, 1))
@@ -628,18 +625,15 @@ traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,co
   }
   else
   {  
-  spacest = NULL
-  spacesb = NULL
   if(p<6)
   {
     par(mfrow = c(p, 1))
-    spacest = c(3,rep(0,p-1))
-    spacesb = c(rep(0,p-1),4)
+    par(oma = c(4,0,3,0))
     
-    for(i in dimen)
+    for(i in 1:p)
     {
       j = 2
-      par(mar = c(spacesb[i], 4.1, spacest[i], 2.1))
+      par(mar = c(0, 4.1,0, 2.1))
       ylim <- if (is.null(ylim)) c(mini[i],maxi[i]) else ylim
       plot(x= index, y = x[[1]][index,i], xlab = xlab, ylab =varnames[i],
            type = "l", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
@@ -653,35 +647,39 @@ traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,co
         j = j + 1
       }
     }
+    mtext("Iteration", side = 1, line = 3, outer = TRUE, cex= 1)
   }else
   {
     setLayout_trace(length(dimen))
-    k = setLayout_trace(length(dimen))
-    spacest = c(rep(3,k$mfrow[2]),rep(0,p-2))
-    spacesb = c(rep(0,p-2),rep(4.2,k$mfrow[2]))
+    par(oma = c(4,0,3,0))
+    
     for(i in dimen)
     {
-      par(mar = c(spacesb[i],4.2,spacest[i],2))
+      j = 2
+      par(mar = c(0,4.2,0,2))
       ylim <-  if (is.null(ylim)) c(mini[i],maxi[i]) else ylim
       plot(x= index, y = x[[1]][index,i], 
-           xlab = if(i > p- k$mfrow[2]) xlab else "", ylab = varnames[i],
+           xlab = if(i > p-2) xlab else "", ylab = varnames[i],
            type = "l", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
            col = adjustcolor(col[1],alpha.f = 0.9),
-           xaxt = if(i > p-k$mfrow[2])'s' else'n')
-      for(j in 2:m)
+           xaxt = if(i > p-2)'s' else'n')
+      while(j <= m)
       {
         lines(x= index, y=x[[j]][index,i], type = "l", 
               col = adjustcolor(col[j],alpha.f = 0.9),
               ylim = ylim, xlim = xlim, lwd = 1, lty = 1, 
               yaxt = 'n', xaxt = 'n')
+        j = j +1
       }
     }
+    
   }
+  
   ##Setting of legend
-  par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+  par(fig = c(0,1,0,1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
   plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
   legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-         horiz = TRUE,cex = 1, seg.len=1, bty = 'n')
+         horiz = TRUE,cex = 1.25, seg.len=1, bty = 'n')
   on.exit(par(ask = FALSE, mfrow = c(1,1)))
   par(mar = c(5.1, 4.1, 4.1, 2.1))
   par(fig = c(0, 1, 0, 1))

@@ -437,30 +437,29 @@ invisible(list("combined" = avgf, "individual" = chain.acf))
 
 
 
-
-
 #' @title Trace Plot for Markov chain Monte Carlo
 #' @description traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain.
 #' @name traceplot
-#' @usage function(x, fast = FALSE,which = NULL, xlim = NULL, ylim = NULL,component = NULL,
-#'                   xlab = "Iteration",auto.layout = TRUE,
-#'                   ask = dev.interactive(),
+#' @usage function(x, fast = NULL,which = NULL, xlim = NULL, ylim = NULL,
+#'                   xlab = "Iteration",ylab = NULL, auto.layout = TRUE,
+#'                   alpha.f = 0.9, ask = dev.interactive(),
 #'                   col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
 #'                           "springgreen2","skyblue3","khaki3",
 #'                           "lightpink1","palegreen3","thistle3","aquamarine3","dimgrey",
 #'                           "tomato3"))
 #'
-#'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
-#'@param fast : a boolean argument that will be auto set to TRUE when chain size is larger than 1e6
-#'@param which : if we want full size traceplots of specific dimensions of chain, we can pass a vector of respective dimension/components. 
+#'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.
+#'@param fast : a Boolean argument that will be auto set to TRUE when chain size is larger than 1e6
+#'@param which : if we want full size trace plots of specific dimensions of chain, we can pass a vector of respective dimension/components. 
 #'@param xlim : range of x-axis
 #'@param ylim : range of y-axis
-#'@param component : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
-#'@param xlab : lables of x-axis
+#'@param main : usual heading for plot
+#'@param xlab : labels of x-axis
+#'@param ylab : labels of y-axis(it should be a vector of length equal to dimension of chain)
 #'@param auto.layout : logical argument for an automatic layout of plots
 #'@param ask : activating interactive plots
 #'@param col : color vector for multiple chains
-#'
+#'@param alpha.f : To fix the opacity of lines as per user convenience, by default it is 0.9.
 #'
 #' @return Returns the Trace Plots of Markov Chain(s)
 #' @examples

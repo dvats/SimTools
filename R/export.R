@@ -539,25 +539,30 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
   if(dim(x[[1]])[1] > 100000 && is.na(fast)){ fast = TRUE }
   if(!is.null(fast) && isTRUE(fast))
   {
-    if(n < 1e4){index = 1:n}
+    if(n < 1e3){index = 1:n}
     else
     {
-      index <- sample(1:n,10000,replace = FALSE)
+      index <- sample(1:n,1000,replace = FALSE)
       index <- sort(index)
     }
   }else{index = 1:n}
   
   xlim <- if (is.null(xlim)) c(0,n) else xlim
+  
   maxi <- rep(-1e9,p)
   mini <- rep(1e9,p)
   vec <- vector(length = m)
   for(j in 1:m)
   {
+    if(is.null(ylim)){
       mat <- as.matrix(x[[j]])
       tempx <- rbind(apply(mat,2,max), maxi)
       tempn <- rbind(apply(mat,2,min),mini)
       maxi <- apply(tempx,2,max)
       mini <- apply(tempn,2, min)
+    }
+    else{mini = rep(ylim[1],p)
+         maxi = rep(ylim[2],p)}
       vec[j] <- paste("Chain",j)
   }
   
@@ -609,8 +614,7 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
   }
   else
   {  
-    if(m>8){par(oma = c(4,0,4,0))}
-    else {par(oma = c(4,0,3,0))}
+    par(oma = c(4,0,3,0))
     axs = p-1
     if(p <= 4){axs = p-1}
     else {axs = p-2}
@@ -631,14 +635,18 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
               yaxt = 'n', xaxt = 'n')
         j = j + 1
       }
+      if(p%%2 != 0 && i == p-1 && p>4){mtext("Iteration", side = 1, line = 2.3,cex = 1)}
     }
-    if(p<=4){mtext("Iteration", side = 1, line = 2, outer = TRUE, cex= 1)}
-    
+    if(p<=4){mtext("   Iteration", side = 1, line = 2.3, outer = TRUE, cex= 1)}
+    else{mtext("Iteration", side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 1)
+      if(p%%2 == 0){mtext("Iteration", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 1)}}
     ##Setting of legend
       par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
       plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
       legend("top",legend = vec[1:m], col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
              horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
+      
+      
   }
   if(isTRUE(fast) && n > 100000){message("Chain size is very large, fast changed to TRUE.")}
   on.exit(par(ask = FALSE, mfrow = c(1,1)))

@@ -578,9 +578,13 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
     }
     lay <- par()
     leg <- lay$mfrow[1]*lay$mfrow[2]
+    space = 0
+    if(is.null(main)){par(oma = c(0,0,2,0))}
+    else{par(oma = c(0,0,2.5,0))
+         space = 1}
     for(i in which)
     {
-       par(mar = c(4, 4, 3, 2))
+       par(mar = c(4, 4, 2, 3))
        j <- 1  
        ylim <- c(mini[i],maxi[i])
        plot(x = index, y = x[[1]][index,i], 
@@ -599,10 +603,15 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
        ##Setting of legend
        if(i%%leg == 0|i == which[length(which)])
        {
-        par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+        if(!is.null(main)){mtext(main, side = 3, line = 1,outer = TRUE, cex = 1.5)} 
+        par(fig = c(0, 1, 0, 1), oma = c(0, 0, space, 0), mar = c(0, 0, 0, 0), new = TRUE)
         plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
         legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
                 horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
+        if(is.null(main)){par(oma = c(0,0,2,0))}
+        else{par(oma = c(0,0,2.5,0))
+             space = 1.1}
+        par(mar = c(4, 4, 2, 3))
         par(mfrow = lay$mfrow)
         }
       }
@@ -613,8 +622,11 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
       
   }
   else
-  {  
-    par(oma = c(4,0,3,0))
+  { 
+    space = 0
+    if(is.null(main)){par(oma = c(4,0,2.5,0))}
+    else{par(oma = c(4,0,4,0))
+         space = 1.3}
     axs = p-1
     if(p <= 4){axs = p-1}
     else {axs = p-2}
@@ -637,11 +649,12 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
       }
       if(p%%2 != 0 && i == p-1 && p>4){mtext("Iteration", side = 1, line = 2.3,cex = 1)}
     }
-    if(p<=4){mtext("   Iteration", side = 1, line = 2.3, outer = TRUE, cex= 1)}
+    if(!is.null(main)){mtext(main, side = 3, line = 2,outer = TRUE, cex = 1.3)}
+    if(p<=4){mtext("Iteration", side = 1, line = 2.3,at =0.52, outer = TRUE, cex= 1)}
     else{mtext("Iteration", side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 1)
-      if(p%%2 == 0){mtext("Iteration", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 1)}}
+         if(p%%2 == 0){mtext("Iteration", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 1)}}
     ##Setting of legend
-      par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+      par(fig = c(0, 1, 0, 1), oma = c(0, 0, space, 0), mar = c(0, 0, 0, 0), new = TRUE)
       plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
       legend("top",legend = vec[1:m], col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
              horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')

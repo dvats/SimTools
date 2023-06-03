@@ -10,18 +10,18 @@ Trace Plot for Markov chain Monte Carlo
 traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain. 
 }
 \usage{
-traceplot(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,component = NULL,
-          xlab = "Iteration",auto.layout = TRUE,
-          ask = dev.interactive(),
-          col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
-                  "springgreen2","skyblue3","khaki3",
-                  "lightpink1","palegreen3","thistle3","aquamarine3",
-                  "dimgrey","tomato3"))
+traceplot(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,main = NULL,
+                      xlab = "Iteration",ylab = NULL,alpha.f = 0.9, auto.layout = TRUE,
+                      ask = dev.interactive(),
+                      col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
+                              "springgreen2","skyblue3","khaki3",
+                              "lightpink1","palegreen3","thistle3","aquamarine3","dimgrey",
+                              "tomato3"))
 }
 \arguments{
-  \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix}
+  \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector}
   
-  \item{fast}{: a boolean argument that will be auto set to TRUE when chain size is larger than 1e6}
+  \item{fast}{: a Boolean argument that will be auto set to TRUE when chain size is larger than 1e6}
   
   \item{which}{: if we want full size traceplots of specific dimensions of chain, we can pass a vector of respective dimension/components. }
   
@@ -29,9 +29,13 @@ traceplot(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,component = NU
   
   \item{ylim}{: range of y-axis}
   
-  \item{component}{: a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.}
+  \item{main}{: usual heading for plot}
   
   \item{xlab}{: lables of x-axis}
+  
+  \item{ylab}{: labels of y-axis(it should be a vector of length equal to dimension of chain)}
+  
+  \item{alpha.f}{: To fix the opacity of lines as per user convenience, by default it is 0.9.}
   
   \item{auto.layout}{: logical argument for an automatic layout of plots}
   

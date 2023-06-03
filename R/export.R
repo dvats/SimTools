@@ -502,8 +502,8 @@ invisible(list("combined" = avgf, "individual" = chain.acf))
 #'
 #'
 #' @export
-traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,component = NULL,
-                      xlab = "Iteration",auto.layout = TRUE,
+traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,main = NULL,
+                      xlab = "Iteration",ylab = NULL,alpha.f = 0.9, auto.layout = TRUE,
                       ask = dev.interactive(),
                       col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
                               "springgreen2","skyblue3","khaki3",
@@ -511,232 +511,139 @@ traceplot <- function(x, fast = FALSE, which = NULL, xlim = NULL, ylim = NULL,co
                               "tomato3"))
 {
   ## Check for the Data Type
-  if(is.vector(x) && !is.list(x))
-  {class
+  if(TRUE %in% (class(x) == "Smcmc")){x <- x$chains}else if(is.list(x))
+  {
+    for(i in 1:length(x)) { x[[i]] = as.matrix(x[[i]]) }
+  }else if(is.vector(x))
+  {
     x <- as.matrix(x)
     x <- list(x)
-  }else if(is.matrix(x) && !is.list(x))
-  {
-    x <- list(x)
-  }else if(TRUE %in% (class(x) == "Smcmc"))
-  {
-    x <- x$chains
-  }else if(!is.list(x))
-  {
-    stop("x must be a matrix, list or an Smcmc  object")
-  }
+  }else if(is.matrix(x))
+  {x <- list(x)}else
+      {stop("x must be a matrix, list or an Smcmc object")}
   
- 
   dimn <- dim(x[[1]])
   n <- dimn[1]
   p <- dimn[2]
-  m = length(x)
-  if(m>12){stop("Maximum 12 chains are allowed")}
-  varnames <- vector(length = p)
-  for(i in 1:p)
+  m <- length(x)
+  
+  if(m>5){stop("Maximum 5 chains are allowed")}
+  
+  if(is.null(ylab) | !is.vector(ylab) | length(ylab)!=p)
   {
-    varnames[i] = paste("Comp ",i)
+    if(!is.null(ylab) && (!is.vector(ylab) | length(ylab) != p ))
+    {message("ylab should be NULL, or vector of length no. of dimension. Default value of ylab applied.")}
+    ylab <- vector(length = p)
+    for(i in 1:p) { ylab[i] <- paste("Comp ",i) }
   }
   
-  if(dim(x[[1]])[1] > 100000 && fast == FALSE)
+  if(dim(x[[1]])[1] > 100000 && is.na(fast)){ fast = TRUE }
+  if(!is.null(fast) && isTRUE(fast))
   {
-    fast = TRUE
-  }
-  
-  if(fast)
-  {
-    index = sample(1:n,10000,replace = FALSE)
-    index = sort(index)
+    if(n < 1e4){index = 1:n}
+    else
+    {
+      index <- sample(1:n,10000,replace = FALSE)
+      index <- sort(index)
+    }
   }else{index = 1:n}
   
-  dimen <- as.numeric(component)
-  if(is.null(component)) dimen <- 1:p
   xlim <- if (is.null(xlim)) c(0,n) else xlim
-  maxi = rep(-1e9,p)
-  mini = rep(1e9,p)
-  vec = vector(length = m)
+  maxi <- rep(-1e9,p)
+  mini <- rep(1e9,p)
+  vec <- vector(length = m)
   for(j in 1:m)
   {
-      mat = as.matrix(x[[j]])
-      tempx = rbind(apply(mat,2,max), maxi)
-      tempn = rbind(apply(mat,2,min),mini)
-      maxi = apply(tempx,2,max)
-      mini = apply(tempn,2, min)
-      vec[j] = paste("Chain",j)
+      mat <- as.matrix(x[[j]])
+      tempx <- rbind(apply(mat,2,max), maxi)
+      tempn <- rbind(apply(mat,2,min),mini)
+      maxi <- apply(tempx,2,max)
+      mini <- apply(tempn,2, min)
+      vec[j] <- paste("Chain",j)
   }
   
   ## this if condition is for plotting traceplots of chains, 
-  ## when which not equal to NULL and Dimention of chain exceeds 12.
+  ## when which not equal to NULL and Dimension of chain exceeds 12.
   if(!is.null(which)| p > 10)
   {
-    if(p>12 && is.null(which) )
+    if(p > 10 && is.null(which) )
     {
-      which = 1:p
-      message("Number of dimension of chain(s) is more than 12. Series of plot returned!")
+      which <- 1:p
+      message("Number of dimension of chain(s) is more than 10. Series of plot returned!")
       
     }
-    if(m>8){par(oma = c(0,0,4,0))}
-    lay = par()
-    if(!isTRUE(all.equal(lay$mfrow, c(1,1))))
+    lay <- par()
+    leg <- lay$mfrow[1]*lay$mfrow[2]
+    for(i in which)
     {
-      for(i in which)
-      {
-       j = 2  
-       ylim = c(mini[i],maxi[i])
-       plot(x= index, y = x[[1]][index,i], 
-            xlab = xlab, ylab = varnames[i],
-            type = "l", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
-            col = adjustcolor(col[1],alpha.f = 0.9))
+       par(mar = c(4, 4, 3, 2))
+       j <- 1  
+       ylim <- c(mini[i],maxi[i])
+       plot(x = index, y = x[[1]][index,i], 
+            xlab = xlab, ylab = ylab[i],
+            type = "n", lwd = 1.3, lty = 1, ylim = ylim, xlim = xlim,
+            col = adjustcolor(col[1],alpha.f = alpha.f))
        while(j <= m)
        {
-        lines(x= index, y=x[[j]][index,i], type = "l", 
-              col = adjustcolor(col[j],alpha.f = 0.9),
-              ylim = ylim, xlim = xlim, lwd = 1, lty = 1, 
+        lines( x= index, y=x[[j]][index,i], type = "l", 
+              col = adjustcolor(col[j],alpha.f = alpha.f),
+              ylim = ylim, xlim = xlim, lwd = 1.3, lty = 1, 
               yaxt = 'n', xaxt = 'n')
-         j  = j + 1
-       }
-      }
-      ##Setting of legend
-      if(m > 8)
+         j  <- j + 1
+        }
       
-      {
+       ##Setting of legend
+       if(i%%leg == 0|i == which[length(which)])
+       {
         par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
         plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
         legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-                cex = 1, seg.len= 1, bty = 'n',x.intersp = 0.1,ncol = 6)
+                horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
+        par(mfrow = lay$mfrow)
+        }
       }
+       on.exit(par(ask = FALSE, mfrow = c(1,1)))
+       par(mar = c(5.1, 4.1, 4.1, 2.1))
+       par(fig = c(0, 1, 0, 1))
+       par(oma = c(0, 0, 0, 0))
       
-      else
-      {
-        par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
-        plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
-        legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-               horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
-      }
-      on.exit(par(ask = FALSE, mfrow = c(1,1)))
-      par(mar = c(5.1, 4.1, 4.1, 2.1))
-      par(fig = c(0, 1, 0, 1))
-      par(oma = c(0, 0, 0, 0))
-    }
-    
-    else
-    {
-      for(i in which)
-      {
-        j = 2
-        ylim = c(mini[i],maxi[i])
-        plot(x= index, y = x[[1]][index,i], 
-             xlab = xlab, ylab = varnames[i],
-             type = "l", lwd = 1.3, lty = 1, ylim = ylim, xlim = xlim,
-             col = adjustcolor(col[1],alpha.f = 0.9))
-        while(j <= m)
-        {
-          lines(x= index, y=x[[j]][index,i], type = "l", 
-                col = adjustcolor(col[j],alpha.f = 0.9),
-                ylim = ylim, xlim = xlim, lwd = 1.3, lty = 1, 
-                yaxt = 'n', xaxt = 'n')
-          j = j+ 1
-        }
-      ##Setting of legend
-        if(m > 8)
-          
-        {
-          par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
-          plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
-          legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-                 cex = 1, seg.len= 1, bty = 'n',x.intersp = 0.1,ncol = 6)
-        }
-        
-        else
-        {
-          par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
-          plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
-          legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-                 horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
-        }
-        on.exit(par(ask = FALSE, mfrow = c(1,1)))
-        par(mar = c(5.1, 4.1, 4.1, 2.1))
-        par(fig = c(0, 1, 0, 1))
-        par(oma = c(0, 0, 0, 0))
-      }
-      
-    }
-    
   }
   else
   {  
-  if(p<6)
-  {
-    par(mfrow = c(p, 1))
     if(m>8){par(oma = c(4,0,4,0))}
     else {par(oma = c(4,0,3,0))}
-    
+    axs = p-1
+    if(p <= 4){axs = p-1}
+    else {axs = p-2}
+    setLayout_trace(p)
     for(i in 1:p)
     {
       j = 2
       par(mar = c(0, 4.1,0, 2.1))
       ylim <-  c(mini[i],maxi[i])
-      plot(x= index, y = x[[1]][index,i], xlab = xlab, ylab =varnames[i],
+      plot(x= index, y = x[[1]][index,i], xlab = if(i>axs) xlab else "" , ylab =ylab[i],
            type = "l", lwd = 1.3, lty = 1, ylim = ylim, xlim = xlim,
-           col = adjustcolor(col[1],alpha.f = 0.9), xaxt = if(i==p) 's' else 'n')
+           col = adjustcolor(col[1],alpha.f = alpha.f), xaxt = if(i>axs) 's' else 'n')
       while(j<=m)
       {
         lines(x= index, y=x[[j]][index,i], type = "l", 
-              col = adjustcolor(col[j],alpha.f = 0.9),
+              col = adjustcolor(col[j],alpha.f = alpha.f),
               ylim = ylim, xlim = xlim, lwd = 1.3, lty = 1, 
               yaxt = 'n', xaxt = 'n')
         j = j + 1
       }
     }
-    mtext("Iteration", side = 1, line = 3, outer = TRUE, cex= 1)
-  }else
-  {
-    setLayout_trace(length(dimen))
-    par(oma = c(4,0,4,0))
+    if(p<=4){mtext("Iteration", side = 1, line = 2, outer = TRUE, cex= 1)}
     
-    for(i in dimen)
-    {
-      j = 2
-      par(mar = c(0,4.2,0,2))
-      ylim <-  c(mini[i],maxi[i])
-      plot(x= index, y = x[[1]][index,i], 
-           xlab = if(i > p-2) xlab else "", ylab = varnames[i],
-           type = "l", lwd = 1.3, lty = 1, ylim = ylim, xlim = xlim,
-           col = adjustcolor(col[1],alpha.f = 0.9),
-           xaxt = if(i > p-2)'s' else'n')
-      while(j <= m)
-      {
-        lines(x= index, y=x[[j]][index,i], type = "l", 
-              col = adjustcolor(col[j],alpha.f = 0.9),
-              ylim = ylim, xlim = xlim, lwd = 1.3, lty = 1, 
-              yaxt = 'n', xaxt = 'n')
-        j = j +1
-      }
-    }
-    
-  }
-  
-  ##Setting of legend
-    if(m > 8)
-      
-    {
-      par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
-      plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
-      legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-             cex = 1.25, seg.len= 1, bty = 'n',x.intersp = 1,ncol = 6, y.intersp = 0.7)
-    }
-    
-    else
-    {
+    ##Setting of legend
       par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
       plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
       legend("top",legend = vec[1:m], col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
              horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
-    }
+  }
+  if(isTRUE(fast) && n > 100000){message("Chain size is very large, fast changed to TRUE.")}
   on.exit(par(ask = FALSE, mfrow = c(1,1)))
   par(mar = c(5.1, 4.1, 4.1, 2.1))
   par(fig = c(0, 1, 0, 1))
   par(oma = c(0, 0, 0, 0))
-  }
-  if(fast && n>1000000){message("Chain size is very large, fast changed to TRUE.")}
 }

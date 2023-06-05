@@ -16,6 +16,8 @@ ACF(x,component = NULL, type = c("correlation", "covariance"),
 \item{type}{: the kind of ACF plot: "correlation" or "covariance"}
 
 \item{plot}{: TRUE if plots are required. If FALSE, raw values are returned}
+  
+ \item{main}{: To add heading ro the plot}
 
 \item{lag.max}{: Maximum lag for the ACF plot}
 

@@ -321,6 +321,7 @@ boxCI <- function(x,
 #' @param component : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
 #' @param type : the kind of ACF plot: "correlation" or "covariance"
 #' @param plot : TRUE if plots are required. If FALSE, raw values are returned
+#' @param main : To add heading in the plot
 #' @param lag.max : Maximum lag for the ACF plot
 #' @param avg.col  : color for the overall ACF of each component
 #' @param chain.col : color for the ACF of the individual chains.
@@ -349,10 +350,12 @@ boxCI <- function(x,
 #'
 #' @export
 
+
 ACF <- function(x,
                 component   = NULL,
                 type        = c("correlation", "covariance", "partial"),
                 plot        = TRUE,
+                main        = NULL,
                 lag.max     = NULL,
                 avgcol      = "blue",
                 chain.col   = "red",
@@ -360,52 +363,57 @@ ACF <- function(x,
                 auto.layout = TRUE,
                 ask         = dev.interactive())
 {
-  
-  if(is.matrix(x))
+  if(TRUE %in% (class(x) == "Smcmc")){x <- x$chains}else if(is.list(x))
   {
+    for(i in 1:length(x)) { x[[i]] = as.matrix(x[[i]]) }
+  }else if(is.vector(x))
+  {
+    x <- as.matrix(x)
     x <- list(x)
-  }
-  if(class(x) == "Smcmc")
-  {
-    x <- x$chains
-  }else if(!is.list(x))
-  {
-    stop("x must be a matrix, list or an Smcmc  object")
-  }
+  }else if(is.matrix(x))
+  {x <- list(x)}else
+  {stop("x must be a matrix, list or an Smcmc object")}
+  
   dimn <- dim(x[[1]])
   n <- dimn[1]
   p <- dimn[2]
-
+  m <- length(x)
+  
+  if(m>10){stop("Maximum 10 chains are allowed")}
+  
   which <- as.numeric(component)
   if(is.null(component)) which <- 1:p
-
+  
   varnames <- colnames(x[[1]])
   if (is.null(lag.max)) lag.max <- floor(10 * (log10(n)) )
   
   lag.max <- as.integer(min(lag.max, n - 1L))
-  m <- length(x)
-
   
-  if(plot) 
-  {
-     setLayout(length(which))
-  }
+  np = length(which)
+  space = 0
+  if(is.null(main)){par(oma = c(4,0,2,0))}
+  else{par(oma = c(4,0,3,0))
+       space = 1.3}
+  axs = np-1
+  if(np <= 4){axs = np-1}
+  else {axs = np-2}
+  setLayout_trace(np)
+  
   
   for(i in which)
   {
     xi <- matrix(data = 0, nrow = n, ncol = m)
-
+    
     for (j in 1:m) {
       xi[,j] <- x[[j]][,i]
     }
     xi <- xi - mean(xi) # global mean
     
     chain.acf <- list(length = m)
-    
     for(j in 1:m) {
       chain.acf[[j]] <- acf(xi[,j], type = type, plot = FALSE, demean = FALSE, lag.max = lag.max)
     }
-
+    
     avgf <-  chain.acf[[1]]
     k = 100
     avgf$acf <-  0
@@ -418,20 +426,31 @@ ACF <- function(x,
     
     if(plot)
     {
-      plot(avgf, ci = 0, main = varnames[i], lwd = .2, ylim = c( min(- 1.96/sqrt(n),min(avgf$acf),k), max(avgf$acf)))
+      par(mar = c(0, 4.1,0, 2.1))
+      plot(avgf, ci = 0, main = varnames[i], lwd = .2, ylim = c( min(- 1.96/sqrt(n),min(avgf$acf),k), max(avgf$acf)),xlab = if(i>axs) "Lag" else "" , ylab = paste("ACF",i),
+           lty = 1, xaxt = if(i>axs) 's' else 'n')
       
       for(j in 1:m)
       {
         lines(0:lag.max, as.matrix(chain.acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
       }
       lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avgcol, alpha.f = .6), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
-      
+      if(np%%2 != 0 && i == np-1 && np>4){mtext("Lag", side = 1, line = 2.3,cex = 0.8)}
+    }
+    
+    if(plot){
+      if(!is.null(main)){mtext(main, side = 3, line = space,outer = TRUE, cex = 1.3)}
+      if(np <= 4){mtext("Lag", side = 1, line = 2.3,at =0.52, outer = TRUE, cex= 1)}
+      else{mtext("Lag", side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 0.8)
+        if(np %% 2 == 0){mtext("Lag", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 0.8)}}
     }
     
   }
-on.exit( par (ask = FALSE,mfrow=c(1,1)))
-invisible(list("combined" = avgf, "individual" = chain.acf))    
+  on.exit( par (ask = FALSE,mfrow=c(1,1)))
+  invisible(list("combined" = avgf, "individual" = chain.acf))    
 }
+
+
 
 
 

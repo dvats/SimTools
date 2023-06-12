@@ -18,6 +18,8 @@
 
 \item{thresh}{: numeric typically less than .005 for the accuracy of the simulteaneous procedure}
 
+\item{main}{:  to add main heading}
+
 \item{iid}{: logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}}
 
 \item{plot}{:  logical argument for is plots are to be returned}

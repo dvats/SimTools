@@ -86,6 +86,7 @@ Smcmc <- function(data,
 
 
 
+
 #' @title Plot Smcmc
 #'
 #' @description Density plots with simultaenous error bars around means and quantiles
@@ -103,6 +104,7 @@ Smcmc <- function(data,
 #' @param thresh : numeric typically less than .005 for the accuracy of the simulteaneous procedure
 #' @param iid : logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}
 #' @param plot :  logical argument for is plots are to be returned 
+#' @param main : to add main heading
 #' @param mean : logical argument whether the mean is to be plotted
 #' @param border : whether a border is required for the simultaneous confidence intervals
 #' @param mean.col : color for the mean confidence interval
@@ -137,6 +139,7 @@ Smcmc <- function(data,
                          Q        = c(0.1, 0.9), 
                          alpha    = 0.05, 
                          thresh   = 0.001, 
+                         main     = NULL,
                          iid      = FALSE, 
                          plot     = TRUE,  
                          mean     = TRUE, 
@@ -154,13 +157,10 @@ Smcmc <- function(data,
   if(plot == TRUE)
   {
     plot.CIs(x, dimn = length(x$stacked[1,]), CIs = out, bord = border, 
-    	mean.color = adjustcolor(mean.col, alpha.f = opaq), 
-    	quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-    	mean = mean, auto.layout = auto.layout, rug = rug,
-    	ask = ask, ...)
+             mean.color = adjustcolor(mean.col, alpha.f = opaq), 
+             quan.color = adjustcolor(quan.col, alpha.f = opaq), 
+             mean = mean, auto.layout = auto.layout, rug = rug,
+             ask = ask,main = main, ...)
   }
   invisible(out)
 }
-
-
-

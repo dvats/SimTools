@@ -27,44 +27,18 @@ CIz <- function(z, p1 , p2, theta.hat, phi, ci.sigma.mat, n, mean = TRUE)
   return (list("lower.ci" = c(lower.ci.p1, lower.ci.p2), "upper.ci" = c(upper.ci.p1, upper.ci.p2)))
 }
 
-"set.mfrow" <-function (Nparms = 1) 
-{
-  ## Set up dimensions of graphics window: 
-  ##	1 x 1	if Nparms = 1 
-  ##	1 X 2 	if Nparms = 2 
-  ##	2 X 2 	if Nparms = 3 or 4 
-  ##	3 X 2 	if Nparmss = 5 or 6 or 10 - 12 
-  ##	3 X 3 	if Nparms = 7 - 9 or >= 13 
-    ## One plot per variable
-  mfrow <- switch(min(Nparms,13),
-                    c(1,1),
-                    c(1,2),
-                    c(2,2),
-                    c(2,2),
-                    c(3,2),
-                    c(3,2),
-                    c(3,3),
-                    c(3,3),
-                    c(3,3),
-                    c(3,2),
-                    c(3,2),
-                    c(3,2),
-                    c(3,3))
-  return(mfrow)
-}
-
-
-
+## For plotting density plots and Histograms
 plot.CIs <- function(x, 
-                    dimn, 
-                    CIs, 
-                    bord = NULL, 
-                    mean.color, 
-                    quan.color, 
-                    rug, 
-                    mean = TRUE, 
-                    auto.layout, 
-                    ask, ...)
+                     dimn, 
+                     CIs, 
+                     bord = NULL, 
+                     mean.color = 'plum4' , 
+                     quan.color = 'lightsteelblue3', 
+                     rug, 
+                     main,
+                     mean = TRUE, 
+                     auto.layout, 
+                     ask, ...)
 {
   if(class(x) == "Smcmc")
   {
@@ -87,20 +61,35 @@ plot.CIs <- function(x,
       data <- x$data
     }
   }
-  
-  setLayout(dimn)
+  if(is.null(main)){par(oma = c(2,0,2,0))}else{par(oma = c(2,0,4,0))}
+  setLayout_trace(dimn)
   for(i in 1:dimn)
   {
-    beta = ts(data[, i])
+    ylab = paste("Density of ",i)
+    par(mar = c(1.2, 4.1,1.2, 2.1))
+    beta = data[, i]
+    if (max(abs(beta - floor(beta))) == 0 || bndw(beta) == 0 || length(unique(beta)) == 1)
+    {
+      beta = as.vector(beta)
+      h = hist(beta, plot = F) # or hist(x,plot=FALSE) to avoid the plot of the histogram
+      h$density = h$counts/sum(h$counts)
+      plot(h,freq=FALSE,ylab=ylab, xlab = NA, main = NA, col = "lightgreen")
+      addCI(x, CIs, component = i, bord = bord, 
+            mean.color = mean.color, quan.color = quan.color, 
+            mean = mean)
+    }
     
-    main1 = paste("Density of ",varnames[i])
-    plot(density(beta), main = main1, ...)
-    if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
-    main1 = paste("Density of ",varnames[i])
-    addCI(x, CIs, component = i, bord = bord, 
-          mean.color = mean.color, quan.color = quan.color, 
-          mean = mean, ...)
+    else
+    {
+      beta = ts(beta)
+      plot(density(beta),main = NA, xlab = NA, ylab = ylab)
+      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
+      addCI(x, CIs, component = i, bord = bord, 
+            mean.color = mean.color, quan.color = quan.color, 
+            mean = mean)
+    }
   }
+  if(!is.null(main)){mtext(main, side = 3, line = 1,outer = TRUE, cex = 1.5)}
   on.exit(par(ask = FALSE,mfrow=c(1,1)))
   
 }
@@ -155,30 +144,7 @@ chain_stacker <- function(x) {
   return(list("b.size" = b.final, "stacked.data" = big.chain))
 }
 
-setLayout <- function(p=1, auto.layout = TRUE,pars = NULL)
-{
-  if(p < 4) {
-    par(mfrow = c(p,1))
-  }
-  else if(p == 4) {
-    par(mfrow = c(2,2))
-  }
-  else if(p == 5||p == 6){
-    par(mfrow = c(3,2))
-  }
-  else {
-    on.exit(par(pars))
-    
-    if (auto.layout) {
-      mfrow <- set.mfrow(Nparms = 6)
-      pars <- par(ask=FALSE,mfrow = mfrow)
-    }
-  }  
-  
-}
-  
-  
-##setLayout for traceplot
+## setLayout for all plots
 setLayout_trace <- function(p, ask = FALSE)
 {
   if(p%%2 == 0)
@@ -195,3 +161,10 @@ setLayout_trace <- function(p, ask = FALSE)
   names(k) = c("ask","mfrow")
   return(k)
 }
+
+## for calculating Bandwidth
+bndw <- function(x) {
+  x <- x[!is.na(as.vector(x))]
+  return(1.06 * min(sd(x), IQR(x)/1.34) * length(x)^-0.2)
+}
+

@@ -270,7 +270,7 @@ getCI <- function(x,
 #' @export
 boxCI <- function(x,
                   CI,
-                  component = 1,
+                  component = c(1),
                   dimn       = 1,
                   quan.color = 'lightsteelblue3',
                   horizontal = FALSE) 
@@ -304,18 +304,21 @@ boxCI <- function(x,
 
 
 
+
+
+
 #' @title ACF Plot for Markov chain Monte Carlo
 #'
 #' @description Autocorrelation function plots for MCMC data (including multiple chains)
 #'
 #'
 #' @name acfplot
-#' @usage ACF(x,component = NULL, type = c("correlation", "covariance"),
-#'              plot= TRUE, lag.max = NULL, avg.col = "blue", chain.col   = "red",
+#' @usage acfplot(x,which = NULL, type = c("correlation", "covariance"),
+#'              plot= TRUE, lag.max = NULL,main, avg.col = "blue", chain.col   = "red",
 #'              na.action   = na.fail, auto.layout = TRUE, ask = dev.interactive()) 
 #'          
 #' @param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
-#' @param component : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
+#' @param which : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
 #' @param type : the kind of ACF plot: "correlation" or "covariance"
 #' @param plot : TRUE if plots are required. If FALSE, raw values are returned
 #' @param main : main heading of plot
@@ -461,12 +464,10 @@ acfplot <- function(x,
 
 
 
-
-
 #' @title Trace Plot for Markov chain Monte Carlo
 #' @description traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain.
 #' @name traceplot
-#' @usage function(x, fast = NULL,which = NULL, xlim = NULL, ylim = NULL,
+#' @usage traceplot(x, fast = TRUE,which = NULL, xlim = NULL, ylim = NULL,
 #'                   xlab = "Iteration",ylab = NULL, auto.layout = TRUE,
 #'                   alpha.f = 0.9, ask = dev.interactive(),
 #'                   col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",

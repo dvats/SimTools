@@ -96,7 +96,6 @@ Smcmc <- function(data,
 
 
 
-
 #' @title density plot form Smcmc class
 #'
 #' @description Density plots with simultaenous error bars around means and quantiles
@@ -104,7 +103,7 @@ Smcmc <- function(data,
 #'
 #'
 #' @name densityplot
-#' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
+#' @usage densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
 #'                             plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', 
 #'                             quan.col = 'lightsteelblue3',rug = TRUE, opaq = 0.7, 
 #'                             auto.layout = TRUE, ask = dev.interactive(),...)    

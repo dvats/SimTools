@@ -71,18 +71,15 @@ plot.CIs <- function(x,
     if (max(abs(beta - floor(beta))) == 0 || bndw(beta) == 0 || length(unique(beta)) == 1)
     {
       beta = as.vector(beta)
-      h = hist(beta, plot = F) # or hist(x,plot=FALSE) to avoid the plot of the histogram
+      h = hist(beta, plot = F,..) # or hist(x,plot=FALSE) to avoid the plot of the histogram
       h$density = h$counts/sum(h$counts)
       plot(h,freq=FALSE,ylab=ylab, xlab = NA, main = NA, col = "lightgreen")
-      addCI(x, CIs, component = i, bord = bord, 
-            mean.color = mean.color, quan.color = quan.color, 
-            mean = mean)
     }
     
     else
     {
       beta = ts(beta)
-      plot(density(beta),main = NA, xlab = NA, ylab = ylab)
+      plot(density(beta,...),main = NA, xlab = NA, ylab = ylab)
       if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       addCI(x, CIs, component = i, bord = bord, 
             mean.color = mean.color, quan.color = quan.color, 
@@ -91,9 +88,11 @@ plot.CIs <- function(x,
   }
   if(!is.null(main)){mtext(main, side = 3, line = 1,outer = TRUE, cex = 1.5)}
   on.exit(par(ask = FALSE,mfrow=c(1,1)))
+  par(mar = c(5.1, 4.1, 4.1, 2.1))
+  par(fig = c(0, 1, 0 , 1))
+  par(oma = c(0, 0, 0, 0))
   
 }
-
 
 
 ## For boxplots

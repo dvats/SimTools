@@ -11,4 +11,4 @@ Imports: mcmcse, mvtnorm
 Description: Toolkit for simulation output including Monte Carlo and Markov chain Monte Carlo. Tools for reliable visualisations are available, and support for multiple chain MCMC is integrated.
 License: GPL (>= 2)
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3

@@ -38,9 +38,19 @@ Smcmc <- function(data,
   if(missing(data))
     stop("Data must be provided.")
   
+  
   if(!is.list(data))
+  {
+    data = as.matrix(data)
     data <- list(data)
-
+  }else
+  {
+    for(i in 1:length(data))
+    {
+      data[[i]] = as.matrix(data[[i]])
+    }
+  }
+  
   nsim <- dim(data[[1]])[1]
   if(is.null(varnames)) varnames <- colnames(data[[1]])  
   
@@ -87,7 +97,7 @@ Smcmc <- function(data,
 
 
 
-#' @title denity plot form Smcmc class
+#' @title density plot form Smcmc class
 #'
 #' @description Density plots with simultaenous error bars around means and quantiles
 #'  for MCMC data. The error bars account for the correlated nature of the process.

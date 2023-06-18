@@ -304,15 +304,12 @@ boxCI <- function(x,
 
 
 
-
-
-
 #' @title ACF Plot for Markov chain Monte Carlo
 #'
 #' @description Autocorrelation function plots for MCMC data (including multiple chains)
 #'
 #'
-#' @name ACF
+#' @name acfplot
 #' @usage ACF(x,component = NULL, type = c("correlation", "covariance"),
 #'              plot= TRUE, lag.max = NULL, avg.col = "blue", chain.col   = "red",
 #'              na.action   = na.fail, auto.layout = TRUE, ask = dev.interactive()) 
@@ -321,7 +318,7 @@ boxCI <- function(x,
 #' @param component : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
 #' @param type : the kind of ACF plot: "correlation" or "covariance"
 #' @param plot : TRUE if plots are required. If FALSE, raw values are returned
-#' @param main : To add heading in the plot
+#' @param main : main heading of plot
 #' @param lag.max : Maximum lag for the ACF plot
 #' @param avg.col  : color for the overall ACF of each component
 #' @param chain.col : color for the ACF of the individual chains.
@@ -342,7 +339,7 @@ boxCI <- function(x,
 #'   chain[i,] <- .3*chain[i-1,] + err[i]
 #' }
 #' chain <- Smcmc(list(chain))
-#' ACF(chain)
+#' acfplot(chain)
 #'
 #' @references
 #' Agarwal, M., and Vats, D., “Globally-centered autocovariances in MCMC”, 
@@ -351,23 +348,24 @@ boxCI <- function(x,
 #' @export
 
 
-ACF <- function(x,
-                component   = NULL,
-                type        = c("correlation", "covariance", "partial"),
-                plot        = TRUE,
-                main        = NULL,
-                lag.max     = NULL,
-                avgcol      = "blue",
-                chain.col   = "red",
-                na.action   = na.fail,
-                auto.layout = TRUE,
-                ask         = dev.interactive())
+
+acfplot <- function(x,
+                    which       = NULL,
+                    type        = c("correlation", "covariance", "partial"),
+                    plot        = TRUE,
+                    main        = NULL,
+                    lag.max     = NULL,
+                    avgcol      = "blue",
+                    chain.col   = "red",
+                    na.action   = na.fail,
+                    auto.layout = TRUE,
+                    ask         = dev.interactive())
 {
   if(TRUE %in% (class(x) == "Smcmc")){x <- x$chains}else if(is.list(x))
   {
     for(i in 1:length(x)) { x[[i]] = as.matrix(x[[i]]) }
   }else if(is.vector(x))
-  {
+  {2
     x <- as.matrix(x)
     x <- list(x)
   }else if(is.matrix(x))
@@ -380,75 +378,84 @@ ACF <- function(x,
   m <- length(x)
   
   if(m>10){stop("Maximum 10 chains are allowed")}
-  
-  which <- as.numeric(component)
-  if(is.null(component)) which <- 1:p
-  
-  varnames <- colnames(x[[1]])
   if (is.null(lag.max)) lag.max <- floor(10 * (log10(n)) )
-  
   lag.max <- as.integer(min(lag.max, n - 1L))
   
-  np = length(which)
+  lay <- par()
+  leg <- lay$mfrow[1]*lay$mfrow[2]
+  if(is.null(which))
+  {np = p}else
+  {np = length(which)}
   space = 0
-  if(is.null(main)){par(oma = c(4,0,2,0))}
-  else{par(oma = c(4,0,3,0))
-       space = 1.3}
+  if(is.null(main)){par(oma = c(4,0,2,0))}else
+  {par(oma = c(4,0,3,0))
+    space = 1.3}
   axs = np-1
-  if(np <= 4){axs = np-1}
-  else {axs = np-2}
-  setLayout_trace(np)
-  
-  
-  for(i in which)
+  if(np <= 4){axs = np-1}else {axs = np-2}
+  if(!is.null(which)){axs = 0}
+  if(is.null(which)){setLayout_trace(np)
+    dimen = 1:p}
+  else{dimen = which}
+  for(i in dimen)
   {
     xi <- matrix(data = 0, nrow = n, ncol = m)
-    
-    for (j in 1:m) {
+    for (j in 1:m) 
+    {
       xi[,j] <- x[[j]][,i]
     }
     xi <- xi - mean(xi) # global mean
     
     chain.acf <- list(length = m)
-    for(j in 1:m) {
+    for(j in 1:m)
+    {
       chain.acf[[j]] <- acf(xi[,j], type = type, plot = FALSE, demean = FALSE, lag.max = lag.max)
     }
     
     avgf <-  chain.acf[[1]]
     k = 100
+    l = -100
     avgf$acf <-  0
     for(j in 1:m) 
     {
       avgf$acf <- avgf$acf + chain.acf[[j]]$acf
       k = min(k,min(chain.acf[[j]]$acf))
+      l = max(l,max(chain.acf[[j]]$acf))
     }
-    avgf$acf <- avgf$acf/m
+    avgf$acf <- (avgf$acf)/m
     
     if(plot)
     {
-      par(mar = c(0, 4.1,0, 2.1))
-      plot(avgf, ci = 0, main = varnames[i], lwd = .2, ylim = c( min(- 1.96/sqrt(n),min(avgf$acf),k), max(avgf$acf)),xlab = if(i>axs) "Lag" else "" , ylab = paste("ACF",i),
-           lty = 1, xaxt = if(i>axs) 's' else 'n')
+      if(is.null(which)){par(mar = c(0, 4.1,0, 2.1))}
+      plot(avgf, ci = 0, lwd = .2, ylim = c( min(- 1.96/sqrt(n),min(avgf$acf),k), max(max(avgf$acf),l)), ylab = paste("ACF",i),
+           lty = 1, xaxt = if(i>axs) 's' else 'n',main = NA, xlab = NA)
       
       for(j in 1:m)
       {
         lines(0:lag.max, as.matrix(chain.acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
       }
       lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avgcol, alpha.f = .6), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
-      if(np%%2 != 0 && i == np-1 && np>4){mtext("Lag", side = 1, line = 2.3,cex = 0.8)}
+      if(is.null(which) && leg == 1){if(np%%2 != 0 && i == np-1 && np>4){mtext("Lag", side = 1, line = 2.3,cex = 0.8)}}
+      else if(!is.null(which)){mtext("Lag", side = 1, line = 2.3,cex = 0.8)}
     }
     
     if(plot){
       if(!is.null(main)){mtext(main, side = 3, line = space,outer = TRUE, cex = 1.3)}
-      if(np <= 4){mtext("Lag", side = 1, line = 2.3,at =0.52, outer = TRUE, cex= 1)}
-      else{mtext("Lag", side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 0.8)
-        if(np %% 2 == 0){mtext("Lag", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 0.8)}}
+      if(is.null(which))
+      {
+        if(np <= 4){mtext("Lag", side = 1, line = 2.3,at =0.52, outer = TRUE, cex= 1)}
+        else{mtext("Lag", side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 0.8)
+          if(np %% 2 == 0){mtext("Lag", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 0.8)}}
+      }
     }
-    
   }
-  on.exit( par (ask = FALSE,mfrow=c(1,1)))
+  par(mfrow=c(1,1))
+  par(mar = c(5.1, 4.1, 4.1, 2.1))
+  par(fig = c(0, 1, 0 , 1))
+  par(oma = c(0, 0, 0, 0))
   invisible(list("combined" = avgf, "individual" = chain.acf))    
 }
+
+
 
 
 
@@ -468,7 +475,7 @@ ACF <- function(x,
 #'                           "tomato3"))
 #'
 #'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.
-#'@param fast : a Boolean argument that will be auto set to TRUE when chain size is larger than 1e6
+#'@param fast : a Boolean argument that will be set to TRUE by default, to make plots faster.
 #'@param which : if we want full size trace plots of specific dimensions of chain, we can pass a vector of respective dimension/components. 
 #'@param xlim : range of x-axis
 #'@param ylim : range of y-axis
@@ -520,7 +527,7 @@ ACF <- function(x,
 #'
 #'
 #' @export
-traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,main = NULL,
+traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL,main = NULL,
                       xlab = "Iteration",ylab = NULL,alpha.f = 0.9, auto.layout = TRUE,
                       ask = dev.interactive(),
                       col = c("palevioletred3","steelblue3","tan3","lightsteelblue3",
@@ -538,7 +545,7 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
     x <- list(x)
   }else if(is.matrix(x))
   {x <- list(x)}else
-      {stop("x must be a matrix, list or an Smcmc object")}
+  {stop("x must be a matrix, list or an Smcmc object")}
   
   dimn <- dim(x[[1]])
   n <- dimn[1]
@@ -555,13 +562,13 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
     for(i in 1:p) { ylab[i] <- paste("Comp ",i) }
   }
   
-  if(dim(x[[1]])[1] > 100000 && is.na(fast)){ fast = TRUE }
-  if(!is.null(fast) && isTRUE(fast))
+  if(isTRUE(fast))
   {
     if(n < 1e3){index = 1:n}
     else
     {
-      index <- sample(1:n,1000,replace = FALSE)
+      index <- c(1,n)
+      index <- c(index, sample(2:n-1,998,replace = FALSE))
       index <- sort(index)
     }
   }else{index = 1:n}
@@ -581,8 +588,8 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
       mini <- apply(tempn,2, min)
     }
     else{mini = rep(ylim[1],p)
-         maxi = rep(ylim[2],p)}
-      vec[j] <- paste("Chain",j)
+    maxi = rep(ylim[2],p)}
+    vec[j] <- paste("Chain",j)
   }
   
   ## this if condition is for plotting traceplots of chains, 
@@ -592,7 +599,7 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
     if(p > 10 && is.null(which) )
     {
       which <- 1:p
-      message("Number of dimension of chain(s) is more than 10. Series of plot returned!")
+      message("Number of dimension of chain(s) is more than 10. Series of plot returned.")
       
     }
     lay <- par()
@@ -600,52 +607,52 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
     space = 0
     if(is.null(main)){par(oma = c(0,0,2,0))}
     else{par(oma = c(0,0,2.5,0))
-         space = 1}
+      space = 1.8}
     for(i in which)
     {
-       par(mar = c(4, 4, 2, 3))
-       j <- 1  
-       ylim <- c(mini[i],maxi[i])
-       plot(x = index, y = x[[1]][index,i], 
-            xlab = xlab, ylab = ylab[i],
-            type = "n", lwd = 1.3, lty = 1, ylim = ylim, xlim = xlim,
-            col = adjustcolor(col[1],alpha.f = alpha.f))
-       while(j <= m)
-       {
+      par(mar = c(4,4, 2,2))
+      j <- 1  
+      ylim <- c(mini[i],maxi[i])
+      plot(x = index, y = x[[1]][index,i], 
+           xlab = xlab, ylab = ylab[i],
+           type = "n", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
+           col = adjustcolor(col[1],alpha.f = alpha.f))
+      while(j <= m)
+      {
         lines( x= index, y=x[[j]][index,i], type = "l", 
-              col = adjustcolor(col[j],alpha.f = alpha.f),
-              ylim = ylim, xlim = xlim, lwd = 1.3, lty = 1, 
-              yaxt = 'n', xaxt = 'n')
-         j  <- j + 1
-        }
+               col = adjustcolor(col[j],alpha.f = alpha.f),
+               ylim = ylim, xlim = xlim, lwd = 1, lty = 1, 
+               yaxt = 'n', xaxt = 'n')
+        j  <- j + 1
+      }
       
-       ##Setting of legend
-       if(i%%leg == 0|i == which[length(which)])
-       {
-        if(!is.null(main)){mtext(main, side = 3, line = 1,outer = TRUE, cex = 1.5)} 
+      ##Setting of legend
+      if(i%%leg == 0|i == which[length(which)])
+      {
+        if(!is.null(main)){mtext(main, side = 3, line = 0.8,outer = TRUE, cex = 1.5)} 
         par(fig = c(0, 1, 0, 1), oma = c(0, 0, space, 0), mar = c(0, 0, 0, 0), new = TRUE)
         plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
         legend("top",legend = vec, col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-                horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
+               horiz = TRUE,cex = 1 , seg.len= 1, bty = 'n')
         if(is.null(main)){par(oma = c(0,0,2,0))}
         else{par(oma = c(0,0,2.5,0))
-             space = 1.1}
-        par(mar = c(4, 4, 2, 3))
+          space = 1.8}
+        par(mar = c(4, 4, 2, 2))
         par(mfrow = lay$mfrow)
-        }
       }
-       on.exit(par(ask = FALSE, mfrow = c(1,1)))
-       par(mar = c(5.1, 4.1, 4.1, 2.1))
-       par(fig = c(0, 1, 0, 1))
-       par(oma = c(0, 0, 0, 0))
-      
+    }
+    on.exit(par(ask = FALSE, mfrow = c(1,1)))
+    par(mar = c(5.1, 4.1, 4.1, 2.1))
+    par(fig = c(0, 1, 0, 1))
+    par(oma = c(0, 0, 0, 0))
+    
   }
   else
   { 
     space = 0
-    if(is.null(main)){par(oma = c(4,0,2.5,0))}
-    else{par(oma = c(4,0,4,0))
-         space = 1.3}
+    if(is.null(main)){par(oma = c(3.5,0,2.5,0))}
+    else{par(oma = c(3.5,0,4,0))
+      space = 1.3}
     axs = p-1
     if(p <= 4){axs = p-1}
     else {axs = p-2}
@@ -656,33 +663,33 @@ traceplot <- function(x, fast = NULL, which = NULL, xlim = NULL, ylim = NULL,mai
       par(mar = c(0, 4.1,0, 2.1))
       ylim <-  c(mini[i],maxi[i])
       plot(x= index, y = x[[1]][index,i], xlab = if(i>axs) xlab else "" , ylab =ylab[i],
-           type = "l", lwd = 1.3, lty = 1, ylim = ylim, xlim = xlim,
+           type = "l", lwd = 1, lty = 1, ylim = ylim, xlim = xlim,
            col = adjustcolor(col[1],alpha.f = alpha.f), xaxt = if(i>axs) 's' else 'n')
       while(j<=m)
       {
         lines(x= index, y=x[[j]][index,i], type = "l", 
               col = adjustcolor(col[j],alpha.f = alpha.f),
-              ylim = ylim, xlim = xlim, lwd = 1.3, lty = 1, 
+              ylim = ylim, xlim = xlim, lwd = 1, lty = 1, 
               yaxt = 'n', xaxt = 'n')
         j = j + 1
       }
-      if(p%%2 != 0 && i == p-1 && p>4){mtext("Iteration", side = 1, line = 2.3,cex = 1)}
+      if(p%%2 != 0 && i == p-1 && p>4){mtext("Iteration", side = 1, line = 2.3,cex = 0.7)}
     }
-    if(!is.null(main)){mtext(main, side = 3, line = 2,outer = TRUE, cex = 1.3)}
-    if(p<=4){mtext("Iteration", side = 1, line = 2.3,at =0.52, outer = TRUE, cex= 1)}
-    else{mtext("Iteration", side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 1)
-         if(p%%2 == 0){mtext("Iteration", side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 1)}}
+    if(!is.null(main)){mtext(main, side = 3, line = 2.3 ,outer = TRUE, cex = 1)}
+    if(p<=4){mtext("Iteration", side = 1, line = 2.3,at =0.52,cex = 0.7, outer = TRUE)}
+    else{mtext("Iteration", side = 1, line = 2.3,at = 0.3,cex = 0.7,outer = TRUE)
+      if(p%%2 == 0){mtext("Iteration", side = 1, line = 2.3,at = 0.8,cex = 0.7,outer = TRUE)}}
     ##Setting of legend
-      par(fig = c(0, 1, 0, 1), oma = c(0, 0, space, 0), mar = c(0, 0, 0, 0), new = TRUE)
-      plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
-      legend("top",legend = vec[1:m], col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
-             horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
-      
-      
+    par(fig = c(0, 1, 0, 1), oma = c(0, 0, space, 0), mar = c(0, 0, 0, 0), new = TRUE)
+    plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
+    legend("top",legend = vec[1:m], col = col[1:m],lty = 1,lwd =2, xpd = TRUE, 
+           horiz = TRUE,cex = 1.25, seg.len= 1, bty = 'n')
+    
+    
   }
-  if(isTRUE(fast) && n > 100000){message("Chain size is very large, fast changed to TRUE.")}
+  if(isFALSE(fast) && n > 10000){message("Chain size is very large and you choose to wait.")}
   on.exit(par(ask = FALSE, mfrow = c(1,1)))
   par(mar = c(5.1, 4.1, 4.1, 2.1))
-  par(fig = c(0, 1, 0, 1))
+  par(fig = c(0, 1, 0 , 1))
   par(oma = c(0, 0, 0, 0))
 }

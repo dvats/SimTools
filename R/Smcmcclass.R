@@ -87,13 +87,13 @@ Smcmc <- function(data,
 
 
 
-#' @title Plot Smcmc
+#' @title denity plot form Smcmc class
 #'
 #' @description Density plots with simultaenous error bars around means and quantiles
 #'  for MCMC data. The error bars account for the correlated nature of the process.
 #'
 #'
-#' @name plot.Smcmc
+#' @name densityplot
 #' @usage \method{plot}{Smcmc}(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
 #'                             plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', 
 #'                             quan.col = 'lightsteelblue3',rug = TRUE, opaq = 0.7, 
@@ -104,7 +104,7 @@ Smcmc <- function(data,
 #' @param thresh : numeric typically less than .005 for the accuracy of the simulteaneous procedure
 #' @param iid : logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}
 #' @param plot :  logical argument for is plots are to be returned 
-#' @param main : to add main heading
+#' @param main : To add main heading
 #' @param mean : logical argument whether the mean is to be plotted
 #' @param border : whether a border is required for the simultaneous confidence intervals
 #' @param mean.col : color for the mean confidence interval
@@ -112,7 +112,7 @@ Smcmc <- function(data,
 #' @param rug : logical indicating whether a rug plot is desired
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
 #' @param auto.layout : logical argument for an automatic layout of plots
-#' @param ask : activating interactive plots
+#' @param ask : activating inter active plots
 #' @param ... : arguments passed on to the \code{density} plot in base R
 #' @return returns a plot of the univariate density estimates with simultaneous
 #'			confidence intervals wherever asked. If \code{plot == FALSE} a list of
@@ -127,7 +127,7 @@ Smcmc <- function(data,
 #'   chain[i,] <- .3*chain[i-1,] + err[i]
 #' }
 #' chain <- Smcmc(list(chain))
-#' plot(chain)
+#' densityplot(chain)
 #'
 #' @references
 #' Robertson, N., Flegal, J. M., Vats, D., and Jones, G. L., 
@@ -135,7 +135,7 @@ Smcmc <- function(data,
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
-"plot.Smcmc" <- function(x, 
+"densityplot" <- function(x, 
                          Q        = c(0.1, 0.9), 
                          alpha    = 0.05, 
                          thresh   = 0.001, 
@@ -146,7 +146,7 @@ Smcmc <- function(data,
                          border   = NA, 
                          mean.col = 'plum4', 
                          quan.col = 'lightsteelblue3',
-                         rug      = TRUE, 
+                         rug      = FALSE, 
                          opaq     = 0.7, 
                          auto.layout = TRUE, 
                          ask      = dev.interactive(), ...)

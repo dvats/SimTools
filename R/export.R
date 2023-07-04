@@ -667,7 +667,7 @@ traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, ma
       space = 1}
     else if(!legend && !is.null(main)){par(oma = c(3.5,0,2.5,0))
       l = 1}
-    else{par(oma = c(3.5,0,0,0))}
+    else{par(oma = c(3.5,0,0.5,0))}
     axs = p-1
     if(p <= 4){axs = p-1}
     else {axs = p-2}

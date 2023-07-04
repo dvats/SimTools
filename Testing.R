@@ -86,7 +86,7 @@ densityplot(out.one, mean = FALSE)  # no mean
 
 ### Summary plot
 plot(out.one)
-
+summary(out.one)
 ###********************************************************************############
 ###********************************************************************###########
 
@@ -127,6 +127,7 @@ dim(out.five$stacked)
 densityplot(out.five, main = "Density Plots of All variate")
 
 plot(out.five)
+summary(out.five)
 # plotting individual chain densities versus combined
 # using the getCI and the addCI functions
 # we can add appropriate simulateneous intervals
@@ -214,6 +215,7 @@ densityplot(out12.five,main = "Density Plot")
 traceplot(out12.five,main = "Trace Plot")
 acfplot(out12.five,main = "ACF Plot")
 plot(out12.five)
+summary(out12.five)
 
 ##Testing of Discrete State Space c0mpatibility
 c1 <- sample(1:100, 10000 ,replace = T)
@@ -233,7 +235,7 @@ c8 <- as.matrix(sample(1:1000, 100000 ,replace = T))
 out <- as.Smcmc(cbind(c1,c2,c3,c4),cbind(c5,c6,c7,c8))
 densityplot(out)
 plot(out)
-
+summary(out)
 ## Mixed chain(2 dimesions Continuous and 1 Dimensions Discrete)
 
 chain1 = MakeChain(p=2, nsim=10000)
@@ -243,3 +245,4 @@ chain4 = MakeChain(p=2, nsim=10000)
 out <- as.Smcmc(list(cbind(chain1,c1),cbind(chain2,c2),cbind(chain3,c3),cbind(chain4,c4)))
 densityplot(out)
 plot(out)
+summary(out)

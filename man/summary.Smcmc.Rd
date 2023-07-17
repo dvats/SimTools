@@ -7,6 +7,8 @@
 summary.Smcmc(x)
 }
 \arguments{
+\item{quantiles}{: quantile of markov chains user want to see}
+
 \item{x}{: a `Smcmc' class object}
 }
 \value{

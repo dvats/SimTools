@@ -2,13 +2,14 @@
 % Please edit documentation in R/Smcmcclass.R
 \name{summary.Smcmc}
 \alias{summary.Smcmc}
+\alias{print.summary.Smcmc}
 \title{Summary function for Smcmc objects}
 \usage{
-summary.Smcmc(x)
+\method{summary}{Smcmc}(x)
+
+\method{print}{summary.Smcmc}(x, ...)
 }
 \arguments{
-\item{quantiles}{: quantile of markov chains user want to see}
-
 \item{x}{: a `Smcmc' class object}
 }
 \value{

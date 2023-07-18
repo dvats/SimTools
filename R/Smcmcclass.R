@@ -176,7 +176,7 @@ Smcmc <- function(data,
              mean.color = adjustcolor(mean.col, alpha.f = opaq), 
              quan.color = adjustcolor(quan.col, alpha.f = opaq), 
              mean = mean, auto.layout = auto.layout, rug = rug,
-             ask = ask,main = main,which= which, ...)
+             ask = ask, main = main, which= which, ...)
   }
   invisible(out)
 }
@@ -251,13 +251,10 @@ Smcmc <- function(data,
 
 
 #' @title Summary function for Smcmc objects
-#'
-#' @description To show different statistics of the Smcmc object
-#'
 #' @name summary.Smcmc
-#' @usage summary.Smcmc(x)    
+#' @description To show different statistics of the Smcmc object
+#' @usage \method{summary}{Smcmc}(x)    
 #' @param x : a `Smcmc' class object
-#' @param quantiles : quantile of markov chains user want to see
 #' @return return statistics of the all the dimensions(& chains) in Smcmc object
 #' @examples
 #' # Producing Markov chain
@@ -273,85 +270,98 @@ Smcmc <- function(data,
 #'
 #'@export
 
-"summary.Smcmc" <- function (object,  quantiles = c(0.025, 0.25, 0.5, 0.75, 0.975),...)
+"summary.Smcmc" <- function (object ,...)
 {
   object <- as.Smcmc(object)
   object.class <- class(object)
-  Batch_Size = object$b.size
+  Batch_Size <- object$b.size
   Smcmc_output <- object$chains[[1]]
-  stacked = object$stacked
+  stacked <- object$stacked
   
   chains <- object$chains
-  n = dim(chains[[1]])[1]
-  p = dim(chains[[1]])[2]
-  columns = ncol(Smcmc_output)
-  m = length(chains)
+  n <- dim(chains[[1]])[1]
+  p <- dim(chains[[1]])[2]
+  columns <- ncol(Smcmc_output)
+  m <- length(chains)
   dimen <- vector(length = columns)
-  if(!is.null(object$varnames)){dimen = object$varnames }
-  else{for(i in 1:columns){dimen[i] = paste("Component",i)}}
+  if(!is.null(object$varnames)){dimen <- object$varnames }else{for(i in 1:columns){dimen[i] <- paste("Component",i)}}
   colname <- c("Mean","SD","MCSE","ESS","Gelman-Rubin")
   
   statistics <- matrix(0,ncol = 5, nrow = p)
-  statistics[ ,1] = apply(stacked,2,mean)
-  statistics[ ,2] = apply(stacked,2,sd)
-  statistics[ ,3] = (round(mcmcse::mcse.mat(stacked), 3))[ ,2]
-  mp_ess = mcmcse::multiESS(stacked)
-  foo = p*log(mp_ess/n)
-  ms = cov(chains[[1]])
+  statistics[ ,1] <- apply(stacked,2,mean)
+  statistics[ ,2] <- apply(stacked,2,sd)
+  statistics[ ,3] <- (round(mcmcse::mcse.mat(stacked,size = Batch_Size), 4))[ ,2]
+  mp_ess <- mcmcse::multiESS(stacked, size = Batch_Size)
+  foo <- p*log(mp_ess/n)
+  ms <- cov(chains[[1]])
   if(m>1)
   {
     for(i in 2:m)
     {
-      ms = ms + cov(chains[[i]])
+      ms <- ms + cov(chains[[i]])
     }
   }
-  ms = ms/m
-  correction = sum(log(eigen(ms, symmetric = TRUE, 
-                             only.values = TRUE)$values)) - sum(log(eigen(cov(stacked), symmetric = TRUE, 
-                                                                          only.values = TRUE)$values))
-  foo = (foo + correction)/p
-  n_ess = n*exp(foo)
-  multiess = floor(n_ess)
-  multigelmann = round(sqrt((n-1)/n + m/n_ess),5)
+  ms <- ms/m
+  correction <- sum(log(eigen(ms, symmetric = TRUE, 
+                              only.values = TRUE)$values)) - sum(log(eigen(cov(stacked), symmetric = TRUE, 
+                                                                           only.values = TRUE)$values))
+  foo <- (foo + correction)/p
+  n_ess <- n*exp(foo)
+  multiess <- floor(n_ess)
+  multigelmann <- round(sqrt((n-1)/n + m/n_ess),5)
   
-  s = vector(length = p)
+  s <- vector(length = p)
   for(i in 1:p)
   {
-    ms = var(chains[[1]][,i])
+    ms <- var(chains[[1]][,i])
     if(m>1)
     {
       for(j in 2:m)
       {
-        ms = ms + var(chains[[j]][,i])
+        ms <- ms + var(chains[[j]][,i])
       }
-      s[i] = ms
     }
+    s[i] <- ms
   }
-  s = s/m
-  lambda <- apply(stacked, 2, var)
-  statistics[ ,4] = (mcmcse::ess(stacked)*s)/lambda
-  statistics[ ,5] = round(sqrt((n-1)/n + m/statistics[,4]),5)
-  ##statistics = as.data.frame(statistics)
-  colnames(statistics) = colname
-  rownames(statistics) = dimen
-  varquant =  varquant <- as.matrix(round( rbind(t((apply(stacked, 2, quantile, quantiles)))),3))
-  rownames(varquant) = dimen
-  summary_list <- list(Class = object.class,
-                       Batch_Size = Batch_Size,
-                       MultiESS = floor(multiess),
-                       MultiGelmann = multigelmann,
-                       Statistics = as.data.frame(statistics),
-                       Quantiles = as.data.frame(varquant))
+  
+  s <- s/m
+  statistics[ ,4] <- s/(statistics[,3]^2)
+  statistics[ ,5] <- round(sqrt(1 + m/statistics[,4]),5)
+  statistics[,4] <- floor(statistics[,4])
+  statistics <- as.data.frame(statistics)
+  stacked_rows <- dim(stacked)[1]
+  colnames(statistics) <- colname
+  rownames(statistics) <- dimen
+  statistics <- drop(statistics)
+  summary_list <- list(nsim = n,
+                       Dimensions = p,
+                       no.chains = m,
+                       stacked_rows = stacked_rows,
+                       Statistics = statistics,
+                       MultiESS = multiess,
+                       MultiGelmann = multigelmann)
   class(summary_list) <- "summary.Smcmc"
   return(summary_list)
 }
 
 
+#'@rdname summary.Smcmc
+#'@export
 
-
-
-
-
+"print.summary.Smcmc" <-function (x, ...) 
+{
+  cat("\n", "No. of Iterations = ",x$nsim," samples\n", sep = "")
+  cat("No. of Dimensions = ",x$Dimensions,"\n", sep = "")
+  cat("No. of chains = ",x$no.chains,"\n", sep = "")
+  cat("Number of Iterations Considered=",x$stacked_rows, "\n" )
+  cat("\n1. Statistics for each variable,\n")
+  print(x$Statistics, ...)
+  cat("\n")
+  cat("MultiESS value =", x$MultiESS, "\n")
+  cat("Multi Gelman-Rubin =", x$MultiGelmann)
+  cat("\n")
+  invisible(x)
+}
 
 
 

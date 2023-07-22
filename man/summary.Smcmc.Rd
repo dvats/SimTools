@@ -10,6 +10,12 @@
 \method{print}{summary.Smcmc}(x, ...)
 }
 \arguments{
+\item{eps}{: desired volume of the confidence region}
+
+\item{alpha}{: Type one error/threshold percentage error}
+
+\item{Q}{: desired quantiles (vector of 2)}
+
 \item{x}{: a `Smcmc' class object}
 }
 \value{

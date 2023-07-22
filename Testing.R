@@ -78,7 +78,7 @@ traceplot(out.one, main = "Traceplots", legend = F)
 # densityplot function
 densityplot(out.one)
 
- # rug plots can also be seen
+# rug plots can also be seen
 densityplot(out.one, rug = TRUE)
 
 # flexibility in this function
@@ -104,6 +104,7 @@ out.four <- Smcmc(list(chain1, chain2, chain3,chain4))
 str(out.four)
 acfplot(out.four)
 traceplot(out.four, fast = F)
+traceplot(out.four, main = "Hui Hui Hui")
 densityplot(out.four)
 plot(out.four)
 
@@ -154,9 +155,10 @@ chain1 <- MakeChain(p = 7,n=1e3)
 chain2 <- MakeChain(p=7,n=1e3)
 chain3 <- MakeChain(p =7,n=1e3)
 chain4 <- MakeChain(p = 7,n=1e3)
-out.sev <- Smcmc(list(chain1, chain2, chain3,chain4))
+out.sev <- Smcmc(list(chain1, chain2, chain3,chain4),varnames = c("GJ", "DV","JF","KG","GJ","SP","Unkonwn"))
 acfplot(out.sev,main = "ACF Plot")
-
+traceplot(out.sev)
+densityplot(out.sev)
 
 ### Testing of large chains
 chain7 <- MakeChain(p =10,nsim=1e5)
@@ -186,11 +188,11 @@ summary(out12.five)
 
 
 
-chain11 <- MakeChain(p =15,n=1e5)
-chain12 <- MakeChain(p =15,n=1e5)
-chain13 <- MakeChain(p =15,n=1e5)
-chain14 <- MakeChain(p=15,n=1e5)
-chain15 <- MakeChain(p =15,n=1e5)
+chain11 <- MakeChain(p =15,n=7*1e4)
+chain12 <- MakeChain(p =15,n=7*1e4)
+chain13 <- MakeChain(p =15,n=7*1e4)
+chain14 <- MakeChain(p=15,n=7*1e4)
+chain15 <- MakeChain(p =15,n=7*1e4)
 out15.five <- Smcmc(list(chain12, chain13, chain14,chain15,chain11))
 densityplot(out15.five,main = "Density Plot")
 traceplot(out15.five,main = "Trace Plot")
@@ -210,7 +212,7 @@ traceplot(out14.five,main = "Trace Plot")
 acfplot(out14.five,main = "ACF Plot")
 summary(out14.five)
 
-##Testing of Discrete State Space c0mpatibility
+##Testing of Discrete State Space compatibility
 c1 <- sample(1:100, 10000 ,replace = T)
 c2 <- sample(1:100, 10000 ,replace = T)
 out <- as.Smcmc(list(cbind(c1,c2)))
@@ -223,14 +225,15 @@ c3 <- as.matrix(rpois(10000,lambda=10))
 c4 <- as.matrix(rpois(10000,lambda=10))
 c5 <- as.matrix(rbinom(50,n= 100000, p = 0.7))
 c6 <- as.matrix(rbinom(50,n= 100000,p=0.8))
-c7 <- as.matrix(sample(1:1000, 100000 ,replace = T))
-c8 <- as.matrix(sample(1:1000, 100000 ,replace = T))
+c7 <- as.matrix(rpois(10000,lambda=10))
+c8 <- as.matrix(rpois(10000,lambda=10))
 out <- as.Smcmc(cbind(c1,c2,c3,c4),cbind(c5,c6,c7,c8))
 densityplot(out)
 plot(out)
 summary(out)
-## Mixed chain(2 dimesions Continuous and 1 Dimensions Discrete)
 
+
+## Mixed chain(2 dimensions Continuous and 1 Dimensions Discrete)
 chain1 = MakeChain(p=2, nsim=10000)
 chain2 = MakeChain(p=2, nsim=10000)
 chain3 = MakeChain(p=2, nsim=10000)

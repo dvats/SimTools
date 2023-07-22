@@ -353,6 +353,7 @@ boxCI <- function(x,
 
 
 
+
 acfplot <- function(x,
                     which       = NULL,
                     type        = c("correlation", "covariance", "partial"),
@@ -366,7 +367,8 @@ acfplot <- function(x,
                     auto.layout = TRUE,
                     ask         = dev.interactive(),...)
 {
-  if(TRUE %in% (class(x) == "Smcmc")){x <- x$chains}else if(is.list(x))
+  varname = NULL
+  if(TRUE %in% (class(x) == "Smcmc")){varname = x$varnames;x <- x$chains}else if(is.list(x))
   {
     for(i in 1:length(x)) { x[[i]] = as.matrix(x[[i]]) }
   }else if(is.vector(x))
@@ -381,10 +383,13 @@ acfplot <- function(x,
   n <- dimn[1]
   p <- dimn[2]
   m <- length(x)
-  flag = 1
-  varname <- vector(length = p)
-  for(i in 1:m){if(!is.null(colnames(x[[i]]))){varname = colnames(x[[i]]); flag = 0;break }}
-  if(flag){for(i in 1:p){varname[i] = paste("ACF",i)}}
+  if(is.null(varname))
+  {
+    flag = 1
+    varname <- vector(length = p)
+    for(i in 1:m){if(!is.null(colnames(x[[i]]))){varname = colnames(x[[i]]); flag = 0;break }}
+    if(flag){for(i in 1:p){varname[i] = paste("ACF",i)}}
+  }
   if(m>10){stop("Maximum 10 chains are allowed")}
   if (is.null(lag.max)) lag.max <- floor(10 * (log10(n)) )
   lag.max <- as.integer(min(lag.max, n - 1L))
@@ -542,7 +547,8 @@ traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL,mai
                       col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
 {
   ## Check for the Data Type
-  if(TRUE %in% (class(x) == "Smcmc")){x <- x$chains}else if(is.list(x))
+  varnames = NULL
+  if(TRUE %in% (class(x) == "Smcmc")){ varnames = x$varnames;x <- x$chains}else if(is.list(x))
   {
     for(i in 1:length(x)) { x[[i]] = as.matrix(x[[i]]) }
   }else if(is.vector(x))
@@ -552,7 +558,6 @@ traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL,mai
   }else if(is.matrix(x))
   {x <- list(x)}else
   {stop("x must be a matrix, list or an Smcmc object")}
-  ##
   
   ## extracting the information about size & number of chains
   dimn <- dim(x[[1]])
@@ -562,15 +567,20 @@ traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL,mai
   if(m>5){stop("Maximum 5 chains are allowed")}
   
   ## Fixing y lables
-  if(is.null(ylab) | !is.vector(ylab) | length(ylab)!=p)
+  if(is.null(ylab) || !is.vector(ylab) || length(ylab)!=p)
   {
     if(!is.null(ylab) && (!is.vector(ylab) | length(ylab) != p ))
     {message("ylab should be NULL, or vector of length no. of dimension. Default value of ylab applied.")}
-    ylab <- vector(length = p)
-    flag = 1
-    for(i in 1:m)
-    { if(!is.null(colnames(x[[i]]))){ylab <- colnames(x[[i]]);flag = 0;break}}
-    if(flag){for(i in 1:p) { ylab[i] <- paste("Comp ",i) }}
+    if(!is.null(varnames)){ylab = varnames}
+    
+    else
+    {
+      ylab <- vector(length = p)
+      flag = 1
+      for(i in 1:m)
+      {if(!is.null(colnames(x[[i]]))){ylab <- colnames(x[[i]]);flag = 0;break}}
+      if(flag){for(i in 1:p) { ylab[i] <- paste("Comp ",i) }}
+    }
   }
   
   ## fixing xlim , indexes based on xlim values

@@ -255,6 +255,9 @@ Smcmc <- function(data,
 #' @description To show different statistics of the Smcmc object
 #' @usage \method{summary}{Smcmc}(x)    
 #' @param x : a `Smcmc' class object
+#' @param eps : desired volume of the confidence region
+#' @param alpha : Type one error/threshold percentage error
+#' @param Q : desired quantiles (vector of 2)
 #' @return return statistics of the all the dimensions(& chains) in Smcmc object
 #' @examples
 #' # Producing Markov chain
@@ -270,27 +273,36 @@ Smcmc <- function(data,
 #'
 #'@export
 
-"summary.Smcmc" <- function (object ,...)
+"summary.Smcmc" <- function (object, eps = 0.10, alpha = 0.05, Q = c(0.10, 0.90), ...)
 {
   object <- as.Smcmc(object)
   object.class <- class(object)
   Batch_Size <- object$b.size
   Smcmc_output <- object$chains[[1]]
-  stacked <- object$stacked
+  stacked <- as.matrix(object$stacked)
   
   chains <- object$chains
   n <- dim(chains[[1]])[1]
   p <- dim(chains[[1]])[2]
-  columns <- ncol(Smcmc_output)
   m <- length(chains)
-  dimen <- vector(length = columns)
-  if(!is.null(object$varnames)){dimen <- object$varnames }else{for(i in 1:columns){dimen[i] <- paste("Component",i)}}
-  colname <- c("Mean","SD","MCSE","ESS","Gelman-Rubin")
-  
-  statistics <- matrix(0,ncol = 5, nrow = p)
-  statistics[ ,1] <- apply(stacked,2,mean)
-  statistics[ ,2] <- apply(stacked,2,sd)
-  statistics[ ,3] <- (round(mcmcse::mcse.mat(stacked,size = Batch_Size), 4))[ ,2]
+  dimen <- vector(length = p)
+  if(!is.null(object$varnames)){dimen <- object$varnames }else{for(i in 1:p){dimen[i] <- paste("Component",i)}}
+  colname <- c("Mean","MCSE","SD",paste("Q-",Q[1],sep=""),paste("Q-",Q[2],sep=""), "ESS","G-R"," ")
+  c_batch = dim(stacked)[1]/m
+  std = 0
+  for(i in 1:m)
+  {
+    a = 1+(i-1)*c_batch
+    b = i*c_batch
+    std = std + apply(as.matrix(stacked[a:b, ]),2,var)
+  }
+  std = std/m
+  mini_ess = floor(4*pi*qchisq(1-alpha, df = 1)/((gamma(0.5))^2*eps*eps))
+  mini_multi_ess = floor(2^(2/p)*pi*qchisq(1-alpha, df = p)/((p*gamma(0.5*p))^(2/p)*eps*eps))
+  statistics <-  matrix(0,ncol = 7, nrow = p)
+  statistics[ ,1] <- round(apply(stacked,2,mean),4)
+  statistics[ ,3] <- round(sqrt(std),4)
+  statistics[ ,2] <- (round(mcmcse::mcse.mat(stacked,size = Batch_Size), 5))[ ,2]
   mp_ess <- mcmcse::multiESS(stacked, size = Batch_Size)
   foo <- p*log(mp_ess/n)
   ms <- cov(chains[[1]])
@@ -323,12 +335,17 @@ Smcmc <- function(data,
     }
     s[i] <- ms
   }
+  varquant <- round(rbind(t(apply(stacked, 2, quantile, Q))), 3)
   
   s <- s/m
-  statistics[ ,4] <- s/(statistics[,3]^2)
-  statistics[ ,5] <- round(sqrt(1 + m/statistics[,4]),5)
-  statistics[,4] <- floor(statistics[,4])
+  statistics[ ,4] <- varquant[ ,1]
+  statistics[ ,5] <- varquant[ ,2]
+  statistics[ ,6] <- s/(statistics[ ,2]^2)
+  statistics[ ,7] <- round(sqrt(1 + m/statistics[ ,6]),5)
+  statistics[ ,6] <- floor(statistics[ ,6])
   statistics <- as.data.frame(statistics)
+  Signif.= ifelse( test = statistics[,6] >= mini_ess, yes = '*', no = '')
+  statistics = cbind(statistics, Signif.)
   stacked_rows <- dim(stacked)[1]
   colnames(statistics) <- colname
   rownames(statistics) <- dimen
@@ -336,13 +353,20 @@ Smcmc <- function(data,
   summary_list <- list(nsim = n,
                        Dimensions = p,
                        no.chains = m,
+                       Batch_Size = Batch_Size,
                        stacked_rows = stacked_rows,
+                       nbatch = stacked_rows/Batch_Size,
+                       nbatch_per_chain = stacked_rows/(Batch_Size*m),
                        Statistics = statistics,
                        MultiESS = multiess,
-                       MultiGelmann = multigelmann)
+                       MultiGelmann = multigelmann,
+                       mini_ESS = mini_ess,
+                       mini_multi_ESS = mini_multi_ess)
   class(summary_list) <- "summary.Smcmc"
   return(summary_list)
 }
+
+
 
 
 #'@rdname summary.Smcmc
@@ -350,18 +374,32 @@ Smcmc <- function(data,
 
 "print.summary.Smcmc" <-function (x, ...) 
 {
-  cat("\n", "No. of Iterations = ",x$nsim," samples\n", sep = "")
-  cat("No. of Dimensions = ",x$Dimensions,"\n", sep = "")
-  cat("No. of chains = ",x$no.chains,"\n", sep = "")
-  cat("Number of Iterations Considered=",x$stacked_rows, "\n" )
-  cat("\n1. Statistics for each variable,\n")
+  cat("\n", "No. of Iterations = ",x$nsim,"\n", sep = "")
+  cat("No. of Components = ",x$Dimensions,"\n", sep = "")
+  cat("No. of Chains = ",x$no.chains,"\n", sep = "")
+  cat("Number of Iterations Considered =",x$stacked_rows, "\n" )
+  cat("\nNote : ESS calculations are based on estimation of means.","\n",sep = "")
+  cat("       There is a one-to-one relationship between ESS and Gelman-Rubin.","\n",sep = "")
+  cat("       Reporting either is equivalent to the other, we recommend ESS.", "\n", sep = "")
+  cat("\nSummary for Each Variable :\n")
   print(x$Statistics, ...)
   cat("\n")
-  cat("MultiESS value =", x$MultiESS, "\n")
-  cat("Multi Gelman-Rubin =", x$MultiGelmann)
+  cat("Multivariate ESS =", x$MultiESS)
+  a = x$mini_multi_ESS
+  b = x$MultiESS
+  if(b >= a){cat(" ***\n")}else{cat("\n")}
+  cat("Multivariate Gelman-Rubin =", x$MultiGelmann)
+  cat("\nNote : * indicates desired quality for this component has been achieved\n")
+  cat("       *** indicates desired multivariate quality has been achieved.\n")
+  cat("\n")
+  cat("For Given alpha & epsilon :","\n",sep="")
+  cat("Minimum ESS for Each Component =",x$mini_ESS)
+  cat("\nMinimum Mutltivariate ESS =",x$mini_multi_ESS)
   cat("\n")
   invisible(x)
 }
+
+
 
 
 

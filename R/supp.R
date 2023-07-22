@@ -35,17 +35,17 @@ plot.CIs <- function(x,
                      mean.color = 'plum4' , 
                      quan.color = 'lightsteelblue3', 
                      rug,
-                     main,
                      mean = TRUE, 
                      auto.layout, 
                      ask,
-                     which, ...)
+                     main,
+                     which,...)
 {
   if(class(x) == "Smcmc")
   {
     if(is.null(x$varnames)) 
     {
-      varnames <- as.character(1:dim(x$stacked)[2])
+      varnames <- paste("Desity of",as.character(1:dim(x$stacked)[2]))
     }else{
       varnames <- x$varnames
     }

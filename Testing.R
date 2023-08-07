@@ -22,7 +22,7 @@ MakeChain <- function(p, phi = diag(rep(.99, p)), nsim = 1e5,  omega = diag(rep(
   # sig <- diag(rep(rho, p))
   chain <- matrix(0, nrow = nsim, ncol = p)	
   decomp <- svd(omega)
-  omega.root <- decomp$v %*% diag((decomp$d)^(1/2), nrow = p, ncol = p) %*% t(decomp$u)
+  omega.root <- as.matrix(decomp$v) %*% as.matrix(diag((decomp$d)^(1/2), nrow = p, ncol = p)) %*% as.matrix(t(decomp$u))
   if(is.null(last)){
     chain[1, ] <- rnorm(p)
   } else {
@@ -31,7 +31,7 @@ MakeChain <- function(p, phi = diag(rep(.99, p)), nsim = 1e5,  omega = diag(rep(
   # sigma.root%*%rnorm(p)
   for(i in 2:nsim)
   {
-    chain[i, ] <- phi%*%chain[i-1, ] + omega.root %*% rnorm(p)
+    chain[i, ] <- as.matrix(phi) %*% as.matrix(chain[i-1, ]) + omega.root %*% as.matrix(rnorm(p))
   }
   return(chain)
 }
@@ -181,6 +181,7 @@ chain14 <- MakeChain(p=12,n=1e5)
 chain15 <- MakeChain(p =12,n=1e5)
 out12.five <- Smcmc(list(chain12, chain13, chain14,chain15,chain11))
 densityplot(out12.five,main = "Density Plot")
+densityplot(out12.five,main = "Density Plot", fast = F)
 traceplot(out12.five,main = "Trace Plot")
 acfplot(out12.five,main = "ACF Plot")
 plot(out12.five)

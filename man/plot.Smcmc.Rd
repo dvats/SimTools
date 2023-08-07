@@ -8,6 +8,8 @@ plot.Smcmc(x)
 }
 \arguments{
 \item{x}{: a `Smcmc' class object}
+
+\item{which}{: If you are intresetd in few components only}
 }
 \value{
 return plot(s) of the all the dimensions of Smcmc object

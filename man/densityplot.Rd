@@ -42,6 +42,8 @@ densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
 
 \item{ask}{: activating inter active plots}
 
+\item{fast}{: Argument passed to getCI}
+
 \item{...}{: arguments passed on to the \code{density} plot in base R}
 }
 \value{

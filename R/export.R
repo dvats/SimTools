@@ -37,7 +37,7 @@ addCI <- function(x,
                   mean        = TRUE,
                   mean.color  = 'plum4', 
                   quan.color  = 'lightsteelblue3',
-                  opaq        = 0.7, ...)
+                  opaq        = 0.7,...)
 {
   if(class(x) == "Smcmc")  obj <- ts(x$stacked[, component])
   if(class(x) == "Siid")  obj <- ts(x$data[, component])
@@ -83,9 +83,11 @@ addCI <- function(x,
 #' @param thresh : threshold for the optimization methodology that calculates the simultaneous CIs
 #' @param iid : logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}
 #' @param mean : logical  indicating whether mean is to be plotted
+#' @param fast : By defaults TRUE (To calculate CI efficiently), if set to FALSE, then use traditional method for CI calculations
 #' @return adds segments for confidence intervals into an already existing plot environment
 #'
 #' @examples
+#' library(mvtnorm)
 #' chain <- matrix(0, ncol = 1, nrow = 1e3)
 #' chain[1,] <- 0
 #' err <- rnorm(1e3)
@@ -104,12 +106,14 @@ addCI <- function(x,
 #' Journal of Computational and Graphical Statistics,  2020. 
 #'
 #' @export
+
 getCI <- function(x,
                   Q      = c(0.1, 0.9), 
                   alpha  = 0.05, 
                   thresh = 0.001,
                   iid    = FALSE, 
-                  mean   = TRUE) 
+                  mean   = TRUE,
+                  fast   = TRUE) 
 {
   
   if(class(x) == "Smcmc")
@@ -143,7 +147,7 @@ getCI <- function(x,
   xi.q <- apply(x, 2, quantile, Q)
   xi.q <- as.matrix(xi.q)
   if(mq==1) xi.q <- t(xi.q)
-  #phi is the vector of all quantiles
+  # phi is the vector of all quantiles
   phi <- rep(0, p2)
   for(i in 1:mq)
   {
@@ -161,7 +165,7 @@ getCI <- function(x,
   
   I.flat <- rep(1, p1)
   
-  #since p2 was m*dim(h(x))
+  # since p2 was m*dim(h(x))
   lower.ci.mat <- matrix(0, nrow = mq, ncol = p2/mq)
   upper.ci.mat <- matrix(0, nrow = mq, ncol = p2/mq) 
   indis <- matrix(0,nrow = n,ncol = p2)
@@ -182,39 +186,54 @@ getCI <- function(x,
   if(mean == FALSE) lambda <- 1/fs else (lambda <- 1/c(I.flat, fs))
   
   ci.sigma.mat <- (t(t(sigma.mat)*lambda))*lambda
+  
   p <- p1 + p2
   if(mean == FALSE) p = p2
   
-  z1 <- qnorm(1 - alpha/2)
-  z2 <- qnorm(1 - alpha/(2*p))
-  foo1 <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-  foo2 <- CIz(z2, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-  if(mean == FALSE) v <- phi else v <- c(theta.hat, phi)
-  
-  count <- 0
-  prob1 <- pmvnorm(lower = foo1$lower.ci, upper = foo1$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
-  prob2 <- pmvnorm(lower = foo2$lower.ci, upper = foo2$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
-  
-  while(prob2 - prob1 > thresh)
+  if(fast == FALSE)
   {
-    count <- count + 1
-    z.star <- (z1 + z2)/2
-    foo.star <- CIz(z.star, p1, p2, theta.hat, phi, ci.sigma.mat, n, mean)
-    prob.star <- pmvnorm(lower = foo.star$lower.ci, upper = foo.star$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
-    if(prob.star > 1- alpha) 
+    z1 <- qnorm(1 - alpha/2)
+    z2 <- qnorm(1 - alpha/(2*p))
+    foo1 <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+    foo2 <- CIz(z2, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+    if(mean == FALSE) v <- phi else v <- c(theta.hat, phi)
+    
+    count <- 0
+    prob1 <- pmvnorm(lower = foo1$lower.ci, upper = foo1$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
+    prob2 <- pmvnorm(lower = foo2$lower.ci, upper = foo2$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
+    
+    while(prob2 - prob1 > thresh)
     {
-      z2 <- z.star
-      prob2 <- prob.star
-    }else
-    {
-      z1 <- z.star
-      prob1 <- prob.star
+      count <- count + 1
+      z.star <- (z1 + z2)/2
+      foo.star <- CIz(z.star, p1, p2, theta.hat, phi, ci.sigma.mat, n, mean)
+      prob.star <- pmvnorm(lower = foo.star$lower.ci, upper = foo.star$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
+      if(prob.star > 1- alpha) 
+      {
+        z2 <- z.star
+        prob2 <- prob.star
+      }else
+      {
+        z1 <- z.star
+        prob1 <- prob.star
+      }
+      if(abs(prob1 - (1 - alpha)) < thresh)
+      {
+        temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+        break
+      }
     }
-    if(abs(prob1 - (1 - alpha)) < thresh)
-    {
-      temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-      break
-    }
+  }
+  
+  else
+  {
+    sigma.n <- (t(t(sigma.mat)*lambda))*lambda
+    diag.sds <- sqrt(diag(sigma.n))
+    rho.matrix <- t(t(sigma.n)/diag.sds)/diag.sds
+    N = min(50000,n)
+    Zt.mat <- rmvnorm(N, sigma=rho.matrix) 
+    sup.Zt <- apply(abs(Zt.mat), 1, max)
+    z1 <- quantile(sup.Zt, probs = 1-alpha)
   }
   temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
   
@@ -240,7 +259,6 @@ getCI <- function(x,
     
     foo3 <- list("lower.ci.mean" = lower.mean, "upper.ci.mean" = upper.mean, "lower.ci.mat" = lower.ci.mat, "upper.ci.mat" = upper.ci.mat, "mean.est" = theta.hat, "xi.q" = xi.q)
   } else foo3 <- list("lower.ci.mat" = lower.ci.mat, "upper.ci.mat" = upper.ci.mat, "mean.est" = theta.hat, "xi.q" = xi.q)
-  
   return(foo3)
   
 }

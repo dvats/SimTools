@@ -39,7 +39,7 @@ plot.CIs <- function(x,
                      auto.layout, 
                      ask,
                      main,
-                     which,...)
+                     which)
 {
   if(class(x) == "Smcmc")
   {
@@ -89,7 +89,7 @@ plot.CIs <- function(x,
     else
     {
       beta = ts(beta)
-      plot(density(beta,...),main = if(is.null(which)){NA} else{main}, xlab = NA, ylab = varnames[i],lwd =1.5)
+      plot(density(beta, ...),main = if(is.null(which)){NA} else{main}, xlab = NA, ylab = varnames[i],lwd =1.5)
       if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
       addCI(x, CIs, component = i, bord = bord, 
             mean.color = mean.color, quan.color = quan.color, 
@@ -160,6 +160,7 @@ chain_stacker <- function(x) {
 ## Layout for all 3 plotting function
 setLayout_trace <- function(p, ask = FALSE)
 {
+  
   if(p <= 4)
   {
     mfrow <- c(p,1)

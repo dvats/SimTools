@@ -126,6 +126,7 @@ Smcmc <- function(data,
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
 #' @param auto.layout : logical argument for an automatic layout of plots
 #' @param ask : activating inter active plots
+#' @param fast : Argument passed to getCI
 #' @param ... : arguments passed on to the \code{density} plot in base R
 #' @return returns a plot of the univariate density estimates with simultaneous
 #'			confidence intervals wherever asked. If \code{plot == FALSE} a list of
@@ -159,24 +160,25 @@ Smcmc <- function(data,
                           plot     = TRUE,  
                           mean     = TRUE,
                           which    = NULL,
+                          fast     = TRUE,
                           border   = NA, 
                           mean.col = 'plum4', 
                           quan.col = 'lightsteelblue3',
                           rug      = FALSE, 
                           opaq     = 0.7, 
                           auto.layout = TRUE, 
-                          ask      = dev.interactive(), ...)
+                          ask      = dev.interactive())
 {
   
   x <- as.Smcmc(x)
-  out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
+  out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, fast = fast)
   if(plot == TRUE)
   {
     plot.CIs(x, CIs = out, bord = border, 
              mean.color = adjustcolor(mean.col, alpha.f = opaq), 
              quan.color = adjustcolor(quan.col, alpha.f = opaq), 
              mean = mean, auto.layout = auto.layout, rug = rug,
-             ask = ask, main = main, which= which, ...)
+             ask = ask, main = main, which= which)
   }
   invisible(out)
 }
@@ -190,6 +192,7 @@ Smcmc <- function(data,
 #' @name plot.Smcmc
 #' @usage plot.Smcmc(x)    
 #' @param x : a `Smcmc' class object
+#' @param which : If you are intresetd in few components only
 #' @return return plot(s) of the all the dimensions of Smcmc object
 #' @examples
 #' # Producing Markov chain
@@ -205,7 +208,7 @@ Smcmc <- function(data,
 #'
 #'@export
 
-"plot.Smcmc" <- function(x,which = NULL,...)
+"plot.Smcmc" <- function(x,which = NULL, ...)
 {
   if(class(x)!="Smcmc"){stop("Argument must be Smcmc object")}
   y = x$chains
@@ -462,6 +465,7 @@ Smcmc <- function(data,
 #'@export
 
 
+
 convert2Smcmc <- function(x)
 {
   if(class(x) =="mcmc.list")
@@ -477,18 +481,19 @@ convert2Smcmc <- function(x)
   
   else if("stanfit"%in%class(x) || "rstan"%in%class(x))
   {
-    x = as.array(x)
-    dim_samples <- dim(x)
-    # Reshape the multidimensional array into separate chains
-    num_chains <- dim_samples[1]  # Number of chains
-    num_iterations <- dim_samples[2]  # Number of iterations
-    num_variables <- dim_samples[3]  # Number of variables
-    
-    chains = list(as.matrix(x[,1 , ]))
-    if(num_iterations > 1){
-      for (i in 2:num_iterations) {
-        append(chains, as.matrix(x[ ,i, ]))
-      }
+    foo <- x@sim$samples
+    f1 <- foo[[1]]
+    s <- length(f1)
+    f1 <- f1[-s]
+    samp <- Reduce('cbind', f1)
+    dim(foo[[1]])[1]
+    n = dim(Reduce('cbind',(foo[[1]])))[1]
+    perm = fit@sim$permutation
+    chains = list()
+    for(i in 1:length(perm))
+    {
+      chain =  as.matrix(Reduce('cbind',(foo[[i]]))[(n-length(perm[[i]])):n, ])
+      chains[[i]] = chain
     }
     return(as.Smcmc(chains))
   }
@@ -498,3 +503,5 @@ convert2Smcmc <- function(x)
     return(as.Smcmc(x))
   }
 }
+
+

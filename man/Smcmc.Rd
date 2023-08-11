@@ -7,7 +7,7 @@
 \alias{is.mcmc}
 \title{Smcmc class}
 \usage{
-Smcmc(data, batch.size = TRUE, stacked = TRUE, varnames = colnames(data))
+Smcmc(data, batch.size = TRUE, stacked = TRUE, varnames = NULL)
 }
 \arguments{
 \item{data}{: a list of MCMC output matrices each with `nsim` rows and `p` columns}

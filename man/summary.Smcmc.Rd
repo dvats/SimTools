@@ -5,18 +5,22 @@
 \alias{print.summary.Smcmc}
 \title{Summary function for Smcmc objects}
 \usage{
-\method{summary}{Smcmc}(x)
+\method{summary}{Smcmc}(object, eps = 0.10, alpha = 0.05, Q = c(0.10, 0.90), ...)
 
 \method{print}{summary.Smcmc}(x, ...)
 }
 \arguments{
+\item{object}{: a `Smcmc' class object}
+
 \item{eps}{: desired volume of the confidence region}
 
 \item{alpha}{: Type one error/threshold percentage error}
 
 \item{Q}{: desired quantiles (vector of 2)}
 
-\item{x}{: a `Smcmc' class object}
+\item{...}{: Other arguments}
+
+\item{x}{: summary.Smcmc output}
 }
 \value{
 return statistics of the all the dimensions(& chains) in Smcmc object

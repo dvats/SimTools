@@ -19,8 +19,6 @@ getCI(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
 \item{iid}{: logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}}
 
 \item{mean}{: logical  indicating whether mean is to be plotted}
-
-\item{fast}{: By defaults TRUE (To calculate CI efficiently), if set to FALSE, then use traditional method for CI calculations}
 }
 \value{
 adds segments for confidence intervals into an already existing plot environment

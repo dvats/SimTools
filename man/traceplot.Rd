@@ -4,8 +4,8 @@
 \alias{traceplot}
 \title{Trace Plot for Markov chain Monte Carlo}
 \usage{
-function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL,
-                xlab = "Iteration", ylab = NULL, alpha.f = 0.9, legend = TRUE,
+traceplot(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
+                 ylab = NULL, alpha.f = 0.9, legend = TRUE, ask = dev.interactive(), col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
 }
 \arguments{
 \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.}
@@ -31,6 +31,8 @@ function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL,
 \item{ask}{: activating interactive plots}
 
 \item{col}{: color vector for multiple chains}
+
+\item{...}{: Other arguments}
 }
 \value{
 Returns the Trace Plots of Markov Chain(s)
@@ -58,7 +60,6 @@ MakeChain <- function(p, n , h = .5)
   return(chain)
 }
 
-
 chain1 <- MakeChain(p=4,n=1000)
 chain2 <- MakeChain(p=4,n=1000)
 chain3 <- MakeChain(p=4,n=1000)
@@ -71,8 +72,5 @@ chain2 <- MakeChain(p=6,n=1000)
 chain3 <- MakeChain(p=6,n=1000)
 out <- Smcmc(list(chain1,chain2,chain3))
 traceplot(out)
-
-
-
 
 }

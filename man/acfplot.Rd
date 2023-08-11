@@ -4,9 +4,9 @@
 \alias{acfplot}
 \title{ACF Plot for Markov chain Monte Carlo}
 \usage{
-acfplot(x,which = NULL, type = c("correlation", "covariance"),
-             plot= TRUE, lag.max = NULL,main, avg.col = "blue", chain.col   = "red",
-             na.action   = na.fail, auto.layout = TRUE, ask = dev.interactive())
+acfplot(x,which = NULL, type = c("correlation", "covariance","partial"),
+               plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avgcol = "blue", chain.col   = "red",
+               na.action = na.fail, auto.layout = TRUE, ask = dev.interactive(), ...)
 }
 \arguments{
 \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix}
@@ -23,6 +23,8 @@ acfplot(x,which = NULL, type = c("correlation", "covariance"),
 
 \item{lag.max}{: Maximum lag for the ACF plot}
 
+\item{avgcol}{: color for the overall ACF of each component}
+
 \item{chain.col}{: color for the ACF of the individual chains.}
 
 \item{na.action}{:  function to be called to handle missing values. ‘na.pass’ can be used.}
@@ -31,7 +33,7 @@ acfplot(x,which = NULL, type = c("correlation", "covariance"),
 
 \item{ask}{: activating interactive plots}
 
-\item{avg.col}{: color for the overall ACF of each component}
+\item{...}{: Other arguments}
 }
 \value{
 returns the autocorrelation function plots of the Markov chains. Uses the

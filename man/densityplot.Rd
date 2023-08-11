@@ -4,9 +4,9 @@
 \alias{densityplot}
 \title{density plot form Smcmc class}
 \usage{
-densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
-                            plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', 
-                            quan.col = 'lightsteelblue3',rug = TRUE, opaq = 0.7, 
+densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, main = NA, iid = FALSE,
+                            plot = TRUE, mean = TRUE, which = NULL, border = NA, mean.col = 'plum4', 
+                            quan.col = 'lightsteelblue3',rug = FALSE, opaq = 0.7, 
                             auto.layout = TRUE, ask = dev.interactive(),...)
 }
 \arguments{
@@ -41,8 +41,6 @@ densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
 \item{auto.layout}{: logical argument for an automatic layout of plots}
 
 \item{ask}{: activating inter active plots}
-
-\item{fast}{: Argument passed to getCI}
 
 \item{...}{: arguments passed on to the \code{density} plot in base R}
 }

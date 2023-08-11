@@ -4,12 +4,14 @@
 \alias{plot.Smcmc}
 \title{Summary plot function for Smcmc objects}
 \usage{
-plot.Smcmc(x)
+\method{plot}{Smcmc}(x, which = NULL, ...)
 }
 \arguments{
 \item{x}{: a `Smcmc' class object}
 
 \item{which}{: If you are intresetd in few components only}
+
+\item{...}{: Other arguments}
 }
 \value{
 return plot(s) of the all the dimensions of Smcmc object

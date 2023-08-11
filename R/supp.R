@@ -4,8 +4,8 @@ Indicator <- function(x, ...)
   return(as.numeric(x > ... ))
 }
 
-#since our goal is to optimize z, this function returns the Confidence interval
-#for a particular z
+# since our goal is to optimize z, this function returns the Confidence interval
+# for a particular z
 
 CIz <- function(z, p1 , p2, theta.hat, phi, ci.sigma.mat, n, mean = TRUE)
 {
@@ -28,7 +28,7 @@ CIz <- function(z, p1 , p2, theta.hat, phi, ci.sigma.mat, n, mean = TRUE)
 }
 
 
-## for densityplot
+## for density plot
 plot.CIs <- function(x, 
                      CIs, 
                      bord = NULL, 
@@ -39,7 +39,7 @@ plot.CIs <- function(x,
                      auto.layout, 
                      ask,
                      main,
-                     which)
+                     which, ...)
 {
   if(class(x) == "Smcmc")
   {

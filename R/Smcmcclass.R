@@ -3,7 +3,6 @@
 #' @importFrom graphics boxplot par polygon segments boxplot.matrix
 #' @importFrom stats cov density qnorm quantile ts
 #' @importFrom mcmcse mcse.multi batchSize
-#' @importFrom mvtnorm pmvnorm
 ## usethis namespace: end
 
 #' @title Smcmc class
@@ -12,7 +11,7 @@
 #'
 #' @name Smcmc
 #' @aliases Smcmc as.Smcmc as.Smcmc.default is.mcmc 
-#' @usage Smcmc(data, batch.size = TRUE, stacked = TRUE, varnames = colnames(data))
+#' @usage Smcmc(data, batch.size = TRUE, stacked = TRUE, varnames = NULL)
 #' @param data : a list of MCMC output matrices each with `nsim` rows and `p` columns
 #' @param batch.size : logical argument, if true, calculates the batch size appropriate for this Markov chain. Setting to TRUE saves time in future steps.
 #' @param stacked : recommended to be `TRUE`. logical argument, if true, stores a carefully stacked version of the MCMC output for use later.
@@ -106,9 +105,9 @@ Smcmc <- function(data,
 #'
 #'
 #' @name densityplot
-#' @usage densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, iid = FALSE,
-#'                             plot = TRUE, mean = TRUE, border = NA, mean.col = 'plum4', 
-#'                             quan.col = 'lightsteelblue3',rug = TRUE, opaq = 0.7, 
+#' @usage densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, main = NA, iid = FALSE,
+#'                             plot = TRUE, mean = TRUE, which = NULL, border = NA, mean.col = 'plum4', 
+#'                             quan.col = 'lightsteelblue3',rug = FALSE, opaq = 0.7, 
 #'                             auto.layout = TRUE, ask = dev.interactive(),...)    
 #' @param x : a `Smcmc' class object
 #' @param Q : vector of quantiles
@@ -126,7 +125,6 @@ Smcmc <- function(data,
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
 #' @param auto.layout : logical argument for an automatic layout of plots
 #' @param ask : activating inter active plots
-#' @param fast : Argument passed to getCI
 #' @param ... : arguments passed on to the \code{density} plot in base R
 #' @return returns a plot of the univariate density estimates with simultaneous
 #'			confidence intervals wherever asked. If \code{plot == FALSE} a list of
@@ -160,25 +158,24 @@ Smcmc <- function(data,
                           plot     = TRUE,  
                           mean     = TRUE,
                           which    = NULL,
-                          fast     = TRUE,
                           border   = NA, 
                           mean.col = 'plum4', 
                           quan.col = 'lightsteelblue3',
                           rug      = FALSE, 
                           opaq     = 0.7, 
                           auto.layout = TRUE, 
-                          ask      = dev.interactive())
+                          ask      = dev.interactive(), ...)
 {
   
   x <- as.Smcmc(x)
-  out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean, fast = fast)
+  out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
   if(plot == TRUE)
   {
     plot.CIs(x, CIs = out, bord = border, 
              mean.color = adjustcolor(mean.col, alpha.f = opaq), 
              quan.color = adjustcolor(quan.col, alpha.f = opaq), 
              mean = mean, auto.layout = auto.layout, rug = rug,
-             ask = ask, main = main, which= which)
+             ask = ask, main = main, which= which, ...)
   }
   invisible(out)
 }
@@ -188,11 +185,11 @@ Smcmc <- function(data,
 #'
 #' @description Plots traceplot, acfplot and densityplot of all the dimensions of 
 #' chains in  Smcmc object
-#'
+#' @usage \method{plot}{Smcmc}(x, which = NULL, ...)
 #' @name plot.Smcmc
-#' @usage plot.Smcmc(x)    
 #' @param x : a `Smcmc' class object
 #' @param which : If you are intresetd in few components only
+#' @param ... : Other arguments
 #' @return return plot(s) of the all the dimensions of Smcmc object
 #' @examples
 #' # Producing Markov chain
@@ -208,7 +205,7 @@ Smcmc <- function(data,
 #'
 #'@export
 
-"plot.Smcmc" <- function(x,which = NULL, ...)
+"plot.Smcmc" <- function(x, which = NULL, ...)
 {
   if(class(x)!="Smcmc"){stop("Argument must be Smcmc object")}
   y = x$chains
@@ -256,11 +253,12 @@ Smcmc <- function(data,
 #' @title Summary function for Smcmc objects
 #' @name summary.Smcmc
 #' @description To show different statistics of the Smcmc object
-#' @usage \method{summary}{Smcmc}(x)    
-#' @param x : a `Smcmc' class object
+#' @usage \method{summary}{Smcmc}(object, eps = 0.10, alpha = 0.05, Q = c(0.10, 0.90), ...)
+#' @param object : a `Smcmc' class object
 #' @param eps : desired volume of the confidence region
 #' @param alpha : Type one error/threshold percentage error
 #' @param Q : desired quantiles (vector of 2)
+#' @param ... : Other arguments
 #' @return return statistics of the all the dimensions(& chains) in Smcmc object
 #' @examples
 #' # Producing Markov chain
@@ -276,7 +274,10 @@ Smcmc <- function(data,
 #'
 #'@export
 
-"summary.Smcmc" <- function (object, eps = 0.10, alpha = 0.05, Q = c(0.10, 0.90), ...)
+"summary.Smcmc" <- function (object,
+                             eps = 0.10,
+                             alpha = 0.05,
+                             Q = c(0.10, 0.90), ...)
 {
   object <- as.Smcmc(object)
   object.class <- class(object)
@@ -373,6 +374,8 @@ Smcmc <- function(data,
 
 
 #'@rdname summary.Smcmc
+#' @param x : summary.Smcmc output
+#' @param ... : Other arguments
 #'@export
 
 "print.summary.Smcmc" <-function (x, ...) 
@@ -414,57 +417,8 @@ Smcmc <- function(data,
 #' @usage convert2Smcmc(x)    
 #' @param x : a object belongs from any of "mcmc.list", "stanfit", "rstan", "array", "matrix" classes.
 #' @return return Smcmc object having same chain(s)
-#' @examples
-#' 
-#' library(StanHeaders)
-#' library(rstan)
-#'
-#' stanmodelcode <- "
-#' data { 
-#'  int<lower=0> n;
-#'  vector[2] x[n];
-#'  }
-#'  parameters {
-#'  vector[2] mu;
-#'  vector<lower=0>[2] lambda;
-#'  real<lower=-1,upper=1> r;
-#'  } 
-#'  transformed parameters {
-#'  vector<lower=0>[2] sigma;
-#'  cov_matrix[2] T;
-#'  sigma[1] <- inv_sqrt(lambda[1]);
-#'  sigma[2] <- inv_sqrt(lambda[2]);
-#'  T[1,1] <- square(sigma[1]);
-#'  T[1,2] <- r * sigma[1] * sigma[2];
-#'  T[2,1] <- r * sigma[1] * sigma[2];
-#'  T[2,2] <- square(sigma[2]);
-#'  }
-#'  model {
-#'  mu ~ normal(0, inv_sqrt(.001));
-#'  lambda ~ gamma(.001, .001);
-#'  x ~ multi_normal(mu, T);
-#'  }"
-#'
-#'  x <- matrix(c(0.8,102,1.0,98,0.5,100,0.9,105,0.7,103,0.4,110, 1.2,99, 1.4,87,0.6,113,1.1,89,
-#'                 1.3,93), nrow=11, ncol=2, byrow=TRUE) 
-#'                 
-#'  n <- nrow(x) # number of people/units measured
-#'
-#' data <- list(x=x, n=n) # to be passed on to Stan
-#' myinits <- list(list(r=0))
-#'
-#' # parameters to be monitored: 
-#' parameters <- c("r")
-#'
-#' # The following command calls Stan with specific options.
-#' # For a detailed description type "?rstan".
-#' fit <- stan(model_code=stanmodelcode,data=data,init=myinits,iter=1000,chains=1,thin=1)
-#'
-#' convert2Smcmc(fit)
 #'
 #'@export
-
-
 
 convert2Smcmc <- function(x)
 {

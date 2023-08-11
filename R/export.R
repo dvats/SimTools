@@ -83,7 +83,6 @@ addCI <- function(x,
 #' @param thresh : threshold for the optimization methodology that calculates the simultaneous CIs
 #' @param iid : logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}
 #' @param mean : logical  indicating whether mean is to be plotted
-#' @param fast : By defaults TRUE (To calculate CI efficiently), if set to FALSE, then use traditional method for CI calculations
 #' @return adds segments for confidence intervals into an already existing plot environment
 #'
 #' @examples
@@ -112,8 +111,7 @@ getCI <- function(x,
                   alpha  = 0.05, 
                   thresh = 0.001,
                   iid    = FALSE, 
-                  mean   = TRUE,
-                  fast   = TRUE) 
+                  mean   = TRUE) 
 {
   
   if(class(x) == "Smcmc")
@@ -189,52 +187,58 @@ getCI <- function(x,
   
   p <- p1 + p2
   if(mean == FALSE) p = p2
-  
-  if(fast == FALSE)
+  # 
+  # if(fast == FALSE)
+  # {
+  #   z1 <- qnorm(1 - alpha/2)
+  #   z2 <- qnorm(1 - alpha/(2*p))
+  #   foo1 <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+  #   foo2 <- CIz(z2, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+  #   if(mean == FALSE) v <- phi else v <- c(theta.hat, phi)
+  #   
+  #   count <- 0
+  #   prob1 <- pmvnorm(lower = foo1$lower.ci, upper = foo1$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
+  #   prob2 <- pmvnorm(lower = foo2$lower.ci, upper = foo2$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
+  #   
+  #   while(prob2 - prob1 > thresh)
+  #   {
+  #     count <- count + 1
+  #     z.star <- (z1 + z2)/2
+  #     foo.star <- CIz(z.star, p1, p2, theta.hat, phi, ci.sigma.mat, n, mean)
+  #     prob.star <- pmvnorm(lower = foo.star$lower.ci, upper = foo.star$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
+  #     if(prob.star > 1- alpha) 
+  #     {
+  #       z2 <- z.star
+  #       prob2 <- prob.star
+  #     }else
+  #     {
+  #       z1 <- z.star
+  #       prob1 <- prob.star
+  #     }
+  #     if(abs(prob1 - (1 - alpha)) < thresh)
+  #     {
+  #       temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
+  #       break
+  #     }
+  #   }
+  # }
+  # 
+  # else
+  # {
+  sigma.n <- (t(t(sigma.mat)*lambda))*lambda
+  diag.sds <- sqrt(diag(sigma.n))
+  rho.matrix <- t(t(sigma.n)/diag.sds)/diag.sds
+  N = min(50000,n)
+  Zt.mat <- matrix(0,ncol = dim(rho.matrix)[1],nrow = N)
+  A = t(chol(rho.matrix))
+  for(i in 1:N)
   {
-    z1 <- qnorm(1 - alpha/2)
-    z2 <- qnorm(1 - alpha/(2*p))
-    foo1 <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-    foo2 <- CIz(z2, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-    if(mean == FALSE) v <- phi else v <- c(theta.hat, phi)
-    
-    count <- 0
-    prob1 <- pmvnorm(lower = foo1$lower.ci, upper = foo1$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
-    prob2 <- pmvnorm(lower = foo2$lower.ci, upper = foo2$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
-    
-    while(prob2 - prob1 > thresh)
-    {
-      count <- count + 1
-      z.star <- (z1 + z2)/2
-      foo.star <- CIz(z.star, p1, p2, theta.hat, phi, ci.sigma.mat, n, mean)
-      prob.star <- pmvnorm(lower = foo.star$lower.ci, upper = foo.star$upper.ci, mean = v, sigma = (ci.sigma.mat/n))[1]
-      if(prob.star > 1- alpha) 
-      {
-        z2 <- z.star
-        prob2 <- prob.star
-      }else
-      {
-        z1 <- z.star
-        prob1 <- prob.star
-      }
-      if(abs(prob1 - (1 - alpha)) < thresh)
-      {
-        temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
-        break
-      }
-    }
+    Z = rnorm(dim(rho.matrix)[1])
+    Zt.mat[i, ] <- A%*%Z
   }
-  
-  else
-  {
-    sigma.n <- (t(t(sigma.mat)*lambda))*lambda
-    diag.sds <- sqrt(diag(sigma.n))
-    rho.matrix <- t(t(sigma.n)/diag.sds)/diag.sds
-    N = min(50000,n)
-    Zt.mat <- rmvnorm(N, sigma=rho.matrix) 
-    sup.Zt <- apply(abs(Zt.mat), 1, max)
-    z1 <- quantile(sup.Zt, probs = 1-alpha)
-  }
+  sup.Zt <- apply(abs(Zt.mat), 1, max)
+  z1 <- quantile(sup.Zt, probs = 1-alpha)
+  #}
   temp <- CIz(z1, p1, p2, theta.hat, phi,ci.sigma.mat, n, mean)
   
   for(i in 1:mq)
@@ -262,6 +266,8 @@ getCI <- function(x,
   return(foo3)
   
 }
+
+
 #####
 
 
@@ -331,9 +337,9 @@ boxCI <- function(x,
 #'
 #'
 #' @name acfplot
-#' @usage acfplot(x,which = NULL, type = c("correlation", "covariance"),
-#'              plot= TRUE, lag.max = NULL,main, avg.col = "blue", chain.col   = "red",
-#'              na.action   = na.fail, auto.layout = TRUE, ask = dev.interactive()) 
+#' @usage acfplot(x,which = NULL, type = c("correlation", "covariance","partial"),
+#'                plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avgcol = "blue", chain.col   = "red",
+#'                na.action = na.fail, auto.layout = TRUE, ask = dev.interactive(), ...) 
 #'          
 #' @param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
 #' @param which : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
@@ -342,12 +348,12 @@ boxCI <- function(x,
 #' @param main : main heading of plot
 #' @param xlab : By default "Lag", pass another value, if you want to change.
 #' @param lag.max : Maximum lag for the ACF plot
-#' @param avg.col  : color for the overall ACF of each component
+#' @param avgcol  : color for the overall ACF of each component
 #' @param chain.col : color for the ACF of the individual chains.
 #' @param na.action :  function to be called to handle missing values. ‘na.pass’ can be used.
 #' @param auto.layout : logical argument for an automatic layout of plots
 #' @param ask : activating interactive plots
-
+#' @param ... : Other arguments
 
 #' @return returns the autocorrelation function plots of the Markov chains. Uses the
 #'         more accurate globally-centered ACFs.
@@ -374,7 +380,7 @@ boxCI <- function(x,
 
 acfplot <- function(x,
                     which       = NULL,
-                    type        = c("correlation", "covariance", "partial"),
+                    type        = c("correlation", "covariance","partial"),
                     plot        = TRUE,
                     main        = NA,
                     xlab        = "Lag",
@@ -501,10 +507,8 @@ acfplot <- function(x,
 #' @title Trace Plot for Markov chain Monte Carlo
 #' @description traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain.
 #' @name traceplot
-#' @usage function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL,
-#'                 xlab = "Iteration", ylab = NULL, alpha.f = 0.9, legend = TRUE,
-#"                 ask = dev.interactive(),
-#"                 col = c("palevioletred3","steelblue3","tan3","seagreen3","tomato3"), ...)
+#' @usage traceplot(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
+#'                  ylab = NULL, alpha.f = 0.9, legend = TRUE, ask = dev.interactive(), col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
 #'
 #'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.
 #'@param fast : a Boolean argument that will be set to TRUE by default, to make plots faster.
@@ -518,7 +522,7 @@ acfplot <- function(x,
 #'@param legend : Boolean argument, for making legend or not.
 #'@param ask : activating interactive plots
 #'@param col : color vector for multiple chains
-#'
+#'@param ... : Other arguments
 #' @return Returns the Trace Plots of Markov Chain(s)
 #' @examples
 #' # example code
@@ -540,7 +544,6 @@ acfplot <- function(x,
 #'   return(chain)
 #' }
 #'
-#'
 #' chain1 <- MakeChain(p=4,n=1000)
 #' chain2 <- MakeChain(p=4,n=1000)
 #' chain3 <- MakeChain(p=4,n=1000)
@@ -554,13 +557,18 @@ acfplot <- function(x,
 #' out <- Smcmc(list(chain1,chain2,chain3))
 #' traceplot(out)
 #'
-#'
-#'
-#'
 #' @export
 
-traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL,main = NULL,
-                      xlab = "Iteration",ylab = NULL,alpha.f = 0.9,legend = TRUE,
+traceplot <- function(x,
+                      fast = TRUE, 
+                      which = NULL, 
+                      xlim = NULL, 
+                      ylim = NULL,
+                      main = NULL,
+                      xlab = "Iteration",
+                      ylab = NULL,
+                      alpha.f = 0.9,
+                      legend = TRUE,
                       ask = dev.interactive(),
                       col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
 {
@@ -582,6 +590,8 @@ traceplot <- function(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL,mai
   n <- dimn[1]
   p <- dimn[2]
   m <- length(x)
+  if(p==1){which=1}
+  if(m==1){legend = FALSE}
   if(m>5){stop("Maximum 5 chains are allowed")}
   
   ## Fixing y lables

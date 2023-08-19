@@ -86,7 +86,6 @@ addCI <- function(x,
 #' @return adds segments for confidence intervals into an already existing plot environment
 #'
 #' @examples
-#' library(mvtnorm)
 #' chain <- matrix(0, ncol = 1, nrow = 1e3)
 #' chain[1,] <- 0
 #' err <- rnorm(1e3)
@@ -225,12 +224,16 @@ getCI <- function(x,
   # 
   # else
   # {
+  
+  ## efficient algorithm to get confidence interval, by Bootstrapping
   sigma.n <- (t(t(sigma.mat)*lambda))*lambda
   diag.sds <- sqrt(diag(sigma.n))
   rho.matrix <- t(t(sigma.n)/diag.sds)/diag.sds
-  N = min(50000,n)
+  ## N is the number of Bootstrap samples
+  N = 20000
   Zt.mat <- matrix(0,ncol = dim(rho.matrix)[1],nrow = N)
   A = t(chol(rho.matrix))
+  ## Drawing RV from multivariate Normal distribution
   for(i in 1:N)
   {
     Z = rnorm(dim(rho.matrix)[1])
@@ -337,22 +340,20 @@ boxCI <- function(x,
 #'
 #'
 #' @name acfplot
-#' @usage acfplot(x,which = NULL, type = c("correlation", "covariance","partial"),
-#'                plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avgcol = "blue", chain.col   = "red",
-#'                na.action = na.fail, auto.layout = TRUE, ask = dev.interactive(), ...) 
+#' @usage acfplot(x,which = NULL, type = c("correlation"),
+#'                plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avg.col = "blue", chain.col   = "red",
+#'                na.action = na.fail, ...) 
 #'          
 #' @param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
 #' @param which : a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.
-#' @param type : the kind of ACF plot: "correlation" or "covariance"
+#' @param type : the kind of ACF plot: "correlation" or "covariance". By default it is "correlation"
 #' @param plot : TRUE if plots are required. If FALSE, raw values are returned
 #' @param main : main heading of plot
 #' @param xlab : By default "Lag", pass another value, if you want to change.
 #' @param lag.max : Maximum lag for the ACF plot
-#' @param avgcol  : color for the overall ACF of each component
+#' @param avg.col  : color for the overall ACF of each component
 #' @param chain.col : color for the ACF of the individual chains.
 #' @param na.action :  function to be called to handle missing values. ‘na.pass’ can be used.
-#' @param auto.layout : logical argument for an automatic layout of plots
-#' @param ask : activating interactive plots
 #' @param ... : Other arguments
 
 #' @return returns the autocorrelation function plots of the Markov chains. Uses the
@@ -380,17 +381,16 @@ boxCI <- function(x,
 
 acfplot <- function(x,
                     which       = NULL,
-                    type        = c("correlation", "covariance","partial"),
+                    type        = c("correlation"),
                     plot        = TRUE,
                     main        = NA,
                     xlab        = "Lag",
                     lag.max     = NULL,
-                    avgcol      = "blue",
+                    avg.col      = "blue",
                     chain.col   = "red",
-                    na.action   = na.fail,
-                    auto.layout = TRUE,
-                    ask         = dev.interactive(),...)
+                    na.action   = na.fail, ...)
 {
+  if("partial"%in%type){stop("Partial ACFs are not supported by this function")}
   varname = NULL
   if(TRUE %in% (class(x) == "Smcmc")){varname = x$varnames;x <- x$chains}else if(is.list(x))
   {
@@ -471,7 +471,7 @@ acfplot <- function(x,
       {
         lines(0:lag.max, as.matrix(chain.acf[[j]]$acf), type = "l", col = adjustcolor(chain.col, alpha.f = .5), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
       }
-      lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avgcol, alpha.f = .6), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
+      lines(0:lag.max, as.matrix(avgf$acf), type = "l", col = adjustcolor(avg.col, alpha.f = .6), lwd = 1, lty = 1, yaxt = 'n', xaxt = 'n')
       
       if(is.null(which)){if((np%%2 != 0 && i == np-1 && np>4)||(length(dimen)>10 && i>axs && i>10)){mtext(xlab, side = 1, line = 2.3,cex = 0.8)}}
       
@@ -483,7 +483,7 @@ acfplot <- function(x,
       {
         if(np <= 4 && length(dimen)<=4){mtext(xlab, side = 1, line = 2.3,at =0.52, outer = TRUE, cex= 1)}
         else if(i<=10 && i>axs){mtext(xlab, side = 1, line = 2.3,at = 0.3,outer = TRUE,cex = 0.8)
-          if(i %%10 == 0){mtext(xlab, side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 0.8)}}
+        if(i %%10 == 0){mtext(xlab, side = 1, line = 2.3,at = 0.8,outer = TRUE,cex = 0.8)}}
       }
     } 
   }
@@ -507,21 +507,20 @@ acfplot <- function(x,
 #' @title Trace Plot for Markov chain Monte Carlo
 #' @description traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain.
 #' @name traceplot
-#' @usage traceplot(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
-#'                  ylab = NULL, alpha.f = 0.9, legend = TRUE, ask = dev.interactive(), col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
+#' @usage traceplot(x, fast = TRUE, which = NULL, col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
+#'                  ylab = NULL, opaq = 0.9, legend = TRUE, ...)
 #'
 #'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.
 #'@param fast : a Boolean argument that will be set to TRUE by default, to make plots faster.
-#'@param which : if we want full size trace plots of specific dimensions of chain, we can pass a vector of respective dimension/components. 
+#'@param which : if we want full size trace plots of specific dimensions of chain, we can pass a vector of respective dimension/components.
+#'@param col : color vector for multiple chains 
 #'@param xlim : range of x-axis
 #'@param ylim : range of y-axis
 #'@param main : usual heading for plot
 #'@param xlab : labels of x-axis
 #'@param ylab : labels of y-axis,it should be a vector of length equal to dimension of chain.
-#'@param alpha.f : To fix the opacity of lines as per user convenience, by default it is 0.9.
+#'@param opaq : To fix the opacity of lines as per user convenience, by default it is 0.9.
 #'@param legend : Boolean argument, for making legend or not.
-#'@param ask : activating interactive plots
-#'@param col : color vector for multiple chains
 #'@param ... : Other arguments
 #' @return Returns the Trace Plots of Markov Chain(s)
 #' @examples
@@ -562,15 +561,14 @@ acfplot <- function(x,
 traceplot <- function(x,
                       fast = TRUE, 
                       which = NULL, 
+                      col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"),
                       xlim = NULL, 
                       ylim = NULL,
                       main = NULL,
                       xlab = "Iteration",
                       ylab = NULL,
-                      alpha.f = 0.9,
-                      legend = TRUE,
-                      ask = dev.interactive(),
-                      col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
+                      opaq = 0.9,
+                      legend = TRUE, ...)
 {
   ## Check for the Data Type
   varnames = NULL
@@ -669,11 +667,11 @@ traceplot <- function(x,
       j <- 1  
       ylim <- c(mini[i],maxi[i])
       plot(x = index, y = x[[1]][index,i], xlab = xlab, ylab = ylab[i],
-           type = "n", ylim = ylim, xlim = xlim, col = adjustcolor(col[1],alpha.f = alpha.f),main = if(leg!=1){main} else{NA}, ...)
+           type = "n", ylim = ylim, xlim = xlim, col = adjustcolor(col[1], alpha.f = opaq),main = if(leg!=1){main} else{NA}, ...)
       while(j <= m)
       {
         lines(x= index, y=x[[j]][index,i], type = "l", col = adjustcolor(col[j],
-                                                                         alpha.f = alpha.f), ylim = ylim, xlim = xlim, yaxt = 'n', xaxt = 'n', ...)
+                                                                         alpha.f = opaq), ylim = ylim, xlim = xlim, yaxt = 'n', xaxt = 'n', ...)
         j  <- j + 1
       }
       
@@ -703,7 +701,7 @@ traceplot <- function(x,
       space = 1.1}
     else if(!legend && !is.null(main)){par(oma = c(3.5,0,2.5,0))
       l = 1}
-    else{par(oma = c(3.5,0,0,0))}
+    else{par(oma = c(3.5,0,0.5,0))}
     axs = p-1
     if(p <= 4){axs = p-1}
     else {axs = p-2}
@@ -714,10 +712,10 @@ traceplot <- function(x,
       par(mar = c(0, 4.1,0, 2.1))
       ylim <-  c(mini[i],maxi[i])
       plot(x = index, y = x[[1]][index,i], ylab =ylab[i], type = "l", ylim = ylim, xlim = xlim,
-           col = adjustcolor(col[1],alpha.f = alpha.f), xaxt = if(i>axs) 's' else 'n', ...)
+           col = adjustcolor(col[1],alpha.f = opaq), xaxt = if(i>axs) 's' else 'n', ...)
       while(j<=m)
       {
-        lines(x= index, y=x[[j]][index,i], type = "l", col = adjustcolor(col[j],alpha.f = alpha.f),
+        lines(x= index, y=x[[j]][index,i], type = "l", col = adjustcolor(col[j],alpha.f = opaq),
               ylim = ylim, xlim = xlim, yaxt = 'n', xaxt = 'n', ...)
         j = j + 1
       }

@@ -1,7 +1,7 @@
 ## usethis namespace: start
 #' @importFrom grDevices adjustcolor dev.interactive
-#' @importFrom graphics boxplot par polygon segments boxplot.matrix
-#' @importFrom stats cov density qnorm quantile ts
+#' @importFrom graphics boxplot par polygon segments boxplot.matrix mtext lines abline points
+#' @importFrom stats cov density qnorm quantile ts var qchisq rnorm sd IQR acf na.fail
 #' @importFrom mcmcse mcse.multi batchSize
 ## usethis namespace: end
 
@@ -106,16 +106,14 @@ Smcmc <- function(data,
 #'
 #' @name densityplot
 #' @usage densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, main = NA, iid = FALSE,
-#'                             plot = TRUE, mean = TRUE, which = NULL, border = NA, mean.col = 'plum4', 
-#'                             quan.col = 'lightsteelblue3',rug = FALSE, opaq = 0.7, 
-#'                             auto.layout = TRUE, ask = dev.interactive(),...)    
+#'                             mean = TRUE, which = NULL, border = NA, mean.col = 'plum4', 
+#'                             quan.col = 'lightsteelblue3',rug = FALSE, opaq = 0.7, ...)    
 #' @param x : a `Smcmc' class object
 #' @param Q : vector of quantiles
 #' @param alpha : confidence level of simultaneous confidence intervals 
 #' @param thresh : numeric typically less than .005 for the accuracy of the simulteaneous procedure
 #' @param main : To add main heading
 #' @param iid : logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}
-#' @param plot :  logical argument for is plots are to be returned 
 #' @param mean : logical argument whether the mean is to be plotted
 #' @param which : A vector of components, if you want plots of specific components.
 #' @param border : whether a border is required for the simultaneous confidence intervals
@@ -123,8 +121,6 @@ Smcmc <- function(data,
 #' @param quan.col : color for the quantile confidence intervals
 #' @param rug : logical indicating whether a rug plot is desired
 #' @param opaq : opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.
-#' @param auto.layout : logical argument for an automatic layout of plots
-#' @param ask : activating inter active plots
 #' @param ... : arguments passed on to the \code{density} plot in base R
 #' @return returns a plot of the univariate density estimates with simultaneous
 #'			confidence intervals wherever asked. If \code{plot == FALSE} a list of
@@ -155,28 +151,21 @@ Smcmc <- function(data,
                           thresh   = 0.001, 
                           main     = NA,
                           iid      = FALSE, 
-                          plot     = TRUE,  
                           mean     = TRUE,
                           which    = NULL,
                           border   = NA, 
                           mean.col = 'plum4', 
                           quan.col = 'lightsteelblue3',
                           rug      = FALSE, 
-                          opaq     = 0.7, 
-                          auto.layout = TRUE, 
-                          ask      = dev.interactive(), ...)
+                          opaq     = 0.7, ...)
 {
   
   x <- as.Smcmc(x)
   out <- getCI(x, Q, alpha, thresh = thresh, iid = iid, mean = mean)
-  if(plot == TRUE)
-  {
-    plot.CIs(x, CIs = out, bord = border, 
+  plot.CIs(x, CIs = out, bord = border, 
              mean.color = adjustcolor(mean.col, alpha.f = opaq), 
              quan.color = adjustcolor(quan.col, alpha.f = opaq), 
-             mean = mean, auto.layout = auto.layout, rug = rug,
-             ask = ask, main = main, which= which, ...)
-  }
+             mean = mean, rug = rug, main = main, which= which, ...)
   invisible(out)
 }
 
@@ -442,7 +431,7 @@ convert2Smcmc <- function(x)
     samp <- Reduce('cbind', f1)
     dim(foo[[1]])[1]
     n = dim(Reduce('cbind',(foo[[1]])))[1]
-    perm = fit@sim$permutation
+    perm = x@sim$permutation
     chains = list()
     for(i in 1:length(perm))
     {

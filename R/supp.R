@@ -35,9 +35,7 @@ plot.CIs <- function(x,
                      mean.color = 'plum4' , 
                      quan.color = 'lightsteelblue3', 
                      rug,
-                     mean = TRUE, 
-                     auto.layout, 
-                     ask,
+                     mean = TRUE,
                      main,
                      which, ...)
 {
@@ -89,8 +87,8 @@ plot.CIs <- function(x,
     else
     {
       beta = ts(beta)
-      plot(density(beta, ...),main = if(is.null(which)){NA} else{main}, xlab = NA, ylab = varnames[i],lwd =1.5)
-      if(rug == TRUE) rug(beta, ticksize=0.03, side=1, lwd=0.5)
+      plot(density(beta, ...), main = if(is.null(which)){NA} else{main}, xlab = NA, ylab = varnames[i], lwd =1.5)
+      if(rug == TRUE) rug(beta, ticksize = 0.03, side = 1, lwd = 0.5)
       addCI(x, CIs, component = i, bord = bord, 
             mean.color = mean.color, quan.color = quan.color, 
             mean = mean)
@@ -100,7 +98,7 @@ plot.CIs <- function(x,
   }
   if(leg == 1 || is.null(which))
   {
-    on.exit(par(ask = FALSE,mfrow=lay$mfrow))
+    on.exit(par(mfrow=lay$mfrow))
     par(mar = c(5.1, 4.1, 4.1, 2.1))
     par(fig = c(0, 1, 0 , 1))
     par(oma = c(0, 0, 0, 0))

@@ -4,16 +4,16 @@
 \alias{acfplot}
 \title{ACF Plot for Markov chain Monte Carlo}
 \usage{
-acfplot(x,which = NULL, type = c("correlation", "covariance","partial"),
-               plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avgcol = "blue", chain.col   = "red",
-               na.action = na.fail, auto.layout = TRUE, ask = dev.interactive(), ...)
+acfplot(x,which = NULL, type = c("correlation"),
+               plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avg.col = "blue", chain.col   = "red",
+               na.action = na.fail, ...)
 }
 \arguments{
 \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix}
 
 \item{which}{: a vector of integers indicating which components' ACF plots are needed. By default all components are drawn.}
 
-\item{type}{: the kind of ACF plot: "correlation" or "covariance"}
+\item{type}{: the kind of ACF plot: "correlation" or "covariance". By default it is "correlation"}
 
 \item{plot}{: TRUE if plots are required. If FALSE, raw values are returned}
 
@@ -23,15 +23,11 @@ acfplot(x,which = NULL, type = c("correlation", "covariance","partial"),
 
 \item{lag.max}{: Maximum lag for the ACF plot}
 
-\item{avgcol}{: color for the overall ACF of each component}
+\item{avg.col}{: color for the overall ACF of each component}
 
 \item{chain.col}{: color for the ACF of the individual chains.}
 
 \item{na.action}{:  function to be called to handle missing values. ‘na.pass’ can be used.}
-
-\item{auto.layout}{: logical argument for an automatic layout of plots}
-
-\item{ask}{: activating interactive plots}
 
 \item{...}{: Other arguments}
 }

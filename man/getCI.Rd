@@ -28,7 +28,6 @@ Calculates simultaneous confidence intervals for means and
              quantiles as indicated for the desired MCMC output
 }
 \examples{
-library(mvtnorm)
 chain <- matrix(0, ncol = 1, nrow = 1e3)
 chain[1,] <- 0
 err <- rnorm(1e3)

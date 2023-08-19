@@ -4,8 +4,8 @@
 \alias{traceplot}
 \title{Trace Plot for Markov chain Monte Carlo}
 \usage{
-traceplot(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
-                 ylab = NULL, alpha.f = 0.9, legend = TRUE, ask = dev.interactive(), col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), ...)
+traceplot(x, fast = TRUE, which = NULL, col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
+                 ylab = NULL, opaq = 0.9, legend = TRUE, ...)
 }
 \arguments{
 \item{x}{: an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.}
@@ -13,6 +13,8 @@ traceplot(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL, x
 \item{fast}{: a Boolean argument that will be set to TRUE by default, to make plots faster.}
 
 \item{which}{: if we want full size trace plots of specific dimensions of chain, we can pass a vector of respective dimension/components.}
+
+\item{col}{: color vector for multiple chains}
 
 \item{xlim}{: range of x-axis}
 
@@ -24,13 +26,9 @@ traceplot(x, fast = TRUE, which = NULL, xlim = NULL, ylim = NULL, main = NULL, x
 
 \item{ylab}{: labels of y-axis,it should be a vector of length equal to dimension of chain.}
 
-\item{alpha.f}{: To fix the opacity of lines as per user convenience, by default it is 0.9.}
+\item{opaq}{: To fix the opacity of lines as per user convenience, by default it is 0.9.}
 
 \item{legend}{: Boolean argument, for making legend or not.}
-
-\item{ask}{: activating interactive plots}
-
-\item{col}{: color vector for multiple chains}
 
 \item{...}{: Other arguments}
 }

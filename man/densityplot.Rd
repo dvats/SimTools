@@ -5,9 +5,8 @@
 \title{density plot form Smcmc class}
 \usage{
 densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, main = NA, iid = FALSE,
-                            plot = TRUE, mean = TRUE, which = NULL, border = NA, mean.col = 'plum4', 
-                            quan.col = 'lightsteelblue3',rug = FALSE, opaq = 0.7, 
-                            auto.layout = TRUE, ask = dev.interactive(),...)
+                            mean = TRUE, which = NULL, border = NA, mean.col = 'plum4', 
+                            quan.col = 'lightsteelblue3',rug = FALSE, opaq = 0.7, ...)
 }
 \arguments{
 \item{x}{: a `Smcmc' class object}
@@ -22,8 +21,6 @@ densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, main = NA, iid = F
 
 \item{iid}{: logical argument for constructing density plot for iid samples. Defaults to \code{FALSE}}
 
-\item{plot}{:  logical argument for is plots are to be returned}
-
 \item{mean}{: logical argument whether the mean is to be plotted}
 
 \item{which}{: A vector of components, if you want plots of specific components.}
@@ -37,10 +34,6 @@ densityplot(x, Q = c(0.1, 0.9), alpha = 0.05, thresh = 0.001, main = NA, iid = F
 \item{rug}{: logical indicating whether a rug plot is desired}
 
 \item{opaq}{: opacity of \code{mean.col} and \code{quan.col}. A value of 0 is transparent and 1 is completely opaque.}
-
-\item{auto.layout}{: logical argument for an automatic layout of plots}
-
-\item{ask}{: activating inter active plots}
 
 \item{...}{: arguments passed on to the \code{density} plot in base R}
 }

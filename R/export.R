@@ -39,8 +39,8 @@ addCI <- function(x,
                   quan.color  = 'lightsteelblue3',
                   opaq        = 0.7,...)
 {
-  if(class(x) == "Smcmc")  obj <- ts(x$stacked[, component])
-  if(class(x) == "Siid")  obj <- ts(x$data[, component])
+  if("Smcmc"%in%class(x))  obj <- ts(x$stacked[, component])
+  if("Siid"%in%class(x))  obj <- ts(x$data[, component])
   mean.color = adjustcolor(mean.color, alpha.f = opaq)
   quan.color = adjustcolor(quan.color, alpha.f = opaq)
   mn <- CIs$mean.est[component]
@@ -113,7 +113,7 @@ getCI <- function(x,
                   mean   = TRUE) 
 {
   
-  if(class(x) == "Smcmc")
+  if("Smcmc"%in%class(x))
   {
     if(is.null(x$size)) {
       b.size <- 0
@@ -126,7 +126,7 @@ getCI <- function(x,
     
     x <- x$stacked
   }else{
-    if(class(x) == "Siid")
+    if("Siid"%in%class(x))
     {
       b.size <- 1
       x <- x$data
@@ -341,7 +341,8 @@ boxCI <- function(x,
 #'
 #' @name acfplot
 #' @usage acfplot(x,which = NULL, type = c("correlation"),
-#'                plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avg.col = "blue", chain.col   = "red",
+#'                plot = TRUE, main = NA, xlab = "Lag", 
+#'                lag.max = NULL, avg.col = "blue", chain.col = "red",
 #'                na.action = na.fail, ...) 
 #'          
 #' @param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix
@@ -507,7 +508,9 @@ acfplot <- function(x,
 #' @title Trace Plot for Markov chain Monte Carlo
 #' @description traceplot is a graphical tool commonly used in Bayesian statistics and Markov Chain Monte Carlo(MCMC) methods to diagnose the convergence and mixing properties of a chain.
 #' @name traceplot
-#' @usage traceplot(x, fast = TRUE, which = NULL, col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
+#' @usage traceplot(x, fast = TRUE, which = NULL, 
+#'                  col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"),
+#'                  xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
 #'                  ylab = NULL, opaq = 0.9, legend = TRUE, ...)
 #'
 #'@param x : an `Smcmc' class object or a list of Markov chains or a Markov chain matrix or a vector.

@@ -39,7 +39,7 @@ plot.CIs <- function(x,
                      main,
                      which, ...)
 {
-  if(class(x) == "Smcmc")
+  if("Smcmc"%in%class(x))
   {
     if(is.null(x$varnames)) 
     {
@@ -49,7 +49,7 @@ plot.CIs <- function(x,
     }
     data <- x$stacked
   }else{
-    if(class(x) == "Siid")
+    if("Siid"%in%class(x))
     {
       if(is.null(x$varnames)) 
       {
@@ -128,7 +128,7 @@ plot.boxx <- function(x, dimn, CIs, quan.color, range, width, varwidth, notch, o
 chain_stacker <- function(x) {
   m <- length(x)
   
-  if(class(x) != "list")
+  if(!("list"%in%class(x)))
     stop("must be list of chains")
   
   if(is.null(x))

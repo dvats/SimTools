@@ -196,7 +196,7 @@ Smcmc <- function(data,
 
 "plot.Smcmc" <- function(x, which = NULL, ...)
 {
-  if(class(x)!="Smcmc"){stop("Argument must be Smcmc object")}
+  if(!("Smcmc"%in%class(x))){stop("Argument must be Smcmc object")}
   y = x$chains
   dimn <- dim(y[[1]])
   n <- dimn[1]
@@ -411,7 +411,7 @@ Smcmc <- function(data,
 
 convert2Smcmc <- function(x)
 {
-  if(class(x) =="mcmc.list")
+  if("mcmc.list"%in%class(x))
   {
     temp = list(as.matrix(x[[1]]))
     

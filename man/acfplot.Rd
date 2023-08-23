@@ -5,7 +5,8 @@
 \title{ACF Plot for Markov chain Monte Carlo}
 \usage{
 acfplot(x,which = NULL, type = c("correlation"),
-               plot = TRUE, main = NA, xlab = "Lag", lag.max = NULL, avg.col = "blue", chain.col   = "red",
+               plot = TRUE, main = NA, xlab = "Lag", 
+               lag.max = NULL, avg.col = "blue", chain.col = "red",
                na.action = na.fail, ...)
 }
 \arguments{

@@ -4,7 +4,9 @@
 \alias{traceplot}
 \title{Trace Plot for Markov chain Monte Carlo}
 \usage{
-traceplot(x, fast = TRUE, which = NULL, col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"), xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
+traceplot(x, fast = TRUE, which = NULL, 
+                 col = c("palevioletred3","steelblue3","tan3","dimgrey","palegreen3"),
+                 xlim = NULL, ylim = NULL, main = NULL, xlab = "Iteration", 
                  ylab = NULL, opaq = 0.9, legend = TRUE, ...)
 }
 \arguments{

@@ -4,7 +4,7 @@ Leadership:
 [Dootika Vats](http://dvats.github.io/), [James Flegal](https://faculty.ucr.edu/~jflegal/), [Galin Jones](http://users.stat.umn.edu/~galin/)
 
 Contributors:
-Gunjan Jalori
+Gunjan Jalori, Siddharth Pathak
 
 Updates will be described in this README. For communication regarding issues in the code and other suggestions,  please employ the issues feature on GitHub.
 

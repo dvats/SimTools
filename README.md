@@ -12,11 +12,23 @@ Updates will be described in this README. For communication regarding issues in 
 **Run**: `runme.R`
 
 ---------------------
+Install from this branch using:
+`devtools::install_github("dvats/SimTools", ref = "Siddharth-Pathak")`
+
+---------------------
+
+---------------------
 Next update goal:
+
+---------------------
+ August 25, 2023
+
+The following were accomplished
 - multiple chain compatibility
 - summary function for output
 - compatibility for discrete state space
 - make efficient trace plots
+- New functions to use are: `densityplot()`, `acfplot()`, `traceplot()`, `plot()`, `summary()`.
 
 ---------------------
  October 3, 2021
